@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using HandTracking.Interfaces.Settings;
 
-namespace HandTracking.Interfaces.Settings
+namespace HandTracking.Implementation.HandTracking
 {
     class HandTrackingSettings: CameraSettings
     {
-
 
         public HandTrackingSettings(int width, int height, int fps) : base(width, height, fps)
         {

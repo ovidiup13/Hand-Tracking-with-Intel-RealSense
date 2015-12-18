@@ -17,6 +17,6 @@ namespace HandTracking.Interfaces.Module
         /// 
         /// </summary>
         /// <returns></returns>
-        public abstract ITracking GetInstace();
+        public abstract ITracking GetInstance();
     }
 }

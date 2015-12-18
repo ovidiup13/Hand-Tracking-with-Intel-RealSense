@@ -1,6 +1,4 @@
-﻿using HandTracking.Interfaces.Controller;
-
-namespace HandTracking.Interfaces.Core
+﻿namespace HandTracking.Interfaces.Core
 {
     public interface IExperiment
     {

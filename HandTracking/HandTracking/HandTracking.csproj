@@ -11,7 +11,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>HandTracking</RootNamespace>
     <AssemblyName>HandTracking</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
@@ -62,9 +62,10 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Bass.Net, Version=2.4.11.1, Culture=neutral, PublicKeyToken=b7566c273e6ef480, processorArchitecture=MSIL" />
     <Reference Include="libpxcclr.cs, Version=6.0.21.6598, Culture=neutral, PublicKeyToken=ca106b2214526f83, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>lib\libpxcclr.cs.dll</HintPath>
+      <HintPath>.\libpxcclr.cs.dll</HintPath>
     </Reference>
     <Reference Include="NAudio, Version=1.7.3.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\NAudio.1.7.3\lib\net35\NAudio.dll</HintPath>
@@ -108,6 +109,10 @@
     <Compile Include="Implementation\HandTracking\TrackingData.cs" />
     <Compile Include="Implementation\HandTracking\TrackingImpl.cs" />
     <Compile Include="Implementation\HandTracking\TrackingSettings.cs" />
+    <Compile Include="Implementation\MarkerTracking\MarkerData.cs" />
+    <Compile Include="Implementation\MarkerTracking\MarkerTrackingImpl.cs" />
+    <Compile Include="Implementation\MarkerTracking\MarkerTrackingModule.cs" />
+    <Compile Include="Implementation\MarkerTracking\MarkerTrackingSettings.cs" />
     <Compile Include="Interfaces\Module\IData.cs" />
     <Compile Include="ImageUtils.cs" />
     <Compile Include="Interfaces\Module\IModule.cs" />
@@ -128,7 +133,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Interfaces\Core\ICondition.cs" />
-    <Compile Include="Interfaces\Core\IAudioDesign.cs" />
+    <Compile Include="Interfaces\AudioController\IAudioDesign.cs" />
     <Compile Include="Interfaces\Core\IExperiment.cs" />
     <Compile Include="Interfaces\Core\ITrial.cs" />
     <Compile Include="Interfaces\AudioController\ISpeaker.cs" />
@@ -167,10 +172,27 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="libpxcclr.cs.dll" />
+    <Content Include="bass.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="libpxcclr.cs.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="libpxccpp2c.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="opencv_core300.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="opencv_highgui300.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="opencv_imgproc300.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Libs\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

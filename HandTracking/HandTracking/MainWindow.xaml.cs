@@ -10,8 +10,11 @@ using System.Windows.Input;
 using System.Windows.Media;
 using OpenCV.Net;
 using Aruco.Net;
+using HandTracking.Implementation.AudioController;
+using HandTracking.Implementation.AudioDesigns;
 using HandTracking.Implementation.Core;
 using HandTracking.Interfaces.Core;
+using Un4seen.Bass;
 using Size = OpenCV.Net.Size;
 
 namespace HandTracking
@@ -25,24 +28,22 @@ namespace HandTracking
         private RealSenseHands handsLocation;
         private readonly IExperiment mainExperiment;
 
+        private static int _numberOfTrials = 1;
+
         public MainWindow()
         {
             InitializeComponent();
-
-            //create a new trial list
-            List<Trial> trialList = new List<Trial>();
-            for (int i = 0; i < 5; i++)
-                trialList.Add(new Trial(i));
 
             //create a list of conditions
             List<ConditionImpl> conditions = new List<ConditionImpl>();
             for (int i = 0; i < 2; i++)
             {
-                conditions.Add(new ConditionImpl(trialList.ToArray()));
+                var condition = new ConditionImpl(_numberOfTrials);
+                conditions.Add(condition);
             }
 
             //pass these to main experiment
-            mainExperiment = new MainExperiment(conditions.ToArray());
+            mainExperiment = new MainExperiment(conditions.ToArray(), new SpeakerController());
 
             //start experiment
             mainExperiment.StartExperiment();

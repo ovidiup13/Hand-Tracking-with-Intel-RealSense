@@ -5,7 +5,6 @@ namespace HandTracking.Interfaces.Module
 {
     public interface ITracking
     {
-        ISettings Settings { get; set; }
 
         void StartProcessing();
 
@@ -13,6 +12,6 @@ namespace HandTracking.Interfaces.Module
 
         void PauseProcessing();
 
-        IData GetHandData();
+        IData GetData();
     }
 }

@@ -17,7 +17,7 @@ namespace HandTracking.Implementation.HandTracking
         /// Method that returns an instace of Tracking object, with default settings.
         /// </summary>
         /// <returns>Instance of Tracking object</returns>
-        public override ITracking GetInstace()
+        public override ITracking GetInstance()
         {
             return Tracking ?? (Tracking = new TrackingImpl());
         }
