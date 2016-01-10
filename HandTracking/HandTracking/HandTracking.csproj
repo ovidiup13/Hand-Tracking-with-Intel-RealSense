@@ -105,6 +105,8 @@
     <Compile Include="Implementation\AudioDesigns\GeigerAudioDesign.cs" />
     <Compile Include="Implementation\Core\MainExperiment.cs" />
     <Compile Include="Implementation\Core\Trial.cs" />
+    <Compile Include="Implementation\HandTracking\HandTrackingData.cs" />
+    <Compile Include="Implementation\HandTracking\HandTrackingImpl.cs" />
     <Compile Include="Implementation\HandTracking\HandTrackingModule.cs" />
     <Compile Include="Implementation\HandTracking\TrackingData.cs" />
     <Compile Include="Implementation\HandTracking\TrackingImpl.cs" />

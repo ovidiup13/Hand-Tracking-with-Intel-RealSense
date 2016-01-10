@@ -9,7 +9,7 @@ using Un4seen.Bass;
 
 namespace HandTracking.Implementation.AudioController
 {
-    class Speaker:ISpeaker
+    class Speaker: ISpeaker
     {
         private BASSFlag _speaker;
         private string _file = "Sounds\\peakGeiger.wav";

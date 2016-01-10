@@ -24,9 +24,7 @@ namespace HandTracking
     /// </summary>
     public partial class MainWindow
     {
-        private RealSenseImageStream imageStream;
-        private RealSenseHands handsLocation;
-        private readonly IExperiment mainExperiment;
+        private readonly IExperiment _mainExperiment;
 
         private static int _numberOfTrials = 1;
 
@@ -43,10 +41,10 @@ namespace HandTracking
             }
 
             //pass these to main experiment
-            mainExperiment = new MainExperiment(conditions.ToArray(), new SpeakerController());
+            _mainExperiment = new MainExperiment(conditions.ToArray(), new SpeakerController());
 
             //start experiment
-            mainExperiment.StartExperiment();
+            _mainExperiment.StartExperiment();
         }
 
         /// <summary>
@@ -58,7 +56,7 @@ namespace HandTracking
         {
             //if we pressed space, move to next trial
             if (e.Key == Key.Space)
-                mainExperiment.NextTrial();
+                _mainExperiment.NextTrial();
         }
 
         /// <summary>
@@ -68,7 +66,7 @@ namespace HandTracking
         /// <param name="e"></param>
         private void MainWindow_OnClosed(object sender, EventArgs e)
         {
-            mainExperiment.StopExperiment();
+            _mainExperiment.StopExperiment();
             Application.Current.Shutdown();
         }
 
