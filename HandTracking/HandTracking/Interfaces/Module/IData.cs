@@ -8,5 +8,8 @@ namespace HandTracking.Interfaces.Module
 {
     class IData
     {
+
+
+
     }
 }

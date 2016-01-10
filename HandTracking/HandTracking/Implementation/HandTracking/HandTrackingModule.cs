@@ -19,7 +19,7 @@ namespace HandTracking.Implementation.HandTracking
         /// <returns>Instance of Tracking object</returns>
         public override ITracking GetInstance()
         {
-            return Tracking ?? (Tracking = new TrackingImpl());
+            return Tracking ?? (Tracking = new HandTrackingImpl());
         }
 
         /// <summary>
@@ -29,7 +29,7 @@ namespace HandTracking.Implementation.HandTracking
         /// <returns></returns>
         public override ITracking GetInstance(ISettings settings)
         {
-            return Tracking ?? (Tracking = new TrackingImpl(settings));
+            return Tracking ?? (Tracking = new HandTrackingImpl(settings));
         }
     }
 }
