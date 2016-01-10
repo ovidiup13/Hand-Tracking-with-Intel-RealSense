@@ -41,7 +41,7 @@ namespace HandTracking.Implementation.Core
         private MarkerTrackingModule _markerTrackingModule;
         private ITracking _markerTracking;
         private ITracking _handtracking;
-        private TrackingData _handData;
+        private HandTrackingData _handData;
         private MarkerData _markerData;
 
         #endregion
@@ -89,7 +89,7 @@ namespace HandTracking.Implementation.Core
             //create an instance of hand tracking module
             _handTrackingModule = new HandTrackingModule();
             _handtracking = _handTrackingModule.GetInstance();
-            _handData = _handtracking.GetData() as TrackingData;
+            _handData = _handtracking.GetData() as HandTrackingData;
 
             //start variables
             _experimentIsRunning = true;

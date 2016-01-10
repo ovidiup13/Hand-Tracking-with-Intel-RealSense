@@ -9,6 +9,9 @@ namespace HandTracking.Implementation.HandTracking
 {
     class HandTrackingData : IData
     {
-
+        public PXCMPoint3DF32 getHandPosition3D()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -8,5 +8,9 @@ namespace HandTracking.Interfaces.Core
 {
     class ICondition
     {
+        public int GetNumberOfTrials()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

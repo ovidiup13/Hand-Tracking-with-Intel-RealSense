@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace HandTracking.Interfaces.Module
 {
-    class IData
+    public class IData
     {
 
 

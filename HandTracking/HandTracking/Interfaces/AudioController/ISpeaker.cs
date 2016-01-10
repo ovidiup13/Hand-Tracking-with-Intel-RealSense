@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace HandTracking.Interfaces.AudioController
 {
-    class ISpeaker
+    public class ISpeaker
     {
 
 
