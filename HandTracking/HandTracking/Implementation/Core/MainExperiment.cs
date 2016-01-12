@@ -19,7 +19,7 @@ namespace HandTracking.Implementation.Core
 
         #region main variables
 
-        private readonly ICondition[] _conditions;
+        private readonly ConditionImpl[] _conditions;
         private ISpeakerController _speakerController;
         private readonly Thread _experimentThread;
         private Thread _processingThread;
@@ -39,8 +39,8 @@ namespace HandTracking.Implementation.Core
 
         private HandTrackingModule _handTrackingModule;
         private MarkerTrackingModule _markerTrackingModule;
-        private ITracking _markerTracking;
-        private ITracking _handtracking;
+        private Tracking _markerTracking;
+        private Tracking _handtracking;
         private HandTrackingData _handData;
         private MarkerData _markerData;
 
@@ -60,7 +60,7 @@ namespace HandTracking.Implementation.Core
         /// </summary>
         /// <param name="conditions">Conditions for the experiment, as array</param>
         /// <param name="speakerController"></param>
-        public MainExperiment(ICondition[] conditions, ISpeakerController speakerController)
+        public MainExperiment(ConditionImpl[] conditions, ISpeakerController speakerController)
         {
             //set main experiment variables
             _conditions = conditions;
@@ -79,16 +79,20 @@ namespace HandTracking.Implementation.Core
             InitializeModules();
         }
 
+        /// <summary>
+        /// Method that initializes the modules of the main experiment
+        /// </summary>
         private void InitializeModules()
         {
-            //create instance of marker tracking module
-            _markerTrackingModule = new MarkerTrackingModule();
-            _markerTracking = _markerTrackingModule.GetInstance(cameraSettings);
-            _markerData = _markerTracking.GetData() as MarkerData;
+//            //create instance of marker tracking module
+//            _markerTrackingModule = new MarkerTrackingModule();
+//            _markerTracking = _markerTrackingModule.GetInstance(cameraSettings);
+//            _markerData = _markerTracking.GetData() as MarkerData;
 
             //create an instance of hand tracking module
             _handTrackingModule = new HandTrackingModule();
             _handtracking = _handTrackingModule.GetInstance();
+            _handtracking.InitializeCameraModules();
             _handData = _handtracking.GetData() as HandTrackingData;
 
             //start variables
@@ -105,7 +109,7 @@ namespace HandTracking.Implementation.Core
             _handtracking.StartProcessing();
 
             //start the marker tracking module
-            _markerTracking.StartProcessing();
+           // _markerTracking.StartProcessing();
 
             ///////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -115,17 +119,17 @@ namespace HandTracking.Implementation.Core
             /////////////////////////////////////////////////////////////////////////////////////////////////////
 
             //get number of speakers - excluding wrist
-            int numberOfSpeakers = _speakerController.GetNumberOfSpeakers();
+//            int numberOfSpeakers = _speakerController.GetNumberOfSpeakers();
 
             Console.WriteLine(@"Experiment started.");
             foreach (var cond in _conditions)
             {
 
                 //get the number of trials
-                int trials = cond.GetNumberOfTrials();
+                int trials = cond.NumberOfTrials;
 
                 Console.WriteLine(@"Condition started");
-                for(int i = 0; i < numberOfSpeakers * trials; i++)
+                for(int i = 0; i < _conditions.Length; i++)
                 {
                     Console.WriteLine( @"Trial + " + i + @" started. Press space to move to next trial");
    
@@ -166,13 +170,13 @@ namespace HandTracking.Implementation.Core
         {
             while (_isProcessing)
             {
-                PXCMPoint3DF32 handPosition = _handData.getHandPosition3D();
-                /*
+                PXCMPoint3DF32 handPosition = _handData.Location3D;
+             
                 Console.WriteLine(@"\nProcessing Thread: ");
                 Console.Write(@"\nX: " + handPosition.x);
                 Console.Write(@"\nY: " + handPosition.y);
                 Console.Write(@"\nZ: " + handPosition.z);
-                */
+                
 //              Console.WriteLine(@"We are processing....");
             }
         }
@@ -206,6 +210,9 @@ namespace HandTracking.Implementation.Core
         {
             //stop hand tracking thread
             _handtracking.StopProcessing();
+
+            //stop marker tracking thread
+            //_markerTracking.StopProcessing();
 
             //stop processing thread
             _isProcessing = false;

@@ -26,7 +26,7 @@ namespace HandTracking
     {
         private readonly IExperiment _mainExperiment;
 
-        private static int _numberOfTrials = 1;
+        private static int _numberOfTrials = 2;
 
         public MainWindow()
         {

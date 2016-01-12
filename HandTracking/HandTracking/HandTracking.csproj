@@ -108,23 +108,25 @@
     <Compile Include="Implementation\Core\ConditionImpl.cs" />
     <Compile Include="Implementation\AudioDesigns\GeigerAudioDesign.cs" />
     <Compile Include="Implementation\Core\MainExperiment.cs" />
-    <Compile Include="Implementation\Core\Trial.cs" />
     <Compile Include="Implementation\HandTracking\HandTrackingData.cs" />
+    <Compile Include="Implementation\HandTracking\HandTrackingException.cs" />
     <Compile Include="Implementation\HandTracking\HandTrackingImpl.cs" />
     <Compile Include="Implementation\HandTracking\HandTrackingModule.cs" />
     <Compile Include="Implementation\MarkerTracking\MarkerData.cs" />
+    <Compile Include="Implementation\MarkerTracking\MarkerTrackingException.cs" />
     <Compile Include="Implementation\MarkerTracking\MarkerTrackingImpl.cs" />
     <Compile Include="Implementation\MarkerTracking\MarkerTrackingModule.cs" />
     <Compile Include="Implementation\MarkerTracking\MarkerTrackingSettings.cs" />
     <Compile Include="Interfaces\Module\IData.cs" />
     <Compile Include="Interfaces\Module\IModule.cs" />
+    <Compile Include="Interfaces\Module\ModuleException.cs" />
     <Compile Include="Interfaces\Settings\CameraSettings.cs" />
     <Compile Include="Implementation\Core\ExperimentSettings.cs" />
     <Compile Include="Implementation\HandTracking\HandTrackingSettings.cs" />
     <Compile Include="Interfaces\AudioController\SpeakerSettings.cs" />
     <Compile Include="RealSenseImageStream.cs" />
     <Compile Include="Interfaces\Settings\ISettings.cs" />
-    <Compile Include="Interfaces\Module\ITracking.cs" />
+    <Compile Include="Interfaces\Module\Tracking.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -133,10 +135,9 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Interfaces\Core\ICondition.cs" />
+    <Compile Include="Interfaces\Core\Condition.cs" />
     <Compile Include="Interfaces\AudioController\IAudioDesign.cs" />
     <Compile Include="Interfaces\Core\IExperiment.cs" />
-    <Compile Include="Interfaces\Core\ITrial.cs" />
     <Compile Include="Interfaces\AudioController\ISpeaker.cs" />
     <Compile Include="Interfaces\AudioController\ISpeakerController.cs" />
     <Compile Include="MainWindow.xaml.cs">

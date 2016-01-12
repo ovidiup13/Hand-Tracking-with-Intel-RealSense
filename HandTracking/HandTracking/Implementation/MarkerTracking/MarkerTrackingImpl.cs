@@ -8,11 +8,12 @@ using HandTracking.Interfaces.Settings;
 
 namespace HandTracking.Implementation.MarkerTracking
 {
-    class MarkerTrackingImpl : ITracking
+    class MarkerTrackingImpl : Tracking
     {
 
         protected internal MarkerTrackingImpl()
         {
+
         }
 
         protected internal MarkerTrackingImpl(ISettings settings)
@@ -20,22 +21,27 @@ namespace HandTracking.Implementation.MarkerTracking
             
         }
 
-        public void StartProcessing()
+        public override bool InitializeCameraModules()
         {
             throw new NotImplementedException();
         }
 
-        public void StopProcessing()
+        public override void StartProcessing()
         {
             throw new NotImplementedException();
         }
 
-        public void PauseProcessing()
+        public override void StopProcessing()
         {
             throw new NotImplementedException();
         }
 
-        public IData GetData()
+        public override void PauseProcessing()
+        {
+            throw new NotImplementedException();
+        }
+
+        public override IData GetData()
         {
             throw new NotImplementedException();
         }

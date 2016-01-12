@@ -6,10 +6,8 @@ using System.Threading.Tasks;
 
 namespace HandTracking.Interfaces.AudioController
 {
-    public class ISpeaker
+    public interface ISpeaker
     {
-
-
-
+        
     }
 }

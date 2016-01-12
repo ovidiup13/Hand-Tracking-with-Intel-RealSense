@@ -59,5 +59,14 @@ namespace HandTracking.Properties {
                 resourceCulture = value;
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to create the SenseManager object..
+        /// </summary>
+        internal static string HandTrackingImpl_InitializeTracking_Failed_to_create_the_SenseManager_object_ {
+            get {
+                return ResourceManager.GetString("HandTrackingImpl_InitializeTracking_Failed_to_create_the_SenseManager_object_", resourceCulture);
+            }
+        }
     }
 }
