@@ -1,23 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace HandTracking.Interfaces.Settings
+﻿namespace HandTracking.Interfaces.Settings
 {
-    class CameraSettings : ISettings
+    internal class CameraSettings : ISettings
     {
-        private readonly int _defaultWidth = 640;
-        private readonly int _defaultHeight = 480;
-        private readonly int _defaultFps = 30;
-
-        public int Width { get; set; }
-        public int Height { get; set; }
-        public int FramesPerSecond { get; set; }
-
         /// <summary>
-        /// Constructor that initializes the camera screen with custom values.
+        ///     Constructor that initializes the camera screen with custom values.
         /// </summary>
         /// <param name="width"></param>
         /// <param name="height"></param>
@@ -28,15 +14,21 @@ namespace HandTracking.Interfaces.Settings
         }
 
         /// <summary>
-        /// Constructor that initializes the camera screen with default values.
+        ///     Constructor that initializes the camera screen with default values.
         /// </summary>
         public CameraSettings()
         {
             InitializeScreen(_defaultWidth, _defaultHeight, _defaultFps);
         }
 
+        public int Width { get; protected set; } = _defaultWidth;
+
+        public int Height { get; protected set; } = _defaultHeight;
+
+        public int FramesPerSecond { get; set; } = _defaultFps;
+
         /// <summary>
-        /// Method that sets the widht, height and fps fields.
+        ///     Method that sets the widht, height and fps fields.
         /// </summary>
         /// <param name="width"></param>
         /// <param name="height"></param>
@@ -48,5 +40,12 @@ namespace HandTracking.Interfaces.Settings
             FramesPerSecond = fps;
         }
 
+        #region default values
+
+        private static readonly int _defaultWidth = 640;
+        private static readonly int _defaultHeight = 480;
+        private static readonly int _defaultFps = 30;
+
+        #endregion
     }
 }

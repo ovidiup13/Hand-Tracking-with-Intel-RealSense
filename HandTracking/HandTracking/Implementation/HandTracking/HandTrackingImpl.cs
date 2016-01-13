@@ -5,6 +5,7 @@ using HandTracking.Interfaces.Settings;
 
 namespace HandTracking.Implementation.HandTracking
 {
+    //TODO: replace all errors with exceptions
     internal class HandTrackingImpl : Tracking
     {
         /// <summary>
@@ -33,21 +34,21 @@ namespace HandTracking.Implementation.HandTracking
         /// </summary>
         public override void StartProcessing()
         {
-            if (_isInitialized)
+            if (IsInitialized)
             {
-                _processingThread = new Thread(HandTrackingThread);
-                _isProcessing = true;
-                _processingThread.Start();
+                ProcessingThread = new Thread(TrackingThread);
+                IsProcessing = true;
+                ProcessingThread.Start();
             }
-            else throw new HandTrackingNotInitializedException("Hand tracking RealSense modules have not been initialized.");
+            else throw new HandTrackingException("Hand tracking RealSense modules have not been initialized.");
         }
 
         public override void StopProcessing()
         {
             //terminate thread
-            _isProcessing = false;
+            IsProcessing = false;
 
-            _processingThread = null;
+            ProcessingThread = null;
         }
 
         public override void PauseProcessing()
@@ -63,44 +64,35 @@ namespace HandTracking.Implementation.HandTracking
         /// <summary>
         ///     Method that initializes camera modules.
         /// </summary>
-        public override bool InitializeCameraModules()
+        public override void InitializeCameraModules()
         {
-            _session = PXCMSession.CreateInstance();
+            //init session
+            Session = PXCMSession.CreateInstance();
+            if (Session == null)
+                throw new HandTrackingException(@"Failed to create Session");
 
-            _senseManager = _session.CreateSenseManager();
-
-            if (_senseManager == null)
-            {
-                Console.WriteLine(@"Failed to create the SenseManager object.");
-                return false;
-            }
+            //create sense manager
+            SenseManager = Session.CreateSenseManager();
+            if (SenseManager == null)
+                throw new HandTrackingException(@"Failed to create Sense Manager");
 
             // Enabling the Hand module
-            var enablingModuleStatus = _senseManager.EnableHand("Hand Module");
+            var enablingModuleStatus = SenseManager.EnableHand("Hand Module");
 
             if (enablingModuleStatus != pxcmStatus.PXCM_STATUS_NO_ERROR)
-            {
-                Console.WriteLine(@"Failed to enable the Hand Module");
-                return false;
-            }
+                throw new HandTrackingException(@"Failed to enable the Hand Module");
 
             //getting instance of hand module
-            _handModule = _senseManager.QueryHand();
+            _handModule = SenseManager.QueryHand();
 
             if (_handModule == null)
-            {
-                Console.WriteLine(@"Failed to get the HandModule object.");
-                return false;
-            }
+                throw new HandTrackingException(@"Failed to get the HandModule object.");
 
             //create hand configuration
             _handConfiguration = _handModule.CreateActiveConfiguration();
 
             if (_handConfiguration == null)
-            {
-                Console.WriteLine(@"Failed to create the HandConfiguration object.");
-                return false;
-            }
+                throw new HandTrackingException(@"Failed to create the HandConfiguration object.");
 
             //apply settings
             if (_handTrackingSettings != null)
@@ -115,31 +107,25 @@ namespace HandTracking.Implementation.HandTracking
             _handData = _handModule.CreateOutput();
 
             if (_handData == null)
-            {
-                Console.WriteLine(@"Failed to create the HandData object.");
-                return false;
-            }
+                throw new HandTrackingException(@"Failed to create the HandData object.");
 
             // Initializing the SenseManager
-            if (_senseManager.Init() != pxcmStatus.PXCM_STATUS_NO_ERROR)
-            {
-                Console.WriteLine(@"Failed to initialize the SenseManager");
-                return false;
-            }
+            if (SenseManager.Init() != pxcmStatus.PXCM_STATUS_NO_ERROR)
+                throw new HandTrackingException(@"Failed to initialize the SenseManager");
 
-            return true;
+            IsInitialized = true;
         }
 
         /// <summary>
         ///     Method that is run in a separate thread.
         /// </summary>
-        private void HandTrackingThread()
+        protected override void TrackingThread()
         {
             // Looping to query the hands information
-            while (_isProcessing)
+            while (IsProcessing)
             {
                 // Acquiring a frame
-                if (_senseManager.AcquireFrame(true) < pxcmStatus.PXCM_STATUS_NO_ERROR)
+                if (SenseManager.AcquireFrame(true) < pxcmStatus.PXCM_STATUS_NO_ERROR)
                 {
                     break;
                 }
@@ -151,16 +137,16 @@ namespace HandTracking.Implementation.HandTracking
                 ProcessHands(_handData);
 
                 // Releasing the acquired frame
-                _senseManager.ReleaseFrame();
+                SenseManager.ReleaseFrame();
             }
 
             // Releasing resources
             _handData?.Dispose();
             _handConfiguration?.Dispose();
 
-            _senseManager.Close();
-            _senseManager.Dispose();
-            _session.Dispose();
+            SenseManager.Close();
+            SenseManager.Dispose();
+            Session.Dispose();
         }
 
         /// <summary>
@@ -199,14 +185,14 @@ namespace HandTracking.Implementation.HandTracking
 
                 if (queryHandStatus == pxcmStatus.PXCM_STATUS_NO_ERROR && hand != null)
                 {
-                    // Querying Hand 2D Position
-                    var massCenterImage = hand.QueryMassCenterImage();
-                    Console.WriteLine(@"Hand position on image: {0} | {1}", massCenterImage.x, massCenterImage.y);
-
-                    // Querying Hand 3D Position
-                    var massCenterWorld = hand.QueryMassCenterWorld();
-                    Console.WriteLine(@"Hand position on world: {0} | {1} | {2}", massCenterWorld.x, massCenterWorld.y,
-                        massCenterWorld.z);
+//                    // Querying Hand 2D Position
+//                    var massCenterImage = hand.QueryMassCenterImage();
+////                    Console.WriteLine(@"Hand position on image: {0} | {1}", massCenterImage.x, massCenterImage.y);
+//
+//                    // Querying Hand 3D Position
+//                    var massCenterWorld = hand.QueryMassCenterWorld();
+////                    Console.WriteLine(@"Hand position on world: {0} | {1} | {2}", massCenterWorld.x, massCenterWorld.y,
+//                        massCenterWorld.z);
 
                     // Querying Hand Joints
                     if (hand.HasTrackedJoints())
@@ -248,20 +234,12 @@ namespace HandTracking.Implementation.HandTracking
 
         #region RealSense vars
 
-        private PXCMSession _session;
-        private PXCMSenseManager _senseManager;
         private PXCMHandModule _handModule;
         private PXCMHandConfiguration _handConfiguration;
         private PXCMHandData _handData;
 
         #endregion
 
-        #region threading vars
 
-        private bool _isProcessing;
-        private readonly bool _isInitialized = true;
-        private Thread _processingThread;
-
-        #endregion
     }
 }

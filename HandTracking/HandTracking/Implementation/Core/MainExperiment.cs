@@ -126,7 +126,7 @@ namespace HandTracking.Implementation.Core
             {
 
                 //get the number of trials
-                int trials = cond.NumberOfTrials;
+//                int trials = cond.NumberOfTrials;
 
                 Console.WriteLine(@"Condition started");
                 for(int i = 0; i < _conditions.Length; i++)

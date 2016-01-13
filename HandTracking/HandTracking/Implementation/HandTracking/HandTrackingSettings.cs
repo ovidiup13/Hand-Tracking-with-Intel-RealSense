@@ -5,8 +5,6 @@ namespace HandTracking.Implementation.HandTracking
 {
     internal class HandTrackingSettings : CameraSettings
     {
-        //TODO: create private fields and public accessors
-
         #region private vars
 
         private float _smoothingValue = 1;
