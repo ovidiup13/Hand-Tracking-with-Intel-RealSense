@@ -30,7 +30,7 @@ namespace HandTracking.Implementation.HandTracking
         }
 
         /// <summary>
-        ///     Met  od that starts the processing thread.
+        /// Method that starts the HandTracking thread.
         /// </summary>
         public override void StartProcessing()
         {
@@ -43,12 +43,15 @@ namespace HandTracking.Implementation.HandTracking
             else throw new HandTrackingException("Hand tracking RealSense modules have not been initialized.");
         }
 
+        /// <summary>
+        /// Method that stops the HandTracking thread.
+        /// </summary>
         public override void StopProcessing()
         {
             //terminate thread
-            IsProcessing = false;
-
+            ProcessingFlag = false;
             ProcessingThread = null;
+            IsProcessing = false;
         }
 
         public override void PauseProcessing()
@@ -121,8 +124,9 @@ namespace HandTracking.Implementation.HandTracking
         /// </summary>
         protected override void TrackingThread()
         {
+            ProcessingFlag = true;
             // Looping to query the hands information
-            while (IsProcessing)
+            while (ProcessingFlag)
             {
                 // Acquiring a frame
                 if (SenseManager.AcquireFrame(true) < pxcmStatus.PXCM_STATUS_NO_ERROR)
@@ -158,7 +162,7 @@ namespace HandTracking.Implementation.HandTracking
         {
             // Querying how many hands were detected
             var numberOfHands = handData.QueryNumberOfHands();
-            Console.WriteLine(@"{0} hand(s) were detected.", numberOfHands);
+//            Console.WriteLine(@"{0} hand(s) were detected.", numberOfHands);
 
             // Querying the information about detected hands
             for (var i = 0; i < numberOfHands; i++)
@@ -220,8 +224,6 @@ namespace HandTracking.Implementation.HandTracking
                         }
                     }
                 }
-
-                Console.WriteLine(@"----------");
             }
         }
 

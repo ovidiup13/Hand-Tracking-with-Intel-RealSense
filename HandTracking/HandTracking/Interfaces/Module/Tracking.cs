@@ -83,6 +83,7 @@ namespace HandTracking.Interfaces.Module
         protected bool IsProcessing;
         protected bool IsInitialized;
         protected Thread ProcessingThread;
+        protected bool ProcessingFlag;
 
         #endregion
     }

@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Threading;
+using Aruco.Net;
 using HandTracking.Interfaces.Module;
 using HandTracking.Interfaces.Settings;
 using OpenCV.Net;
@@ -24,7 +26,7 @@ namespace HandTracking.Implementation.MarkerTracking
         protected internal MarkerTrackingImpl(ISettings settings)
         {
             _markerData = new MarkerData();
-            _markerTrackingSettings = settings as MarkerTrackingSettings;
+            _markerTrackingSettings = (MarkerTrackingSettings) settings;
         }
 
         public override void InitializeCameraModules()
@@ -40,6 +42,14 @@ namespace HandTracking.Implementation.MarkerTracking
 
             if (SenseManager == null)
                 throw new MarkerTrackingException(@"Failed to create Sense Manager");
+
+            _device = SenseManager.captureManager.QueryDevice();
+            if (_device == null)
+                throw new MarkerTrackingException(@"Failed to Query device.");
+
+            _projection = _device.CreateProjection();
+            if(_projection == null)
+                throw new MarkerTrackingException(@"Failed to create projection.");
 
             //initialize image and depth streams
             var imageStatus = SenseManager.EnableStream(PXCMCapture.StreamType.STREAM_TYPE_COLOR,
@@ -63,23 +73,90 @@ namespace HandTracking.Implementation.MarkerTracking
             if (initStatus != pxcmStatus.PXCM_STATUS_NO_ERROR)
                 throw new MarkerTrackingException(@"Failed to initialize Sense Manager.");
 
+
+            _markerDetector = new MarkerDetector();
+            if(_markerDetector == null)
+                throw new MarkerTrackingException(@"Failed to initialize the Aruco Marker Detector.");
+
             IsInitialized = true;
         }
 
         public override void StartProcessing()
         {
+            if(!IsInitialized)
+                throw new MarkerTrackingException(@"Marker Tracking RealSense Modules have not been initialized.");
             if (IsProcessing)
-                throw new MarkerTrackingException("Marker Tracking is already processing.");
+                throw new MarkerTrackingException(@"Marker Tracking process is already running.");
+
+            ProcessingThread = new Thread(TrackingThread);
+            IsProcessing = true;
+            ProcessingThread.Start();
         }
 
+        /// <summary>
+        /// Method that is run in a separate thread. It runs in an infinite loop and queries 
+        /// the Sense Manager for a new frame. The frame is then processed in ProcessFrame method. 
+        /// </summary>
         protected override void TrackingThread()
         {
-            throw new NotImplementedException();
+            ProcessingFlag = true;
+
+            while (ProcessingFlag)
+            {
+                // Acquiring a frame
+                if (SenseManager.AcquireFrame(true) < pxcmStatus.PXCM_STATUS_NO_ERROR)
+                {
+                    break;
+                }
+
+                // retrieve the sample and process it
+                PXCMCapture.Sample sample = SenseManager.QuerySample();
+                ProcessFrame(sample);
+            }
+
+            _device.Dispose();
+            _projection.Dispose();
+            SenseManager.Close();
+            SenseManager.Dispose();
+            Session.Dispose();
+        }
+
+        /// <summary>
+        /// Method that processes frames queried by the sense manager. It retrieves
+        /// color and depth streams from the frame, converts the color frame to OpenCV format.
+        /// </summary>
+        private void ProcessFrame(PXCMCapture.Sample sampleFrame)
+        {
+            //get depth and color images
+            PXCMImage color = sampleFrame.color;
+            PXCMImage depth = sampleFrame.depth;
+
+            //convert color to OpenCV format
+            Mat colorOcv = PxcmImageToOpenCv(color);
+
+            //detect markers using Aruco
+            var detectedMarkers = _markerDetector.Detect(colorOcv, new CameraParameters());
+
+            foreach (var marker in detectedMarkers)
+            {
+                Console.WriteLine(@"Marker detected with id " + marker.Id);
+            }
+
+            color.Dispose();
+            depth.Dispose();
+            colorOcv.Dispose();
         }
 
         public override void StopProcessing()
         {
-            throw new NotImplementedException();
+            if(!IsInitialized)
+                throw new MarkerTrackingException(@"Marker Tracking RealSense Modules have not been initialized.");
+            if(!IsProcessing)
+                throw new MarkerTrackingException(@"Marker Tracking process is not running.");
+
+            ProcessingFlag = false;
+            ProcessingThread = null;
+            IsProcessing = false;
         }
 
         public override void PauseProcessing()
@@ -135,6 +212,8 @@ namespace HandTracking.Implementation.MarkerTracking
             //release access to image data
             image.ReleaseAccess(imageData);
 
+
+
             return openCvImage;
         }
 
@@ -151,6 +230,9 @@ namespace HandTracking.Implementation.MarkerTracking
 
         private readonly MarkerTrackingSettings _markerTrackingSettings;
         private readonly MarkerData _markerData;
+
+        //aruco detector
+        private MarkerDetector _markerDetector;
 
         #endregion
 

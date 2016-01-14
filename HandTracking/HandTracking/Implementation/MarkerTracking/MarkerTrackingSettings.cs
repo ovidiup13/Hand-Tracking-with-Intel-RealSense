@@ -7,7 +7,7 @@ using HandTracking.Interfaces.Settings;
 
 namespace HandTracking.Implementation.MarkerTracking
 {
-    class MarkerTrackingSettings : CameraSettings
+    internal class MarkerTrackingSettings : CameraSettings
     {
 
         /// <summary>
