@@ -165,9 +165,12 @@ namespace HandTracking.Implementation.Core
 
         private void ProcessingThread()
         {
+
+
             while (_isProcessing)
             {
                 PXCMPoint3DF32 handPosition = _handData.Location3D;
+                Console.WriteLine("Hand location: X:" + handPosition.x + " Y:" + handPosition.y + " Z:" + handPosition.z);
              
                 /*Console.WriteLine(@"\nProcessing Thread: ");
                 Console.Write(@"\nX: " + handPosition.x);
@@ -206,10 +209,12 @@ namespace HandTracking.Implementation.Core
         public void StopExperiment()
         {
             //stop hand tracking thread
-            _handtracking.StopProcessing();
+            _handtracking?.StopProcessing();
+            _handtracking = null;
 
             //stop marker tracking thread
-            _markerTracking.StopProcessing();
+            _markerTracking?.StopProcessing();
+            _markerTracking = null;
 
             //stop processing thread
             _isProcessing = false;

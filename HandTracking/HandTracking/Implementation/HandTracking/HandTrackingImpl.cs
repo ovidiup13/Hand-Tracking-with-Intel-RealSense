@@ -124,6 +124,7 @@ namespace HandTracking.Implementation.HandTracking
         /// </summary>
         protected override void TrackingThread()
         {
+            Console.WriteLine(@"Hand Tracking Started.");
             ProcessingFlag = true;
             // Looping to query the hands information
             while (ProcessingFlag)
@@ -151,6 +152,8 @@ namespace HandTracking.Implementation.HandTracking
             SenseManager.Close();
             SenseManager.Dispose();
             Session.Dispose();
+
+            Console.WriteLine(@"Hand Tracking terminated.");
         }
 
         /// <summary>
@@ -181,7 +184,7 @@ namespace HandTracking.Implementation.HandTracking
                     continue;
                 }
 
-                Console.WriteLine(@"Hand id: {0}", handId);
+//                Console.WriteLine(@"Hand id: {0}", handId);
 
                 // Querying the hand data
                 PXCMHandData.IHand hand;

@@ -27,5 +27,13 @@ namespace HandTracking.Implementation.MarkerTracking
         {
         }
 
+        #region vars
+
+        public int DetectedMarkers { get; protected set; } = 0;
+        public PXCMPoint3DF32 MarkerPositions { get; protected set; }
+        public int[] MarkerIds { get; protected set; }
+
+        #endregion
+
     }
 }

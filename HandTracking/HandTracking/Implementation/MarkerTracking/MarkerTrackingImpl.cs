@@ -34,7 +34,7 @@ namespace HandTracking.Implementation.MarkerTracking
             //init session
             Session = PXCMSession.CreateInstance();
 
-            if(Session == null)
+            if (Session == null)
                 throw new MarkerTrackingException(@"Failed to create Session");
 
             //init sense manager
@@ -42,14 +42,6 @@ namespace HandTracking.Implementation.MarkerTracking
 
             if (SenseManager == null)
                 throw new MarkerTrackingException(@"Failed to create Sense Manager");
-
-            _device = SenseManager.captureManager.QueryDevice();
-            if (_device == null)
-                throw new MarkerTrackingException(@"Failed to Query device.");
-
-            _projection = _device.CreateProjection();
-            if(_projection == null)
-                throw new MarkerTrackingException(@"Failed to create projection.");
 
             //initialize image and depth streams
             var imageStatus = SenseManager.EnableStream(PXCMCapture.StreamType.STREAM_TYPE_COLOR,
@@ -73,9 +65,17 @@ namespace HandTracking.Implementation.MarkerTracking
             if (initStatus != pxcmStatus.PXCM_STATUS_NO_ERROR)
                 throw new MarkerTrackingException(@"Failed to initialize Sense Manager.");
 
+            _device = SenseManager.captureManager.QueryDevice();
+            if (_device == null)
+                throw new MarkerTrackingException(@"Failed to Query device.");
+
+            //
+            _projection = _device.CreateProjection();
+            if (_projection == null)
+                throw new MarkerTrackingException(@"Failed to create projection.");
 
             _markerDetector = new MarkerDetector();
-            if(_markerDetector == null)
+            if (_markerDetector == null)
                 throw new MarkerTrackingException(@"Failed to initialize the Aruco Marker Detector.");
 
             IsInitialized = true;
@@ -83,7 +83,7 @@ namespace HandTracking.Implementation.MarkerTracking
 
         public override void StartProcessing()
         {
-            if(!IsInitialized)
+            if (!IsInitialized)
                 throw new MarkerTrackingException(@"Marker Tracking RealSense Modules have not been initialized.");
             if (IsProcessing)
                 throw new MarkerTrackingException(@"Marker Tracking process is already running.");
@@ -94,13 +94,15 @@ namespace HandTracking.Implementation.MarkerTracking
         }
 
         /// <summary>
-        /// Method that is run in a separate thread. It runs in an infinite loop and queries 
-        /// the Sense Manager for a new frame. The frame is then processed in ProcessFrame method. 
+        ///     Method that is run in a separate thread. It runs in an infinite loop and queries
+        ///     the Sense Manager for a new frame. The frame is then processed in ProcessFrame method.
         /// </summary>
         protected override void TrackingThread()
         {
-            ProcessingFlag = true;
+            Console.WriteLine(@"Marker Tracking started.");
 
+            ProcessingFlag = true;
+            var frameCount = -1;
             while (ProcessingFlag)
             {
                 // Acquiring a frame
@@ -110,8 +112,15 @@ namespace HandTracking.Implementation.MarkerTracking
                 }
 
                 // retrieve the sample and process it
-                PXCMCapture.Sample sample = SenseManager.QuerySample();
-                ProcessFrame(sample);
+                // counts how many times per second the frame is processed
+                if (frameCount++ % 10 == 0)
+                {
+                    var sample = SenseManager.QuerySample();
+                    ProcessFrame(sample);
+                }
+
+                //release frame
+                SenseManager.ReleaseFrame();
             }
 
             _device.Dispose();
@@ -119,28 +128,59 @@ namespace HandTracking.Implementation.MarkerTracking
             SenseManager.Close();
             SenseManager.Dispose();
             Session.Dispose();
+
+            Console.WriteLine(@"Marker Tracking terminated.");
         }
 
         /// <summary>
-        /// Method that processes frames queried by the sense manager. It retrieves
-        /// color and depth streams from the frame, converts the color frame to OpenCV format.
+        ///     Method that processes frames queried by the sense manager. It retrieves
+        ///     color and depth streams from the frame, converts the color frame to OpenCV format.
         /// </summary>
         private void ProcessFrame(PXCMCapture.Sample sampleFrame)
         {
             //get depth and color images
-            PXCMImage color = sampleFrame.color;
-            PXCMImage depth = sampleFrame.depth;
+            var color = sampleFrame.color;
+            var depth = sampleFrame.depth;
 
             //convert color to OpenCV format
-            Mat colorOcv = PxcmImageToOpenCv(color);
+            var colorOcv = PxcmImageToOpenCv(color, PXCMImage.PixelFormat.PIXEL_FORMAT_RGB24);
 
             //detect markers using Aruco
             var detectedMarkers = _markerDetector.Detect(colorOcv, new CameraParameters());
 
-            foreach (var marker in detectedMarkers)
+            PXCMPointF32[] colorPoints = new PXCMPointF32[detectedMarkers.Count];
+            PXCMPointF32[] depthPoints = new PXCMPointF32[detectedMarkers.Count];
+
+            //get centroid of markers
+            for (var markerIndex = 0; markerIndex < detectedMarkers.Count; markerIndex++)
             {
-                Console.WriteLine(@"Marker detected with id " + marker.Id);
+                var marker = detectedMarkers[markerIndex];
+//                Console.WriteLine(@"Marker detected with id " + marker.Id);
+                colorPoints[markerIndex] = new PXCMPointF32(marker.Center.X, marker.Center.Y);
             }
+
+            //we map center marker color points to their associated depth point
+            _projection.MapColorToDepth(depth, colorPoints, depthPoints);
+
+            //query vertices (which are depth points coordinates in mm)
+            PXCMPoint3DF32[] vertices = new PXCMPoint3DF32[depth.info.width * depth.info.height];
+            _projection.QueryVertices(depth, vertices);
+
+            for (var point = 0; point < depthPoints.Length; point++)
+            {
+                var detectedPoint = depthPoints[point];
+                if (detectedPoint.x < 0 || detectedPoint.y < 0)
+                {
+                    Console.WriteLine("Marker " + detectedMarkers[point].Id + " is out of range");
+                }
+                else
+                {
+                    var v = vertices[(int) (depthPoints[point].y*depth.info.width + depthPoints[point].x)];
+                    Console.WriteLine("Marker " + detectedMarkers[point].Id + " has coordinates: X:" + v.x + " Y:" + v.y +
+                                      " Z:" + v.z);
+                }
+            }
+
 
             color.Dispose();
             depth.Dispose();
@@ -149,9 +189,9 @@ namespace HandTracking.Implementation.MarkerTracking
 
         public override void StopProcessing()
         {
-            if(!IsInitialized)
+            if (!IsInitialized)
                 throw new MarkerTrackingException(@"Marker Tracking RealSense Modules have not been initialized.");
-            if(!IsProcessing)
+            if (!IsProcessing)
                 throw new MarkerTrackingException(@"Marker Tracking process is not running.");
 
             ProcessingFlag = false;
@@ -174,11 +214,8 @@ namespace HandTracking.Implementation.MarkerTracking
         ///     CV_64F - 64-bit floating-point numbers( -DBL_MAX..DBL_MAX, INF, NAN )
         /// </summary>
         /// <returns></returns>
-        private Mat PxcmImageToOpenCv(PXCMImage image)
+        private Mat PxcmImageToOpenCv(PXCMImage image, PXCMImage.PixelFormat format)
         {
-            //get the format
-            var format = image.QueryInfo().format;
-
             //get image data
             PXCMImage.ImageData imageData;
             image.AcquireAccess(PXCMImage.Access.ACCESS_READ, format, out imageData);
@@ -206,13 +243,11 @@ namespace HandTracking.Implementation.MarkerTracking
                 channels = 1;
             }
 
-            //convert to OpenCV format
-            var openCvImage = new Mat(new Size(width, height), depthType, channels);
+            //convert to OpenCV format and pass first pointer to RealSense image
+            var openCvImage = new Mat(new Size(width, height), depthType, channels, imageData.planes[0]);
 
             //release access to image data
             image.ReleaseAccess(imageData);
-
-
 
             return openCvImage;
         }
