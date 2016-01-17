@@ -18,6 +18,7 @@ namespace HandTracking.Implementation.MarkerTracking
         /// <param name="fps"></param>
         public MarkerTrackingSettings(int width, int height, int fps) : base(width, height, fps)
         {
+
         }
 
         /// <summary>
@@ -27,9 +28,20 @@ namespace HandTracking.Implementation.MarkerTracking
         {
         }
 
+        public int NumberOfMarkers()
+        {
+            int n = 0;
+            lock (lock1)
+            {
+                n = MarkerIds.Length;
+            }
+            return n;
+        }
+
         #region vars
 
-        public int DetectedMarkers { get; protected set; } = 0;
+        private object lock1 = new object();
+
         public PXCMPoint3DF32 MarkerPositions { get; protected set; }
         public int[] MarkerIds { get; protected set; }
 

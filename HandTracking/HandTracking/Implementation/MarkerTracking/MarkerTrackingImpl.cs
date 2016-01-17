@@ -171,13 +171,14 @@ namespace HandTracking.Implementation.MarkerTracking
                 var detectedPoint = depthPoints[point];
                 if (detectedPoint.x < 0 || detectedPoint.y < 0)
                 {
-                    Console.WriteLine("Marker " + detectedMarkers[point].Id + " is out of range");
+                    Console.WriteLine(@"Marker " + detectedMarkers[point].Id + " is out of range");
+
                 }
                 else
                 {
                     var v = vertices[(int) (depthPoints[point].y*depth.info.width + depthPoints[point].x)];
-                    Console.WriteLine("Marker " + detectedMarkers[point].Id + " has coordinates: X:" + v.x + " Y:" + v.y +
-                                      " Z:" + v.z);
+                    Console.WriteLine(@"Marker " + detectedMarkers[point].Id + " has coordinates: X:" + v.x + " Y:" + v.y +
+                                      @" Z:" + v.z);
                 }
             }
 
@@ -273,8 +274,6 @@ namespace HandTracking.Implementation.MarkerTracking
 
         #region RealSense vars
 
-        private RealSenseImageStream _imageStream;
-        private RealSenseImageStream _depthStream;
         private PXCMCapture.Device _device;
         private PXCMProjection _projection;
 

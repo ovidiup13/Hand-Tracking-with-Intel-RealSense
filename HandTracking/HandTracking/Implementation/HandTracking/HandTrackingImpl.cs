@@ -222,8 +222,9 @@ namespace HandTracking.Implementation.HandTracking
 //                            Console.WriteLine(@"	3D Position: {0} | {1} | {2}", jointData.positionWorld.x,
 //                                jointData.positionWorld.y, jointData.positionWorld.z);
 
-                            //set 3D position in hand Data
-                            _handTrackingData.Location3D = jointData.positionWorld;
+                            //set 3D position in hand Data (in mm)
+                            var p = jointData.positionWorld;
+                            _handTrackingData.Location3D = new PXCMPoint3DF32(p.x * 1000, p.y*1000, p.z*1000);
                         }
                     }
                 }

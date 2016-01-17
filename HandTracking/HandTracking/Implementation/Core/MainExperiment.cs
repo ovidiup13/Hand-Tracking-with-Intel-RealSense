@@ -165,20 +165,35 @@ namespace HandTracking.Implementation.Core
 
         private void ProcessingThread()
         {
-
+            //selected speaker location
+            //TODO: get position of target speaker
 
             while (_isProcessing)
             {
                 PXCMPoint3DF32 handPosition = _handData.Location3D;
-                Console.WriteLine("Hand location: X:" + handPosition.x + " Y:" + handPosition.y + " Z:" + handPosition.z);
-             
-                /*Console.WriteLine(@"\nProcessing Thread: ");
-                Console.Write(@"\nX: " + handPosition.x);
-                Console.Write(@"\nY: " + handPosition.y);
-                Console.Write(@"\nZ: " + handPosition.z);*/
+                Console.WriteLine();
+
+                //TODO: calculate distance between hand and speaker
                 
-//              Console.WriteLine(@"We are processing....");
+                //TODO: pass it to speaker controller
+
+                //TODO: play audio feedback
+             
             }
+        }
+
+        /// <summary>
+        /// Method that returns the distance between two points in 3D space. The two points must 
+        /// be measured in the same units. (e.g. either meters or millimeters)
+        /// </summary>
+        /// <param name="point1">First point</param>
+        /// <param name="point2">Second point</param>
+        /// <returns>The distance in the unit of measurement between the two points</returns>
+        private double GetDistance(PXCMPoint3DF32 point1, PXCMPoint3DF32 point2)
+        {
+            return
+                Math.Sqrt(Math.Pow(point1.x - point2.x, 2) + Math.Pow(point1.y - point2.y, 2) +
+                          Math.Pow(point1.z - point2.z, 2));
         }
 
         /// <summary>

@@ -11,6 +11,8 @@ namespace HandTracking.Implementation.AudioController
 {
     class Speaker: ISpeaker
     {
+        private int _markerId;
+        private PXCMPoint3DF32 _position3D;
         private BASSFlag _speaker;
         private string _file = "Sounds\\peakGeiger.wav";
 
