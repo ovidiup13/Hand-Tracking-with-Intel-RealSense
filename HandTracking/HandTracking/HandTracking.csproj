@@ -152,6 +152,9 @@
     <Compile Include="Implementation\Core\ExperimentSettings.cs" />
     <Compile Include="Implementation\HandTracking\HandTrackingSettings.cs" />
     <Compile Include="Interfaces\AudioController\SpeakerSettings.cs" />
+    <Compile Include="MarkerTrackingWindow.xaml.cs">
+      <DependentUpon>MarkerTrackingWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="MenuWindow.xaml.cs">
       <DependentUpon>MenuWindow.xaml</DependentUpon>
     </Compile>
@@ -175,6 +178,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="MarkerTrackingWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MenuWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

@@ -10,6 +10,18 @@ namespace HandTracking.Implementation.AudioController
 {
     class SpeakerController : ISpeakerController
     {
+
+        #region vars
+
+        private Dictionary<int, PXCMPoint3DF32> _speakers;
+
+        #endregion
+
+        public SpeakerController(Dictionary<int, PXCMPoint3DF32> speakers)
+        {
+            _speakers = speakers;
+        }
+
         public void SetSpeakers(List<ISpeaker> speakers)
         {
             throw new NotImplementedException();

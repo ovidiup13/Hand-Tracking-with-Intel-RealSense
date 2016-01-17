@@ -16,5 +16,10 @@ namespace HandTracking.Interfaces.AudioController
         /// </summary>
         /// <param name="file"></param>
         void SetFile(string file);
+
+        /// <summary>
+        /// Method that plays audio feedback from referenced speakers.
+        /// </summary>
+        void PlayFeedback();
     }
 }

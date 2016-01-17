@@ -20,5 +20,9 @@ namespace HandTracking.Implementation.AudioDesigns
             _file = file;
         }
 
+        public void PlayFeedback()
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

@@ -1,0 +1,14 @@
+﻿<Window x:Class="HandTracking.MarkerTrackingWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:HandTracking"
+        mc:Ignorable="d"
+        Title="MarkerTrackingWindow" Height="300" Width="300">
+    <Grid>
+        <Button x:Name="button" Content="Stop Tracking" HorizontalAlignment="Left" Margin="91,163,0,0" VerticalAlignment="Top" Width="100"/>
+        <Button x:Name="button1" Content="Start Tracking" HorizontalAlignment="Left" Margin="91,104,0,0" VerticalAlignment="Top" Width="100" Click="button1_Click"/>
+
+    </Grid>
+</Window>

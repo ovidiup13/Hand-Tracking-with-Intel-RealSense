@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Threading;
 using HandTracking.Implementation.HandTracking;
-using HandTracking.Implementation.MarkerTracking;
 using HandTracking.Interfaces.AudioController;
 using HandTracking.Interfaces.Core;
 using HandTracking.Interfaces.Module;
@@ -13,51 +10,11 @@ using HandTracking.Interfaces.Settings;
 namespace HandTracking.Implementation.Core
 {
     /// <summary>
-    /// 
     /// </summary>
-    class MainExperiment: IExperiment
+    internal class MainExperiment : IExperiment
     {
-
-        #region main variables
-
-        private readonly ConditionImpl[] _conditions;
-        private ISpeakerController _speakerController;
-        private readonly Thread _experimentThread;
-        private Thread _processingThread;
-
-        //other vars
-        private readonly Stopwatch _stopwatch;
-
-        //we lock the thread on this object
-        private readonly AutoResetEvent _resetEvent;
-
-        private volatile bool _experimentIsRunning;
-        private volatile bool _isProcessing;
-
-        #endregion
-
-        #region tracking variables
-
-        private HandTrackingModule _handTrackingModule;
-        private MarkerTrackingModule _markerTrackingModule;
-        private Tracking _markerTracking;
-        private Tracking _handtracking;
-        private HandTrackingData _handData;
-        private MarkerData _markerData;
-
-        #endregion
-
-        #region settings vars
-
-        private CameraSettings cameraSettings;
-        private const int DEFAULT_RESOLUTION_WIDTH = 640;
-        private const int DEFAULT_RESOLUTION_HEIGHT = 480;
-        private const int DEFAULT_FPS = 30;
-
-        #endregion
-
         /// <summary>
-        /// Constructor for main experiment.
+        ///     Constructor for main experiment.
         /// </summary>
         /// <param name="conditions">Conditions for the experiment, as array</param>
         /// <param name="speakerController"></param>
@@ -78,15 +35,74 @@ namespace HandTracking.Implementation.Core
         }
 
         /// <summary>
-        /// Method that initializes the modules of the main experiment
+        /// </summary>
+        /// TODO: must implement return values for each thread state
+        public void StartExperiment()
+        {
+            if (_experimentThread.IsAlive)
+                return;
+
+            _experimentThread.Start();
+        }
+
+        /// <summary>
+        /// </summary>
+        /// TODO: must implement return values for each thread state
+        public void PauseExperiment()
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// </summary>
+        /// TODO: must implement return values for each thread state
+        public void StopExperiment()
+        {
+            //stop hand tracking thread
+            _handtracking?.StopProcessing();
+            _handtracking = null;
+
+            //stop processing thread
+            _isProcessing = false;
+
+            //stop main experiment thread
+            _experimentIsRunning = false;
+
+            //move to next trial in case we are waiting for key pressed
+            NextTrial();
+        }
+
+        /// <summary>
+        ///     An event which starts up the next trial.
+        /// </summary>
+        public void NextTrial()
+        {
+            _resetEvent.Set();
+        }
+
+        /// <summary>
+        /// </summary>
+        /// <returns></returns>
+        public bool IsStarted()
+        {
+            return _experimentThread.IsAlive;
+        }
+
+        /// <summary>
+        /// </summary>
+        /// <returns></returns>
+        public bool IsStopped()
+        {
+            return !_experimentThread.IsAlive;
+        }
+
+        /// <summary>
+        ///     Method that initializes the modules of the main experiment
         /// </summary>
         private void InitializeModules()
         {
             //create instance of marker tracking module
-            _markerTrackingModule = new MarkerTrackingModule();
-            _markerTracking = _markerTrackingModule.GetInstance();
-            _markerTracking.InitializeCameraModules();
-            _markerData = _markerTracking.GetData() as MarkerData;
+
 
             //create an instance of hand tracking module
             _handTrackingModule = new HandTrackingModule();
@@ -100,15 +116,11 @@ namespace HandTracking.Implementation.Core
         }
 
         /// <summary>
-        /// 
         /// </summary>
         private void MainExperimentThread()
         {
             //start the hand tracking module
             _handtracking.StartProcessing();
-
-            //start the marker tracking module
-            _markerTracking.StartProcessing();
 
             ///////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -127,10 +139,10 @@ namespace HandTracking.Implementation.Core
 //                int trials = cond.NumberOfTrials;
 
                 Console.WriteLine(@"Condition started");
-                for(int i = 0; i < _conditions.Length; i++)
+                for (var i = 0; i < _conditions.Length; i++)
                 {
-                    Console.WriteLine( @"Trial + " + i + @" started. Press space to move to next trial");
-   
+                    Console.WriteLine(@"Trial + " + i + @" started. Press space to move to next trial");
+
                     //start stopwatch
                     _stopwatch.Start();
 
@@ -147,7 +159,7 @@ namespace HandTracking.Implementation.Core
                     _isProcessing = false;
 
                     Console.WriteLine(@"Space pressed. Time taken: " + _stopwatch.Elapsed + @" Moving to next trial.");
-                     
+
                     //reset stopwatch
                     _stopwatch.Reset();
 
@@ -171,27 +183,19 @@ namespace HandTracking.Implementation.Core
 
             while (_isProcessing)
             {
-                PXCMPoint3DF32 handPosition = _handData.Location3D;
-
-                Dictionary<int, PXCMPoint3DF32> markers = _markerData.Markers;
-
-                foreach (var m in markers.ToList())
-                {
-                    Console.WriteLine(@" Marker {0} position: X: {1}, Y: {2}, Z: {3}", m.Key, m.Value.x, m.Value.y, m.Value.z);
-                }
+//                var handPosition = _handData.Location3D;
 
                 //TODO: calculate distance between hand and speaker
-                
+
                 //TODO: pass it to speaker controller
 
                 //TODO: play audio feedback
-             
             }
         }
 
         /// <summary>
-        /// Method that returns the distance between two points in 3D space. The two points must 
-        /// be measured in the same units. (e.g. either meters or millimeters)
+        ///     Method that returns the distance between two points in 3D space. The two points must
+        ///     be measured in the same units. (e.g. either meters or millimeters)
         /// </summary>
         /// <param name="point1">First point</param>
         /// <param name="point2">Second point</param>
@@ -203,75 +207,40 @@ namespace HandTracking.Implementation.Core
                           Math.Pow(point1.z - point2.z, 2));
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// TODO: must implement return values for each thread state
-        public void StartExperiment()
-        {
-            if (_experimentThread.IsAlive)
-                return;
+        #region main variables
 
-            _experimentThread.Start();
-        }
+        private readonly ConditionImpl[] _conditions;
+        private ISpeakerController _speakerController;
+        private readonly Thread _experimentThread;
+        private Thread _processingThread;
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// TODO: must implement return values for each thread state
-        public void PauseExperiment()
-        {
-            throw new NotImplementedException();
-        }
+        //other vars
+        private readonly Stopwatch _stopwatch;
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// TODO: must implement return values for each thread state
-        public void StopExperiment()
-        {
-            //stop hand tracking thread
-            _handtracking?.StopProcessing();
-            _handtracking = null;
+        //we lock the thread on this object
+        private readonly AutoResetEvent _resetEvent;
 
-            //stop marker tracking thread
-            _markerTracking?.StopProcessing();
-            _markerTracking = null;
+        private volatile bool _experimentIsRunning;
+        private volatile bool _isProcessing;
 
-            //stop processing thread
-            _isProcessing = false;
+        #endregion
 
-            //stop main experiment thread
-            _experimentIsRunning = false;
+        #region tracking variables
 
-            //move to next trial in case we are waiting for key pressed
-            NextTrial();
-        }
+        private HandTrackingModule _handTrackingModule;
 
-        /// <summary>
-        /// An event which starts up the next trial.
-        /// </summary>
-        public void NextTrial()
-        {
-            _resetEvent.Set();
-        }
+        private Tracking _handtracking;
+        private HandTrackingData _handData;
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        public bool IsStarted()
-        {
-            return _experimentThread.IsAlive;
-        }
+        #endregion
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        public bool IsStopped()
-        {
-            return !_experimentThread.IsAlive;
-        }
+        #region settings vars
+
+        private CameraSettings cameraSettings;
+        private const int DEFAULT_RESOLUTION_WIDTH = 640;
+        private const int DEFAULT_RESOLUTION_HEIGHT = 480;
+        private const int DEFAULT_FPS = 30;
+
+        #endregion
     }
 }
