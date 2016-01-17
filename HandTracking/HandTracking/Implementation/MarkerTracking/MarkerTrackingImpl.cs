@@ -7,7 +7,6 @@ using OpenCV.Net;
 
 namespace HandTracking.Implementation.MarkerTracking
 {
-    //TODO: replace all errors with exceptions
     internal class MarkerTrackingImpl : Tracking
     {
         /// <summary>
@@ -29,6 +28,8 @@ namespace HandTracking.Implementation.MarkerTracking
             _markerTrackingSettings = (MarkerTrackingSettings) settings;
         }
 
+        /// <summary>
+        /// </summary>
         public override void InitializeCameraModules()
         {
             //init session
@@ -81,6 +82,8 @@ namespace HandTracking.Implementation.MarkerTracking
             IsInitialized = true;
         }
 
+        /// <summary>
+        /// </summary>
         public override void StartProcessing()
         {
             if (!IsInitialized)
@@ -113,7 +116,7 @@ namespace HandTracking.Implementation.MarkerTracking
 
                 // retrieve the sample and process it
                 // counts how many times per second the frame is processed
-                if (frameCount++ % 10 == 0)
+                if (frameCount++%10 == 0)
                 {
                     var sample = SenseManager.QuerySample();
                     ProcessFrame(sample);
@@ -148,8 +151,8 @@ namespace HandTracking.Implementation.MarkerTracking
             //detect markers using Aruco
             var detectedMarkers = _markerDetector.Detect(colorOcv, new CameraParameters());
 
-            PXCMPointF32[] colorPoints = new PXCMPointF32[detectedMarkers.Count];
-            PXCMPointF32[] depthPoints = new PXCMPointF32[detectedMarkers.Count];
+            var colorPoints = new PXCMPointF32[detectedMarkers.Count];
+            var depthPoints = new PXCMPointF32[detectedMarkers.Count];
 
             //get centroid of markers
             for (var markerIndex = 0; markerIndex < detectedMarkers.Count; markerIndex++)
@@ -163,31 +166,36 @@ namespace HandTracking.Implementation.MarkerTracking
             _projection.MapColorToDepth(depth, colorPoints, depthPoints);
 
             //query vertices (which are depth points coordinates in mm)
-            PXCMPoint3DF32[] vertices = new PXCMPoint3DF32[depth.info.width * depth.info.height];
+            var vertices = new PXCMPoint3DF32[depth.info.width*depth.info.height];
             _projection.QueryVertices(depth, vertices);
 
+            //go through detected points
             for (var point = 0; point < depthPoints.Length; point++)
             {
                 var detectedPoint = depthPoints[point];
                 if (detectedPoint.x < 0 || detectedPoint.y < 0)
                 {
-                    Console.WriteLine(@"Marker " + detectedMarkers[point].Id + " is out of range");
-
+//                    Console.WriteLine(@"Marker " + detectedMarkers[point].Id + " is out of range");
+                    //add marker, with out of range position
+                    _markerData.AddMarker(detectedMarkers[point].Id, new PXCMPoint3DF32(-1, -1, -1));
                 }
                 else
                 {
                     var v = vertices[(int) (depthPoints[point].y*depth.info.width + depthPoints[point].x)];
-                    Console.WriteLine(@"Marker " + detectedMarkers[point].Id + " has coordinates: X:" + v.x + " Y:" + v.y +
-                                      @" Z:" + v.z);
+//                    Console.WriteLine(@"Marker " + detectedMarkers[point].Id + " has coordinates: X:" + v.x + " Y:" +
+//                                      v.y +
+//                                      @" Z:" + v.z);
+                    _markerData.AddMarker(detectedMarkers[point].Id, v);
                 }
             }
-
 
             color.Dispose();
             depth.Dispose();
             colorOcv.Dispose();
         }
 
+        /// <summary>
+        /// </summary>
         public override void StopProcessing()
         {
             if (!IsInitialized)
@@ -200,6 +208,8 @@ namespace HandTracking.Implementation.MarkerTracking
             IsProcessing = false;
         }
 
+        /// <summary>
+        /// </summary>
         public override void PauseProcessing()
         {
             throw new NotImplementedException();

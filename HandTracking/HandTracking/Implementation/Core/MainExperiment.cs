@@ -1,6 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
-
+using System.Linq;
 using System.Threading;
 using HandTracking.Implementation.HandTracking;
 using HandTracking.Implementation.MarkerTracking;
@@ -171,7 +172,13 @@ namespace HandTracking.Implementation.Core
             while (_isProcessing)
             {
                 PXCMPoint3DF32 handPosition = _handData.Location3D;
-                Console.WriteLine();
+
+                Dictionary<int, PXCMPoint3DF32> markers = _markerData.Markers;
+
+                foreach (var m in markers.ToList())
+                {
+                    Console.WriteLine(@" Marker {0} position: X: {1}, Y: {2}, Z: {3}", m.Key, m.Value.x, m.Value.y, m.Value.z);
+                }
 
                 //TODO: calculate distance between hand and speaker
                 
