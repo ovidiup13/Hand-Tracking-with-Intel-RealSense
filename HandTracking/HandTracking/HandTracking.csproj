@@ -131,6 +131,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="ImageUtils.cs" />
     <Compile Include="Implementation\AudioController\Speaker.cs" />
     <Compile Include="Implementation\AudioController\SpeakerController.cs" />
     <Compile Include="Implementation\Core\ConditionImpl.cs" />
@@ -237,6 +238,9 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Libs\" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

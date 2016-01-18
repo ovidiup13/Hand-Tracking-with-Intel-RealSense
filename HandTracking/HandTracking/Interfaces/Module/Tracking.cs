@@ -80,7 +80,7 @@ namespace HandTracking.Interfaces.Module
 
         #region threading vars
 
-        protected bool IsProcessing;
+        public bool IsProcessing { get; protected set; }
         protected bool IsInitialized;
         protected Thread ProcessingThread;
         protected bool ProcessingFlag;

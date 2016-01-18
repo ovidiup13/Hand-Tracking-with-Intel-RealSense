@@ -5,10 +5,14 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:HandTracking"
         mc:Ignorable="d"
-        Title="MarkerTrackingWindow" Height="300" Width="300">
-    <Grid>
-        <Button x:Name="button" Content="Stop Tracking" HorizontalAlignment="Left" Margin="91,163,0,0" VerticalAlignment="Top" Width="100"/>
-        <Button x:Name="button1" Content="Start Tracking" HorizontalAlignment="Left" Margin="91,104,0,0" VerticalAlignment="Top" Width="100" Click="button1_Click"/>
+        Title="MarkerTrackingWindow" Height="385.56" Width="627.29">
+    <Grid Margin="0,0,2,0">
+
+        <Button x:Name="stop_tracking_button" Content="Stop Tracking" Margin="336,310,181,0" VerticalAlignment="Top" Click="StopTrackingClick" Height="20"/>
+        <Button x:Name="start_tracking_button" Content="Start Tracking" HorizontalAlignment="Left" Margin="181,310,0,0" VerticalAlignment="Top" Width="100" Click="StartTrackingClick" Height="20"/>
+        <Button x:Name="next_button" Content="Next" HorizontalAlignment="Left" Margin="532,325,0,0" VerticalAlignment="Top" Width="75" RenderTransformOrigin="0.04,0.85" Click="Next_button_OnClick" Height="20"/>
+        <Button x:Name="back_button" Content="Back" HorizontalAlignment="Left" Margin="10,325,0,0" VerticalAlignment="Top" Width="75" RenderTransformOrigin="0.04,0.85" Click="BackButtonClick" Height="20"/>
+        <Image x:Name="imgColorStream" HorizontalAlignment="Left" Height="295" VerticalAlignment="Top" Width="597" Margin="10,10,0,0"/>
 
     </Grid>
 </Window>

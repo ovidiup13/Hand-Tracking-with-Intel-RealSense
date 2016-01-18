@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,17 +20,49 @@ namespace HandTracking
     /// </summary>
     public partial class MenuWindow : Window
     {
+        private Window _markerWindow;
+
         public MenuWindow()
         {
             InitializeComponent();
-            
+            _markerWindow = new MarkerTrackingWindow(this);
         }
 
-        private void button_Click(object sender, RoutedEventArgs e)
+        private void StartExperimentClick(object sender, RoutedEventArgs e)
         {
-            var mainWindow = new MainWindow(); //create your new form.
-            mainWindow.Show(); //show the new form.
-            Close(); //only if you want to close the current form.
+            _markerWindow.Show();
+            Hide();
+        }
+
+        /// <summary>
+        /// Method called when the user clicks on the X button on the main window.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void CloseApplication(object sender, CancelEventArgs e)
+        {
+            //ask for confirmation
+            MessageBoxResult result = MessageBox.Show("Are you sure you want to quit?", "Exit Application",
+                MessageBoxButton.YesNo);
+
+            //close or cancel according to result
+            if (result == MessageBoxResult.Yes)
+                Application.Current.Shutdown();
+            else
+            {
+                //cancel closing
+                e.Cancel = true;
+            }
+        }
+
+        /// <summary>
+        /// Method called when user clicks on Quit button. References the CloseApplication method. 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Quit_button_OnClick(object sender, RoutedEventArgs e)
+        {      
+            Application.Current.Shutdown();         
         }
     }
 }
