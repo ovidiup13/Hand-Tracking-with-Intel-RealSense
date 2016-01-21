@@ -20,7 +20,12 @@ namespace HandTracking.Implementation.AudioDesigns
             _file = file;
         }
 
-        public void PlayFeedback()
+        public void Play(double distance)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public void SetSpeaker(Speaker speaker)
         {
             throw new System.NotImplementedException();
         }

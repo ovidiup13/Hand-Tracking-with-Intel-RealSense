@@ -7,18 +7,23 @@
         Title="MainWindow" Height="600" Width="1000"
         Closed="MainWindow_OnClosed"
         KeyDown="MainWindow_OnKeyDown">
-    
-    
-    <Grid>
-        <DockPanel>
-            <Menu DockPanel.Dock="Top">
+
+
+    <StackPanel>
+        <DockPanel DockPanel.Dock="Top">
+            <Menu DockPanel.Dock="Top" Height="20">
                 <MenuItem Header="_File">
                     <MenuItem Header="_Open"/>
                     <MenuItem Header="_Close" Click="Quit_Experiment"/>
                     <MenuItem Header="_Save"/>
                 </MenuItem>
             </Menu>
-            <StackPanel></StackPanel>
         </DockPanel>
-    </Grid>
+        <Image Height="448"></Image>
+        <StackPanel x:Name="control_buttons" Width="374" Orientation="Horizontal" HorizontalAlignment="Center" Margin="309,50,309,0">
+            <Button x:Name="stop_button" Content="Stop" Width="125" Click="Stop_button_OnClick"/>
+            <Button x:Name="start_button" Content="Start" Width="125" Click="Start_button_OnClick"/>
+            <Button x:Name="pause_button" Content="Pause" Width="125"/>
+        </StackPanel>
+    </StackPanel>
 </Window>

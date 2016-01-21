@@ -1,4 +1,6 @@
 ﻿
+using Un4seen.Bass;
+
 namespace HandTracking.Interfaces.AudioController
 {
     public enum AudioDesignType
@@ -20,6 +22,11 @@ namespace HandTracking.Interfaces.AudioController
         /// <summary>
         /// Method that plays audio feedback from referenced speakers.
         /// </summary>
-        void PlayFeedback();
+        void Play(double distance);
+
+        /// <summary>
+        /// Method that sets the next speaker of the Audio Design
+        /// </summary>
+        void SetSpeaker(Speaker speaker);
     }
 }

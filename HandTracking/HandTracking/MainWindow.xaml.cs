@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Input;
-using HandTracking.Implementation.AudioController;
+using HandTracking.Implementation.AudioDesigns;
 using HandTracking.Implementation.Core;
 using HandTracking.Implementation.MarkerTracking;
+using HandTracking.Interfaces.AudioController;
 using HandTracking.Interfaces.Core;
+using SpeakerController = HandTracking.Implementation.AudioController.SpeakerController;
 
 namespace HandTracking
 {
@@ -16,30 +18,52 @@ namespace HandTracking
     {
         public MainWindow(Window mainMenu, Dictionary<int, PXCMPoint3DF32> markerLocation)
         {
+            //init component
             InitializeComponent();
+
+            //init experiment
+            InitializeExperiment(markerLocation);
+            StartExperiment();
         }
 
         /// <summary>
-        ///     Method that starts the experiment.
+        /// Method that initializes a new Experiment.
         /// </summary>
-        /// <param name="markers">Dictionary of markers passed to SpeakerController (i.e. location of speakers)</param>
-        private void StartExperiment(Dictionary<int, PXCMPoint3DF32> markers)
+        private void InitializeExperiment(Dictionary<int, PXCMPoint3DF32> markerLocation)
         {
             //TODO: conditions must be initialized in another method
             //create a list of conditions
+            IAudioDesign audioDesign = new ConstantAudioDesign();
+
             var conditions = new List<ConditionImpl>();
             for (var i = 0; i < 2; i++)
             {
-                var condition = new ConditionImpl(_numberOfTrials);
+                var condition = new ConditionImpl(_numberOfTrials) {AudioDesign = audioDesign};
                 conditions.Add(condition);
             }
 
             //pass these to main experiment
             //TODO: check marker data for null
-            _mainExperiment = new MainExperiment(conditions.ToArray(), new SpeakerController(markers));
+            _mainExperiment = new MainExperiment(conditions.ToArray(), new SpeakerController(markerLocation));
+        }
 
+        /// <summary>
+        /// Method that starts the experiment.
+        /// </summary>
+        private void StartExperiment()
+        {
             //start experiment
-            _mainExperiment.StartExperiment();
+            if (_mainExperiment != null && !_mainExperiment.IsStarted())
+            {
+                _mainExperiment.StartExperiment();
+            }
+
+            else
+            {
+                MessageBox.Show(
+                    "Experiment is already started or has not been initialized.",
+                    "Experiment started", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+            }
         }
 
         /// <summary>
@@ -65,7 +89,6 @@ namespace HandTracking
             if (_mainExperiment.IsStarted())
                 _mainExperiment.StopExperiment();
 
-            //shutdown application
             Application.Current.Shutdown();
         }
 
@@ -76,28 +99,23 @@ namespace HandTracking
 
         #endregion
 
-        #region window vars
-
-        #endregion
-
-        /* void imageStream_NewImageAvailable(object sender, RealSenseImageStream.NewImageArgs args)
-       {
-           Dispatcher.Invoke(new Action(() => { imageComponent.Source = ImageUtils.ConvertBitmapToWpf(args.Bitmap); }));
-       }
-
-       private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
-       {
-           // Avoiding problems with Dispatcher
-           imageStream.NewImageAvailable -= imageStream_NewImageAvailable;
-           imageStream.StopStream();
-           handsLocation.StopTracking();
-       }*/
-
         private void Quit_Experiment(object sender, RoutedEventArgs e)
         {
             //if the experiment is running, then stop it
             if (_mainExperiment.IsStarted())
                 _mainExperiment.StopExperiment();
+        }
+
+        private void Stop_button_OnClick(object sender, RoutedEventArgs e)
+        {
+            //if the experiment is running, then stop it
+            if (_mainExperiment.IsStarted())
+                _mainExperiment.StopExperiment();
+        }
+
+        private void Start_button_OnClick(object sender, RoutedEventArgs e)
+        {
+            StartExperiment();
         }
     }
 }

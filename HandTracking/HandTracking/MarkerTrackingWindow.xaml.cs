@@ -139,7 +139,7 @@ namespace HandTracking
                     "Marker Locations have not been registered. Please Start Marker Tracking and place the markers in front of the camera.",
                     "Marker Locations not Found", MessageBoxButton.OK, MessageBoxImage.Error);
             }
-            else if (_markerTracking.IsProcessing)
+            else if (_markerTracking != null && _markerTracking.IsProcessing)
             {
                 MessageBox.Show(
                     "Please stop marker tracking process before continuing. Make sure marker locations have been registered.",

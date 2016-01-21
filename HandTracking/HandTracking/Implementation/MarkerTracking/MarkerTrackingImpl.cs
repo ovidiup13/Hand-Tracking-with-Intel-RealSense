@@ -155,10 +155,11 @@ namespace HandTracking.Implementation.MarkerTracking
             var depthPoints = new PXCMPointF32[detectedMarkers.Count];
 
             //get centroid of markers
+            Console.WriteLine(@"Markers detected: " + detectedMarkers.Count);
             for (var markerIndex = 0; markerIndex < detectedMarkers.Count; markerIndex++)
             {
                 var marker = detectedMarkers[markerIndex];
-//                Console.WriteLine(@"Marker detected with id " + marker.Id);
+                Console.WriteLine(@"Marker detected with id " + marker.Id);
                 colorPoints[markerIndex] = new PXCMPointF32(marker.Center.X, marker.Center.Y);
             }
 

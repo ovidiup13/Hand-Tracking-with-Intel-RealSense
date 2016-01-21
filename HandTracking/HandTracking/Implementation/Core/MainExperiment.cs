@@ -18,7 +18,7 @@ namespace HandTracking.Implementation.Core
         /// </summary>
         /// <param name="conditions">Conditions for the experiment, as array</param>
         /// <param name="speakerController"></param>
-        public MainExperiment(ConditionImpl[] conditions, ISpeakerController speakerController)
+        public MainExperiment(ConditionImpl[] conditions, SpeakerController speakerController)
         {
             //set main experiment variables
             _conditions = conditions;
@@ -122,54 +122,64 @@ namespace HandTracking.Implementation.Core
             //start the hand tracking module
             _handtracking.StartProcessing();
 
-            ///////////////////////////////////////////////////////////////////////////////////////////////////
-
-            //testing
-//            _speakerController.PlaySounds();
-
-            /////////////////////////////////////////////////////////////////////////////////////////////////////
-
             //get number of speakers - excluding wrist
-//            int numberOfSpeakers = _speakerController.GetNumberOfSpeakers();
+            int numberOfSpeakers = _speakerController.GetNumberOfSpeakers();
 
             Console.WriteLine(@"Experiment started.");
             foreach (var cond in _conditions)
             {
                 //get the number of trials
-//                int trials = cond.NumberOfTrials;
+                int trials = cond.NumberOfTrials;
+
+                //set the audio design on the speaker controller
+                _speakerController.SetAudioDesign(cond.AudioDesign);
 
                 Console.WriteLine(@"Condition started");
-                for (var i = 0; i < _conditions.Length; i++)
+                for (var i = 0; i < trials; i++)
                 {
-                    Console.WriteLine(@"Trial + " + i + @" started. Press space to move to next trial");
+                    Console.WriteLine(@"Trial + " + i + @" started.");
+                    for (var j = 0; j < numberOfSpeakers; j++)
+                    {
+                        //signal speaker controller to move to next speaker
+                        _speakerController.NextSpeaker();
 
-                    //start stopwatch
-                    _stopwatch.Start();
+                        Console.WriteLine(@"Press space to move to next speaker");
 
-                    //start the processing thread
-                    _isProcessing = true;
-                    _processingThread = new Thread(ProcessingThread);
-                    _processingThread.Start();
+                        //start stopwatch
+                        _stopwatch.Start();
 
-                    //wait for main thread to signal key pressed
-                    _resetEvent.WaitOne();
+                        //start the processing thread
+                        _isProcessing = true;
+                        _processingThread = new Thread(ProcessingThread);
+                        _processingThread.Start();
 
-                    //stop watch and processing thread
-                    _stopwatch.Stop();
-                    _isProcessing = false;
+                        //wait for main thread to signal key pressed
+                        _resetEvent.WaitOne();
 
-                    Console.WriteLine(@"Space pressed. Time taken: " + _stopwatch.Elapsed + @" Moving to next trial.");
+                        //stop watch and processing thread
+                        _stopwatch.Stop();
+                        _isProcessing = false;
 
-                    //reset stopwatch
-                    _stopwatch.Reset();
+                        Console.WriteLine(@"Space pressed. Time taken: " + _stopwatch.Elapsed + @" Moving to next trial.");
 
-                    if (!_experimentIsRunning)
-                        return;
+                        //reset stopwatch
+                        _stopwatch.Reset();
+
+                        if (!_experimentIsRunning)
+                            return;
+                    }
+
+                    //signal speaker controller to re-shuffle speaker flags
+                    _speakerController.SignalConditionEnded(true);
+
                 }
 
                 Console.WriteLine(@"Condition ended.");
                 if (!_experimentIsRunning)
                     return;
+
+                //signal speaker controller to re-shuffle speaker flags
+                _speakerController.SignalConditionEnded(true);
             }
 
             Console.WriteLine(@"Experiment ended.");
@@ -183,13 +193,14 @@ namespace HandTracking.Implementation.Core
 
             while (_isProcessing)
             {
-//                var handPosition = _handData.Location3D;
+                var handPosition = _handData.Location3D;
 
                 //TODO: calculate distance between hand and speaker
 
                 //TODO: pass it to speaker controller
 
-                //TODO: play audio feedback
+                //TODO: play audio feedback - pass the distance 
+                _speakerController.PlaySounds(0);
             }
         }
 
@@ -210,7 +221,7 @@ namespace HandTracking.Implementation.Core
         #region main variables
 
         private readonly ConditionImpl[] _conditions;
-        private ISpeakerController _speakerController;
+        private SpeakerController _speakerController;
         private readonly Thread _experimentThread;
         private Thread _processingThread;
 

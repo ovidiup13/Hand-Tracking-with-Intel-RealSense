@@ -132,8 +132,9 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="ImageUtils.cs" />
-    <Compile Include="Implementation\AudioController\Speaker.cs" />
+    <Compile Include="Implementation\AudioController\SpeakerImpl.cs" />
     <Compile Include="Implementation\AudioController\SpeakerController.cs" />
+    <Compile Include="Implementation\AudioDesigns\ConstantAudioDesign.cs" />
     <Compile Include="Implementation\Core\ConditionImpl.cs" />
     <Compile Include="Implementation\AudioDesigns\GeigerAudioDesign.cs" />
     <Compile Include="Implementation\Core\MainExperiment.cs" />
@@ -173,8 +174,8 @@
     <Compile Include="Interfaces\Core\Condition.cs" />
     <Compile Include="Interfaces\AudioController\IAudioDesign.cs" />
     <Compile Include="Interfaces\Core\IExperiment.cs" />
-    <Compile Include="Interfaces\AudioController\ISpeaker.cs" />
-    <Compile Include="Interfaces\AudioController\ISpeakerController.cs" />
+    <Compile Include="Interfaces\AudioController\Speaker.cs" />
+    <Compile Include="Interfaces\AudioController\SpeakerController.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
