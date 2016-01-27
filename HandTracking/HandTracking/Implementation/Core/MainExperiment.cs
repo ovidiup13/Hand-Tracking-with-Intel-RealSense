@@ -123,13 +123,13 @@ namespace HandTracking.Implementation.Core
             _handtracking.StartProcessing();
 
             //get number of speakers - excluding wrist
-            int numberOfSpeakers = _speakerController.GetNumberOfSpeakers();
+            var numberOfSpeakers = _speakerController.GetNumberOfSpeakers();
 
             Console.WriteLine(@"Experiment started.");
             foreach (var cond in _conditions)
             {
                 //get the number of trials
-                int trials = cond.NumberOfTrials;
+                var trials = cond.NumberOfTrials;
 
                 //set the audio design on the speaker controller
                 _speakerController.SetAudioDesign(cond.AudioDesign);
@@ -160,7 +160,8 @@ namespace HandTracking.Implementation.Core
                         _stopwatch.Stop();
                         _isProcessing = false;
 
-                        Console.WriteLine(@"Space pressed. Time taken: " + _stopwatch.Elapsed + @" Moving to next trial.");
+                        Console.WriteLine(@"Space pressed. Time taken: " + _stopwatch.Elapsed +
+                                          @" Moving to next trial.");
 
                         //reset stopwatch
                         _stopwatch.Reset();
@@ -170,15 +171,14 @@ namespace HandTracking.Implementation.Core
                     }
 
                     //signal speaker controller to re-shuffle speaker flags
-                    _speakerController.SignalConditionEnded(true);
-
+                    _speakerController.SignalTrialEnded(true);
                 }
 
                 Console.WriteLine(@"Condition ended.");
                 if (!_experimentIsRunning)
                     return;
 
-                //signal speaker controller to re-shuffle speaker flags
+                //signal speaker controller to re-shuffle speaker flags for new condition
                 _speakerController.SignalConditionEnded(true);
             }
 
@@ -190,6 +190,7 @@ namespace HandTracking.Implementation.Core
         {
             //selected speaker location
             //TODO: get position of target speaker
+            _speakerController.PlaySounds(0);
 
             while (_isProcessing)
             {
@@ -200,7 +201,6 @@ namespace HandTracking.Implementation.Core
                 //TODO: pass it to speaker controller
 
                 //TODO: play audio feedback - pass the distance 
-                _speakerController.PlaySounds(0);
             }
         }
 
@@ -221,7 +221,7 @@ namespace HandTracking.Implementation.Core
         #region main variables
 
         private readonly ConditionImpl[] _conditions;
-        private SpeakerController _speakerController;
+        private readonly SpeakerController _speakerController;
         private readonly Thread _experimentThread;
         private Thread _processingThread;
 

@@ -4,7 +4,6 @@ using System.Windows;
 using System.Windows.Input;
 using HandTracking.Implementation.AudioDesigns;
 using HandTracking.Implementation.Core;
-using HandTracking.Implementation.MarkerTracking;
 using HandTracking.Interfaces.AudioController;
 using HandTracking.Interfaces.Core;
 using SpeakerController = HandTracking.Implementation.AudioController.SpeakerController;
@@ -33,7 +32,7 @@ namespace HandTracking
         {
             //TODO: conditions must be initialized in another method
             //create a list of conditions
-            IAudioDesign audioDesign = new ConstantAudioDesign();
+            AudioDesign audioDesign = new ConstantAudioDesign();
 
             var conditions = new List<ConditionImpl>();
             for (var i = 0; i < 2; i++)

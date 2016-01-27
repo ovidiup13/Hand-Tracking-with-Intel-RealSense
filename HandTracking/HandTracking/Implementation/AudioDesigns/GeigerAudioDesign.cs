@@ -4,9 +4,10 @@ using HandTracking.Interfaces.AudioController;
 
 namespace HandTracking.Implementation.AudioDesigns
 {
-    class GeigerAudioDesign : IAudioDesign
+    class GeigerAudioDesign : AudioDesign
     {
-        public AudioDesignType Type { get; set; }
+        public override AudioDesignType Type { get; set; }
+        public override string File { get; set; }
 
         private string _file;
 
@@ -20,12 +21,12 @@ namespace HandTracking.Implementation.AudioDesigns
             _file = file;
         }
 
-        public void Play(double distance)
+        public override void Play(double distance, float volume)
         {
             throw new System.NotImplementedException();
         }
 
-        public void SetSpeaker(Speaker speaker)
+        public override void SetSpeaker(Speaker speaker)
         {
             throw new System.NotImplementedException();
         }

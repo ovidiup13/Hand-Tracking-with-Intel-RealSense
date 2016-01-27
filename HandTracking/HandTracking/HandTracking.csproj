@@ -11,7 +11,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>HandTracking</RootNamespace>
     <AssemblyName>HandTracking</AssemblyName>
-    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
@@ -51,6 +51,8 @@
     <PlatformTarget>x64</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+    <Optimize>true</Optimize>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
     <OutputPath>bin\x64\Release\</OutputPath>
@@ -60,6 +62,9 @@
     <PlatformTarget>x64</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>HandTracking.App</StartupObject>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Aruco.Net, Version=2.0.0.0, Culture=neutral, processorArchitecture=x86">
@@ -172,7 +177,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Interfaces\Core\Condition.cs" />
-    <Compile Include="Interfaces\AudioController\IAudioDesign.cs" />
+    <Compile Include="Interfaces\AudioController\AudioDesign.cs" />
     <Compile Include="Interfaces\Core\IExperiment.cs" />
     <Compile Include="Interfaces\AudioController\Speaker.cs" />
     <Compile Include="Interfaces\AudioController\SpeakerController.cs" />
@@ -236,10 +241,14 @@
     <Content Include="opencv_imgproc300.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Sounds\peakGeiger.wav">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Sounds\peakPitch.wav">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Libs\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
   </ItemGroup>

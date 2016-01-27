@@ -1,18 +1,19 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using HandTracking.Implementation.AudioDesigns;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace HandTracking.Implementation.AudioDesigns.Tests
+namespace HandTrackingTests.Implementation.AudioDesigns
 {
     [TestClass()]
     public class ConstantAudioDesignTests
     {
         [TestMethod()]
-        public void SetFileTest()
+        public void PlayTest()
+        {
+            throw new NotImplementedException();
+        }
+
+        [TestMethod()]
+        public void SetSpeakerTest()
         {
             throw new NotImplementedException();
         }

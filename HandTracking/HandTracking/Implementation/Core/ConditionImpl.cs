@@ -1,24 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using HandTracking.Interfaces;
-using HandTracking.Interfaces.AudioController;
-using HandTracking.Interfaces.Core;
+﻿using HandTracking.Interfaces.Core;
 
 namespace HandTracking.Implementation.Core
 {
-    class ConditionImpl : Condition
+    public class ConditionImpl : Condition
     {
-        
+        private static long _id = 0;
+
         /// <summary>
-        /// Constructor that instantiates an object with a number of trials.
+        ///     Constructor that instantiates an object with a number of trials.
         /// </summary>
         /// <param name="trials"></param>
         public ConditionImpl(int trials)
         {
             NumberOfTrials = trials;
+            ConditionId = _id++;
         }
     }
 }

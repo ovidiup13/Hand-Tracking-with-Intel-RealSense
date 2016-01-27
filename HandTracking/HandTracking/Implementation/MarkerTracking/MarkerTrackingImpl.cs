@@ -7,6 +7,9 @@ using OpenCV.Net;
 
 namespace HandTracking.Implementation.MarkerTracking
 {
+    //TODO: pass the image stream to the marker settings window for displaying
+    //TODO: get the location, in 2D image space, of the marker
+    //TODO: draw a circle on the image component at each marker's position
     internal class MarkerTrackingImpl : Tracking
     {
         /// <summary>
@@ -159,7 +162,7 @@ namespace HandTracking.Implementation.MarkerTracking
             for (var markerIndex = 0; markerIndex < detectedMarkers.Count; markerIndex++)
             {
                 var marker = detectedMarkers[markerIndex];
-                Console.WriteLine(@"Marker detected with id " + marker.Id);
+//                Console.WriteLine(@"Marker detected with id " + marker.Id);
                 colorPoints[markerIndex] = new PXCMPointF32(marker.Center.X, marker.Center.Y);
             }
 
@@ -183,9 +186,9 @@ namespace HandTracking.Implementation.MarkerTracking
                 else
                 {
                     var v = vertices[(int) (depthPoints[point].y*depth.info.width + depthPoints[point].x)];
-//                    Console.WriteLine(@"Marker " + detectedMarkers[point].Id + " has coordinates: X:" + v.x + " Y:" +
-//                                      v.y +
-//                                      @" Z:" + v.z);
+                    Console.WriteLine(@"Marker " + detectedMarkers[point].Id + @" has coordinates: X:" + v.x + @" Y:" +
+                                      v.y +
+                                      @" Z:" + v.z);
                     _markerData.AddMarker(detectedMarkers[point].Id, v);
                 }
             }

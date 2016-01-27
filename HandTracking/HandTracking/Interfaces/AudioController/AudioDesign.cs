@@ -1,4 +1,5 @@
 ﻿
+using System;
 using Un4seen.Bass;
 
 namespace HandTracking.Interfaces.AudioController
@@ -9,24 +10,23 @@ namespace HandTracking.Interfaces.AudioController
         Coalescent
     };
 
-    public interface IAudioDesign
+    public abstract class AudioDesign
     {
-        AudioDesignType Type { get; set; }
 
-        /// <summary>
-        /// Method that sets file for audio design.
-        /// </summary>
-        /// <param name="file"></param>
-        void SetFile(string file);
+        public abstract AudioDesignType Type { get; set; }
+        public abstract string File { get; set; }
+
+        
 
         /// <summary>
         /// Method that plays audio feedback from referenced speakers.
         /// </summary>
-        void Play(double distance);
+        public abstract void Play(double distance, float volume);
 
         /// <summary>
         /// Method that sets the next speaker of the Audio Design
         /// </summary>
-        void SetSpeaker(Speaker speaker);
+        public abstract void SetSpeaker(Speaker speaker);
+
     }
 }

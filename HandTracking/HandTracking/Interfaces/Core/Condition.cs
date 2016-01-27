@@ -1,40 +1,19 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using HandTracking.Interfaces.AudioController;
 
 namespace HandTracking.Interfaces.Core
 {
-    abstract class Condition
+    public abstract class Condition
     {
-
-        #region private vars
-
-        private int _numberOfTrials;
-        private string _id;
-        private IAudioDesign _audioDesign;
-
-        #endregion
+        /// <summary>
+        ///     Fields that sets an ID to the current condition.
+        /// </summary>
+        public long ConditionId { get; protected set; }
 
         /// <summary>
-        /// Fields that sets an ID to the current condition.
+        ///     Field that sets and gets the type of AudioDesign associated with the Condition.
         /// </summary>
-        public string ConditionId
-        {
-            get { return _id; }
-            internal set
-            {
-                if (value == null) throw new ArgumentNullException(nameof(value));
-                _id = value;
-            }
-        }
-
-        /// <summary>
-        /// Field that sets and gets the type of AudioDesign associated with the Condition.
-        /// </summary>
-        public IAudioDesign AudioDesign
+        public AudioDesign AudioDesign
         {
             get { return _audioDesign; }
             set
@@ -45,16 +24,23 @@ namespace HandTracking.Interfaces.Core
         }
 
         /// <summary>
-        /// Field that sets and gets the number of trials associated with each condition
+        ///     Field that sets and gets the number of trials associated with each condition
         /// </summary>
         public int NumberOfTrials
         {
             get { return _numberOfTrials; }
-            set
+            protected set
             {
                 if (value <= 0) throw new ArgumentOutOfRangeException(nameof(value));
                 _numberOfTrials = value;
             }
         }
+
+        #region private vars
+
+        private int _numberOfTrials;
+        private AudioDesign _audioDesign;
+
+        #endregion
     }
 }

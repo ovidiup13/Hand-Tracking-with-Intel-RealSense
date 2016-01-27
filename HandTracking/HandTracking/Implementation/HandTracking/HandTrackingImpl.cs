@@ -233,7 +233,7 @@ namespace HandTracking.Implementation.HandTracking
 
         #region Module vars
 
-        private HandTrackingData _handTrackingData;
+        private readonly HandTrackingData _handTrackingData;
         private readonly HandTrackingSettings _handTrackingSettings;
 
         #endregion

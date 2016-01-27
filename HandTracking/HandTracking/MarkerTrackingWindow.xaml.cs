@@ -7,11 +7,11 @@ using HandTracking.Interfaces.Module;
 namespace HandTracking
 {
     //TODO: have the image color stream display on the image plane, currently there is a conflict between marker tracking and the other
-    //TODO: allow user to update marker location during experiment 
+    //TODO: allow user to update marker location during experiment
     /// <summary>
     ///     Interaction logic for MarkerTrackingWindow.xaml
     /// </summary>
-    public partial class MarkerTrackingWindow : Window
+    public partial class MarkerTrackingWindow
     {
         /// <summary>
         ///     Method that initializes the marker tracking module and starts marker tracking process.
@@ -20,7 +20,7 @@ namespace HandTracking
         {
             if (_markerTracking != null)
             {
-                var messageBox = MessageBox.Show("Marker Tracking is currently processing.");
+                MessageBox.Show("Marker Tracking is currently processing.");
                 return;
             }
 

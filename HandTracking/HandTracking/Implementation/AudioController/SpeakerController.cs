@@ -7,6 +7,8 @@ namespace HandTracking.Implementation.AudioController
 {
     /*
     TODO: must check for number of speakers every time. If greater > 8, then throw an exception or smth
+    TODO: add methods for displaying the names of all output devices, including their IDs
+    TODO: add method for initializing an output device to be used in the main experiment
         */
     internal class SpeakerController : Interfaces.AudioController.SpeakerController
     {
@@ -14,6 +16,14 @@ namespace HandTracking.Implementation.AudioController
         {
             //bass.net registration
             BassNet.Registration("ovidiu.popoviciu@hotmail.co.uk", "2X2417830312420");
+
+            if ( ! Bass.BASS_Init(-1, 44100, BASSInit.BASS_DEVICE_DEFAULT, IntPtr.Zero))
+            {
+                throw new Exception("An error occurred while initializing the BASS library.");
+            };
+
+            Bass.BASS_SetVolume(0.2f);
+            Console.WriteLine(@"Volume is : " + Bass.BASS_GetVolume());
 
             //location of speakerLocations
             _speakerLocations = speakerLocations;
@@ -31,17 +41,22 @@ namespace HandTracking.Implementation.AudioController
         private void InitializeSpeakers(int numberOfSpeakers)
         {
             Console.WriteLine(@"Initializing speakers...");
-            _speakers = new List<Speaker>(GetNumberOfSpeakers());
+
+            _speakers = new List<SpeakerImpl>(numberOfSpeakers);
             _speakerIndexes = new int[numberOfSpeakers];
+
             for (var i = 0; i < numberOfSpeakers; i++)
             {
                 _speakerIndexes[i] = i;
                 Console.WriteLine(SpeakerFlags[i].ToString());
-                _speakers[i] = new SpeakerImpl(SpeakerFlags[0]);
+                _speakers.Add(new SpeakerImpl(SpeakerFlags[i]));
+//                _speakers[i].SpeakerFlag = ;
+
             }
             
             //randomize speakers indexes
             _speakerIndexes = ShuffleArray(_speakerIndexes);
+
             //set current speaker to zero
             _currentIndex = 0;
         }
@@ -58,7 +73,7 @@ namespace HandTracking.Implementation.AudioController
         /// Method that sets a new Audio Design to the Speaker Controller.
         /// </summary>
         /// <param name="audioDesign"></param>
-        public override void SetAudioDesign(IAudioDesign audioDesign)
+        public override void SetAudioDesign(AudioDesign audioDesign)
         {
             _audioDesign = audioDesign;
         }
@@ -68,7 +83,7 @@ namespace HandTracking.Implementation.AudioController
         /// </summary>un
         public override void PlaySounds(double distance)
         {
-            _audioDesign.Play(distance);
+            _audioDesign.Play(distance, Volume);
         }
 
         /// <summary>
@@ -84,6 +99,12 @@ namespace HandTracking.Implementation.AudioController
         {
             _currentIndex = 0;
             _audioDesign = null;
+            _speakerIndexes = ShuffleArray(_speakerIndexes);
+        }
+
+        public override void SignalTrialEnded(bool flag)
+        {
+            _currentIndex = 0;
             _speakerIndexes = ShuffleArray(_speakerIndexes);
         }
 
@@ -106,7 +127,7 @@ namespace HandTracking.Implementation.AudioController
         private readonly Dictionary<int, PXCMPoint3DF32> _speakerLocations;
 
         //list of Speaker instances
-        private List<Speaker> _speakers;
+        private List<SpeakerImpl> _speakers;
         private int[] _speakerIndexes;
         private int _currentIndex;
 
@@ -124,7 +145,7 @@ namespace HandTracking.Implementation.AudioController
         };
 
         //audio design 
-        private IAudioDesign _audioDesign;
+        private AudioDesign _audioDesign;
 
         #endregion
 
