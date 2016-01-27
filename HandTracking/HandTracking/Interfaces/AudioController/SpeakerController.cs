@@ -10,7 +10,7 @@ namespace HandTracking.Interfaces.AudioController
         private static readonly float VolumeGap = 0.05f;
 
         //initial volume
-        protected float Volume = 0.5f;
+        protected float Volume = 0.02f;
 
         /// <summary>
         /// Method that returns a next random speaker.
@@ -86,32 +86,5 @@ namespace HandTracking.Interfaces.AudioController
             //decrease volume
             Volume -= VolumeGap;
         }
-
-        /*/// <summary>
-        /// Method that sets speaker data.
-        /// </summary>
-        /// <param name="speakers"></param>
-        public abstract void SetSpeakers(List<Speaker> speakers);
-
-        /// <summary>
-        /// Method that retrieves a list of all speakers.
-        /// </summary>
-        /// <returns>List of all speakers.</returns>
-        public abstract List<Speaker> GetAllSpeakers();
-
-        
-
-       
-
-        /// <summary>
-        /// Method that sets the volume of speakers.
-        /// </summary>
-        /// <param name="volume"></param>
-        void SetVolume(float volume);
-
-        /// <summary>
-        /// Method that signals the speaker controller to stop producing sound.
-        /// </summary>
-        void StopStreaming();*/
     }
 }

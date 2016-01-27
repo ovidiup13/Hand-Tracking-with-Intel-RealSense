@@ -30,5 +30,10 @@ namespace HandTracking.Implementation.AudioDesigns
         {
             throw new System.NotImplementedException();
         }
+
+        public override void StopPlayback()
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

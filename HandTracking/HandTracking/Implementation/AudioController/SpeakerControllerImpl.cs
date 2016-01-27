@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using HandTracking.Interfaces.AudioController;
 using Un4seen.Bass;
 
@@ -10,9 +11,9 @@ namespace HandTracking.Implementation.AudioController
     TODO: add methods for displaying the names of all output devices, including their IDs
     TODO: add method for initializing an output device to be used in the main experiment
         */
-    internal class SpeakerController : Interfaces.AudioController.SpeakerController
+    internal class SpeakerControllerImpl : Interfaces.AudioController.SpeakerController
     {
-        public SpeakerController(Dictionary<int, PXCMPoint3DF32> speakerLocations)
+        public SpeakerControllerImpl(Dictionary<int, PXCMPoint3DF32> speakerLocations)
         {
             //bass.net registration
             BassNet.Registration("ovidiu.popoviciu@hotmail.co.uk", "2X2417830312420");
@@ -20,7 +21,7 @@ namespace HandTracking.Implementation.AudioController
             if ( ! Bass.BASS_Init(-1, 44100, BASSInit.BASS_DEVICE_DEFAULT, IntPtr.Zero))
             {
                 throw new Exception("An error occurred while initializing the BASS library.");
-            };
+            }
 
             Bass.BASS_SetVolume(0.2f);
             Console.WriteLine(@"Volume is : " + Bass.BASS_GetVolume());
@@ -66,7 +67,9 @@ namespace HandTracking.Implementation.AudioController
         /// </summary>
         public override void NextSpeaker()
         {
+            _audioDesign.StopPlayback();
             _audioDesign.SetSpeaker(_speakers[_currentIndex++]);
+            Thread.Sleep(2000);
         }
 
         /// <summary>
@@ -95,19 +98,35 @@ namespace HandTracking.Implementation.AudioController
             return _speakerLocations.Count;
         }
 
+        /// <summary>
+        /// Signal the speaker controller that the current condition has ended.
+        /// </summary>
+        /// <param name="flag"></param>
         public override void SignalConditionEnded(bool flag)
         {
+            _audioDesign.StopPlayback();
             _currentIndex = 0;
             _audioDesign = null;
             _speakerIndexes = ShuffleArray(_speakerIndexes);
         }
 
+
+        /// <summary>
+        /// Signal the speaker controller that the current trial has ended.
+        /// </summary>
+        /// <param name="flag"></param>
         public override void SignalTrialEnded(bool flag)
         {
+            _audioDesign.StopPlayback();
             _currentIndex = 0;
             _speakerIndexes = ShuffleArray(_speakerIndexes);
         }
 
+        /// <summary>
+        /// Method that returns a reshuffled array of indexes.
+        /// </summary>
+        /// <param name="array"></param>
+        /// <returns></returns>
         int[] ShuffleArray(int[] array)
         {
             Random r = new Random();

@@ -14,9 +14,8 @@ namespace HandTracking.Interfaces.AudioController
     {
 
         public abstract AudioDesignType Type { get; set; }
-        public abstract string File { get; set; }
 
-        
+        public abstract string File { get; set; }
 
         /// <summary>
         /// Method that plays audio feedback from referenced speakers.
@@ -27,6 +26,11 @@ namespace HandTracking.Interfaces.AudioController
         /// Method that sets the next speaker of the Audio Design
         /// </summary>
         public abstract void SetSpeaker(Speaker speaker);
+
+        /// <summary>
+        /// Method that stops playback for current speakers.
+        /// </summary>
+        public abstract void StopPlayback();
 
     }
 }

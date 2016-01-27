@@ -2,10 +2,8 @@
 
 namespace HandTracking.Interfaces.AudioController
 {
-    abstract class SpeakerSettings : ISettings
+    public abstract class SpeakerSettings : ISettings
     {
-
-
 
     }
 }

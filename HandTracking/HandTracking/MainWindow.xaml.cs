@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Input;
+using HandTracking.Implementation.AudioController;
 using HandTracking.Implementation.AudioDesigns;
 using HandTracking.Implementation.Core;
 using HandTracking.Interfaces.AudioController;
 using HandTracking.Interfaces.Core;
-using SpeakerController = HandTracking.Implementation.AudioController.SpeakerController;
 
 namespace HandTracking
 {
@@ -43,7 +43,7 @@ namespace HandTracking
 
             //pass these to main experiment
             //TODO: check marker data for null
-            _mainExperiment = new MainExperiment(conditions.ToArray(), new SpeakerController(markerLocation));
+            _mainExperiment = new MainExperiment(conditions.ToArray(), new SpeakerControllerImpl(markerLocation));
         }
 
         /// <summary>
@@ -94,7 +94,7 @@ namespace HandTracking
         #region experiment vars
 
         private IExperiment _mainExperiment;
-        private static readonly int _numberOfTrials = 2;
+        private static readonly int _numberOfTrials = 1;
 
         #endregion
 

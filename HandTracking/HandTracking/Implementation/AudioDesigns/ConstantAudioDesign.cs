@@ -42,6 +42,7 @@ namespace HandTracking.Implementation.AudioDesigns
             if (volume < 0 || volume > 1)
                 throw new ArgumentOutOfRangeException(nameof(volume) + " must be between 0 and 1, floating point.");
 
+            //play file
             _speaker.Play(_filePath, volume);
         }
 
@@ -54,6 +55,17 @@ namespace HandTracking.Implementation.AudioDesigns
             if (speaker == null)
                 throw new NullReferenceException("Speaker cannot be null.");
             _speaker = speaker;
+
+            //set constant design
+            _speaker.SetConstant(true);
+        }
+
+        /// <summary>
+        /// Method that stops playback for current speaker.
+        /// </summary>
+        public override void StopPlayback()
+        {
+            _speaker?.StopPlayback();
         }
     }
 }

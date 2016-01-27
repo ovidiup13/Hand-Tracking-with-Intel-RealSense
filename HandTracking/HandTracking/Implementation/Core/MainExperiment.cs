@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Threading;
+using System.Threading.Tasks;
 using HandTracking.Implementation.HandTracking;
 using HandTracking.Interfaces.AudioController;
 using HandTracking.Interfaces.Core;
@@ -140,6 +141,7 @@ namespace HandTracking.Implementation.Core
                     Console.WriteLine(@"Trial + " + i + @" started.");
                     for (var j = 0; j < numberOfSpeakers; j++)
                     {
+                       
                         //signal speaker controller to move to next speaker
                         _speakerController.NextSpeaker();
 
@@ -172,9 +174,11 @@ namespace HandTracking.Implementation.Core
 
                     //signal speaker controller to re-shuffle speaker flags
                     _speakerController.SignalTrialEnded(true);
+
                 }
 
                 Console.WriteLine(@"Condition ended.");
+
                 if (!_experimentIsRunning)
                     return;
 
@@ -197,6 +201,7 @@ namespace HandTracking.Implementation.Core
                 var handPosition = _handData.Location3D;
 
                 //TODO: calculate distance between hand and speaker
+
 
                 //TODO: pass it to speaker controller
 
@@ -224,6 +229,8 @@ namespace HandTracking.Implementation.Core
         private readonly SpeakerController _speakerController;
         private readonly Thread _experimentThread;
         private Thread _processingThread;
+
+        private static readonly int TimeDelay = 2000;
 
         //other vars
         private readonly Stopwatch _stopwatch;

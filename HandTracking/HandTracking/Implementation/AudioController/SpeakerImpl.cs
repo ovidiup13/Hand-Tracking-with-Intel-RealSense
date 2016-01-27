@@ -6,6 +6,10 @@ namespace HandTracking.Implementation.AudioController
 {
     internal class SpeakerImpl : Speaker
     {
+        /// <summary>
+        /// Constructor for speaker implementation.
+        /// </summary>
+        /// <param name="flag"></param>
         public SpeakerImpl(BASSFlag flag)
         {
             SpeakerFlag = flag;
@@ -23,18 +27,28 @@ namespace HandTracking.Implementation.AudioController
         public override void Play(string soundPath, float volume)
         {
             //create a new stream and play it
-            var stream = Bass.BASS_StreamCreateFile(soundPath, 0L, 0L, SpeakerFlag);
-            if (stream != 0 && Bass.BASS_ChannelSetAttribute(stream, BASSAttribute.BASS_ATTRIB_VOL, volume))
+
+            Stream = Repeat ? Bass.BASS_StreamCreateFile(soundPath, 0L, 0L, SpeakerFlag | BASSFlag.BASS_SAMPLE_LOOP) 
+                : Bass.BASS_StreamCreateFile(soundPath, 0L, 0L, SpeakerFlag);
+
+            if (!Bass.BASS_ChannelSetAttribute(Stream, BASSAttribute.BASS_ATTRIB_VOL, volume))
             {
-                // play the stream channel 
-                Bass.BASS_ChannelPlay(stream, false);
+                Console.WriteLine(@"[ERROR} Cannot set volume of speaker.");
+                return;
+            };
+
+            if (Stream != 0)
+            {
+
+                // play the stream channel, restart 
+                Bass.BASS_ChannelPlay(Stream, true);
             }
             else
             {
+                //TODO: throw exception when error is detected
                 // error creating the stream 
                 Console.WriteLine(@"Stream error: {0}", Bass.BASS_ErrorGetCode());
             }
-            Bass.BASS_ChannelPlay(stream, false);
         }
     }
 }
