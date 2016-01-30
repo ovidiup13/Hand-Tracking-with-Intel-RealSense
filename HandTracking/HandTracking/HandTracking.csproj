@@ -153,6 +153,9 @@
     <Compile Include="Implementation\MarkerTracking\MarkerTrackingImpl.cs" />
     <Compile Include="Implementation\MarkerTracking\MarkerTrackingModule.cs" />
     <Compile Include="Implementation\MarkerTracking\MarkerTrackingSettings.cs" />
+    <Compile Include="Interfaces\AudioController\AudioException.cs" />
+    <Compile Include="Interfaces\AudioController\ICoalescentDesign.cs" />
+    <Compile Include="Interfaces\AudioController\IndividualDesign.cs" />
     <Compile Include="Interfaces\Module\IData.cs" />
     <Compile Include="Interfaces\Module\IModule.cs" />
     <Compile Include="Interfaces\Module\ModuleException.cs" />
@@ -245,12 +248,45 @@
     <Content Include="opencv_imgproc300.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Sounds\peakGeiger.wav">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Sounds\peakPitch.wav">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
+    <Content Include="Sounds\confirm.wav" />
+    <Content Include="Sounds\finish.wav" />
+    <Content Include="Sounds\lowPitch.wav" />
+    <Content Include="Sounds\obj1.wav" />
+    <Content Include="Sounds\obj1p.wav" />
+    <Content Include="Sounds\obj1ps.wav" />
+    <Content Include="Sounds\obj2.wav" />
+    <Content Include="Sounds\obj2p.wav" />
+    <Content Include="Sounds\obj3.wav" />
+    <Content Include="Sounds\obj3p.wav" />
+    <Content Include="Sounds\obj4.wav" />
+    <Content Include="Sounds\obj4p.wav" />
+    <Content Include="Sounds\obj5.wav" />
+    <Content Include="Sounds\obj5p.wav" />
+    <Content Include="Sounds\obj6.wav" />
+    <Content Include="Sounds\obj6p.wav" />
+    <Content Include="Sounds\obj7p.wav" />
+    <Content Include="Sounds\obj8p.wav" />
+    <Content Include="Sounds\peakGeiger.wav" />
+    <Content Include="Sounds\peakPitch.wav" />
+    <Content Include="Sounds\Piano\obj1p.wav" />
+    <Content Include="Sounds\Piano\obj2p.wav" />
+    <Content Include="Sounds\Piano\obj3p.wav" />
+    <Content Include="Sounds\Piano\obj4p.wav" />
+    <Content Include="Sounds\Piano\obj5p.wav" />
+    <Content Include="Sounds\Piano\obj6p.wav" />
+    <Content Include="Sounds\Piano\obj7p.wav" />
+    <Content Include="Sounds\Piano\obj8p.wav" />
+    <Content Include="Sounds\pluck.wav" />
+    <Content Include="Sounds\pluck\obj1p.wav" />
+    <Content Include="Sounds\pluck\obj2p.wav" />
+    <Content Include="Sounds\pluck\obj3p.wav" />
+    <Content Include="Sounds\pluck\obj4p.wav" />
+    <Content Include="Sounds\pluck\obj5p.wav" />
+    <Content Include="Sounds\pluck\obj6p.wav" />
+    <Content Include="Sounds\pluck\obj7p.wav" />
+    <Content Include="Sounds\pluck\obj8p.wav" />
+    <Content Include="Sounds\silence.wav" />
+    <Content Include="Sounds\sound.wav" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

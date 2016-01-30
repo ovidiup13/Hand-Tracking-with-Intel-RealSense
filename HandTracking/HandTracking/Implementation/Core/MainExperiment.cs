@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Threading;
-using System.Threading.Tasks;
 using HandTracking.Implementation.HandTracking;
 using HandTracking.Interfaces.AudioController;
 using HandTracking.Interfaces.Core;
@@ -141,7 +140,6 @@ namespace HandTracking.Implementation.Core
                     Console.WriteLine(@"Trial + " + i + @" started.");
                     for (var j = 0; j < numberOfSpeakers; j++)
                     {
-                       
                         //signal speaker controller to move to next speaker
                         _speakerController.NextSpeaker();
 
@@ -174,7 +172,6 @@ namespace HandTracking.Implementation.Core
 
                     //signal speaker controller to re-shuffle speaker flags
                     _speakerController.SignalTrialEnded(true);
-
                 }
 
                 Console.WriteLine(@"Condition ended.");
@@ -193,19 +190,26 @@ namespace HandTracking.Implementation.Core
         private void ProcessingThread()
         {
             //selected speaker location
-            //TODO: get position of target speaker
+            //TODO: catch exception
             _speakerController.PlaySounds(0);
 
             while (_isProcessing)
             {
+                //get hand positions
+                //TODO: check if hand was detected or not
                 var handPosition = _handData.Location3D;
 
-                //TODO: calculate distance between hand and speaker
+                //get speaker position
+                var speakerPosition = _speakerController.GetSpeakerPosition();
 
-
-                //TODO: pass it to speaker controller
+//                Console.WriteLine("Hand position: X: " + handPosition.x + ", Y: " + handPosition.y + ", Z: " + handPosition.z);
+//                Console.WriteLine("Speaker position: X: " + speakerPosition.x + ", Y: " + speakerPosition.y + ", Z: " + speakerPosition.z);
+                
+                //calculate distance between hand and speaker
+                var distance = GetDistance(handPosition, speakerPosition);
 
                 //TODO: play audio feedback - pass the distance 
+                Console.WriteLine(@"Distance between hand and speaker is: " + distance + @" cm");
             }
         }
 
@@ -215,12 +219,13 @@ namespace HandTracking.Implementation.Core
         /// </summary>
         /// <param name="point1">First point</param>
         /// <param name="point2">Second point</param>
-        /// <returns>The distance in the unit of measurement between the two points</returns>
+        /// <returns>The distance in the unit of measurement between the two points in cm (assumming points are measured in mm)</returns>
         private double GetDistance(PXCMPoint3DF32 point1, PXCMPoint3DF32 point2)
         {
+            //TODO: there is a gap between centre of hand and centre of marker - aprox 3cm
             return
                 Math.Sqrt(Math.Pow(point1.x - point2.x, 2) + Math.Pow(point1.y - point2.y, 2) +
-                          Math.Pow(point1.z - point2.z, 2));
+                          Math.Pow(point1.z - point2.z, 2)) / 10;
         }
 
         #region main variables
@@ -229,8 +234,6 @@ namespace HandTracking.Implementation.Core
         private readonly SpeakerController _speakerController;
         private readonly Thread _experimentThread;
         private Thread _processingThread;
-
-        private static readonly int TimeDelay = 2000;
 
         //other vars
         private readonly Stopwatch _stopwatch;

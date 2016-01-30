@@ -50,6 +50,12 @@ namespace HandTracking.Interfaces.AudioController
         public abstract void SignalTrialEnded(bool flag);
 
         /// <summary>
+        /// Returns the position of the current target speaker.
+        /// </summary>
+        /// <returns>position of target speaker.</returns>
+        public abstract PXCMPoint3DF32 GetSpeakerPosition();
+
+        /// <summary>
         /// Method that sets the current volume for all speakers.
         /// </summary>
         /// <param name="value">Floating point value between 0 and 1.</param>

@@ -1,68 +1,88 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using HandTracking.Implementation.AudioController;
 using Un4seen.Bass;
 
 namespace HandTracking.Interfaces.AudioController
 {
     public abstract class Speaker
     {
-        protected Implementation.AudioController.SpeakerSettingsImpl Settings;
-        protected bool Repeat;
-        protected int Stream;
-        protected float Volume;
-
-        private object lock1 = new object();
-
         /// <summary>
-        /// Method that plays a sound through the Speaker instance.
+        ///     Method that plays a sound through the Speaker instance.
         /// </summary>
-        /// <param name="soundPath">Path to the wav file</param>
-        /// <param name="volume">Volume of channel</param>
-        public abstract void Play(string soundPath, float volume);
-
-        /// <summary>
-        /// Method that sets the current speaker to play continously.
-        /// </summary>
-        /// <param name="flag"></param>
-        public void SetConstant(bool flag)
+        /// <param name="stream">Bass Stream to play</param>
+        public void Play(int stream)
         {
-            Repeat = flag;
+            if (stream == 0)
+                throw new AudioException("Speaker: Stream error. Stream cannot be zero.");
+
+            //play the stream
+            Bass.BASS_ChannelPlay(stream, true);
         }
 
         /// <summary>
-        /// Method that returns a boolean indicating whether the current speaker is playing a file.
+        ///     Method that returns a boolean indicating whether the current speaker is playing a file.
         /// </summary>
         /// <returns></returns>
-        private bool IsPlaying()
+        public bool IsPlaying(int stream)
         {
-            return Bass.BASS_ChannelIsActive(Stream) == BASSActive.BASS_ACTIVE_PLAYING;
+            return Bass.BASS_ChannelIsActive(stream) == BASSActive.BASS_ACTIVE_PLAYING;
         }
 
         /// <summary>
-        /// Method that stops the current playback. 
+        ///     Method that stops the current playback.
         /// </summary>
-        public void StopPlayback()
+        public void StopPlayback(int stream)
         {
             //if the stream is not defined, then ignore
-            if (Stream == 0)
-                return;
+            if (stream == 0)
+                throw new AudioException("Stream error. Stream cannot be zero.");
 
-            /*
-            When looping is enabled, there is a small period of time between sample stop and 
-            restart when the channel is set as stopped. This loop is considered a 'hack', to wait
-            for that period of time to end, before stopping playback.
-            */
-//            while (!IsPlaying())
-//            {
-//                Console.WriteLine("Its not playing...");
-//            }
-            
             //stop channel playback
-            Console.WriteLine(@"Stopping playback...: " + Bass.BASS_ChannelStop(Stream));
+            if (!Bass.BASS_ChannelStop(stream))
+                throw new AudioException("Cannot stop playback.");
         }
 
+        /// <summary>
+        ///     Method that returns the position of the speaker.
+        /// </summary>
+        /// <returns></returns>
+        public PXCMPoint3DF32 GetPosition()
+        {
+            return Position;
+        }
+
+        /// <summary>
+        ///     Method that sets the current position of the speaker.
+        /// </summary>
+        /// <param name="position"></param>
+        public void SetPosition(PXCMPoint3DF32 position)
+        {
+            Position = position;
+        }
+
+        /// <summary>
+        ///     Method that returns the id.
+        /// </summary>
+        /// <returns>id as int</returns>
+        public int GetSpeakerId()
+        {
+            return Id;
+        }
+
+        public BASSFlag GetFlag()
+        {
+            return SpeakerFlag;
+        }
+
+        #region vars
+
+        protected SpeakerSettingsImpl Settings;
+
+        protected BASSFlag SpeakerFlag;
+
+        protected PXCMPoint3DF32 Position;
+
+        protected int Id;
+
+        #endregion
     }
 }

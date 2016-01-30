@@ -205,7 +205,7 @@ namespace HandTracking.Implementation.HandTracking
                     if (hand.HasTrackedJoints())
                     {
                         //searching for location of center hand
-                        var jointType = PXCMHandData.JointType.JOINT_CENTER;
+                        var jointType = PXCMHandData.JointType.JOINT_MIDDLE_TIP;
                         PXCMHandData.JointData jointData;
                         var queryStatus = hand.QueryTrackedJoint(jointType, out jointData);
 
