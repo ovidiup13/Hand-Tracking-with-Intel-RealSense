@@ -56,6 +56,12 @@ namespace HandTracking.Interfaces.AudioController
         public abstract PXCMPoint3DF32 GetSpeakerPosition();
 
         /// <summary>
+        /// Method that sets the current distance between hand and target speaker.
+        /// </summary>
+        /// <param name="distance"></param>
+        public abstract void SetDistance(double distance);
+
+        /// <summary>
         /// Method that sets the current volume for all speakers.
         /// </summary>
         /// <param name="value">Floating point value between 0 and 1.</param>

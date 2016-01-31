@@ -34,11 +34,14 @@ namespace HandTracking.Interfaces.AudioController
         {
             //if the stream is not defined, then ignore
             if (stream == 0)
-                throw new AudioException("Stream error. Stream cannot be zero.");
+                throw new AudioException("Stream error. Stream cannot be zero. Error: " + Bass.BASS_ErrorGetCode());
 
             //stop channel playback
             if (!Bass.BASS_ChannelStop(stream))
-                throw new AudioException("Cannot stop playback.");
+                throw new AudioException("Cannot stop playback. Error: " + Bass.BASS_ErrorGetCode());
+
+            //free stream
+            Bass.BASS_StreamFree(stream);
         }
 
         /// <summary>

@@ -27,6 +27,7 @@ namespace HandTracking.Implementation.HandTracking
 
         private PXCMPoint3DF32 _point3D;
         private PXCMPoint3DF32 _point2D;
+        private bool _isDetected;
 
         #endregion
 
@@ -55,6 +56,18 @@ namespace HandTracking.Implementation.HandTracking
                 lock (_lock3D)
                 {
                     _point3D = value;
+                }
+            }
+        }
+
+        public bool HandDetected
+        {
+            get { return _isDetected; }
+            internal set
+            {
+                lock (_lock3D)
+                {
+                    _isDetected = value;
                 }
             }
         }

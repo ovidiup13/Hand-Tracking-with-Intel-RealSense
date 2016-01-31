@@ -95,7 +95,8 @@ namespace HandTracking.Implementation.AudioController
         /// un
         public override void PlaySounds(double distance)
         {
-            _audioDesign.Play(distance, Volume);
+            _audioDesign.SetDistance(distance);
+            _audioDesign.Play(Volume);
         }
 
         /// <summary>
@@ -131,9 +132,22 @@ namespace HandTracking.Implementation.AudioController
             _speakerIndexes = ShuffleArray(_speakerIndexes);
         }
 
+        /// <summary>
+        /// Method that returns the position of the target speaker.
+        /// </summary>
+        /// <returns></returns>
         public override PXCMPoint3DF32 GetSpeakerPosition()
         {
             return _audioDesign.GetSpeakerPosition();
+        }
+
+        /// <summary>
+        /// Method that sets the current distance between hand and target speaker.
+        /// </summary>
+        /// <param name="distance"></param>
+        public override void SetDistance(double distance)
+        {
+            _audioDesign.SetDistance(distance);
         }
 
         /// <summary>
@@ -153,26 +167,6 @@ namespace HandTracking.Implementation.AudioController
             }
             return array;
         }
-
-        /* public override void SetSpeakers(List<Interfaces.AudioController.SpeakerImpl> speakerLocations)
-         {
-             throw new NotImplementedException();
-         }
-
-         public override List<Interfaces.AudioController.SpeakerImpl> GetAllSpeakers()
-         {
-             throw new NotImplementedException();
-         }
-
-         public void SetVolume(float volume)
-         {
-             throw new NotImplementedException();
-         }
-
-         public void StopStreaming()
-         {
-             throw new NotImplementedException();
-         }*/
 
         #region vars
 

@@ -189,6 +189,7 @@ namespace HandTracking.Implementation.Core
 
         private void ProcessingThread()
         {
+            double distance;
             //selected speaker location
             //TODO: catch exception
             _speakerController.PlaySounds(0);
@@ -196,20 +197,23 @@ namespace HandTracking.Implementation.Core
             while (_isProcessing)
             {
                 //get hand positions
-                //TODO: check if hand was detected or not
-                var handPosition = _handData.Location3D;
+                if (!_handData.HandDetected)
+                {
+                    distance = -1;
+                }
+                else
+                {
+                    var handPosition = _handData.Location3D;
 
-                //get speaker position
-                var speakerPosition = _speakerController.GetSpeakerPosition();
+                    //get speaker position
+                    var speakerPosition = _speakerController.GetSpeakerPosition();
+                    //calculate distance between hand and speaker
+                    distance = GetDistance(handPosition, speakerPosition);
+                }
 
-//                Console.WriteLine("Hand position: X: " + handPosition.x + ", Y: " + handPosition.y + ", Z: " + handPosition.z);
-//                Console.WriteLine("Speaker position: X: " + speakerPosition.x + ", Y: " + speakerPosition.y + ", Z: " + speakerPosition.z);
-                
-                //calculate distance between hand and speaker
-                var distance = GetDistance(handPosition, speakerPosition);
-
-                //TODO: play audio feedback - pass the distance 
-                Console.WriteLine(@"Distance between hand and speaker is: " + distance + @" cm");
+                //pass distance to speaker controller
+                _speakerController.SetDistance(distance);
+//                Console.WriteLine(@"Distance between hand and speaker is: " + distance + @" cm");
             }
         }
 
@@ -225,7 +229,7 @@ namespace HandTracking.Implementation.Core
             //TODO: there is a gap between centre of hand and centre of marker - aprox 3cm
             return
                 Math.Sqrt(Math.Pow(point1.x - point2.x, 2) + Math.Pow(point1.y - point2.y, 2) +
-                          Math.Pow(point1.z - point2.z, 2)) / 10;
+                          Math.Pow(point1.z - point2.z, 2))/10;
         }
 
         #region main variables

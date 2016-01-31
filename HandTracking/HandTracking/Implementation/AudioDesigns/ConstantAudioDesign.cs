@@ -8,20 +8,41 @@ namespace HandTracking.Implementation.AudioDesigns
 {
     public class ConstantAudioDesign : AudioDesign
     {
+        /// <summary>
+        ///     Initializes a new constant design.
+        /// </summary>
         public ConstantAudioDesign()
         {
             _file = "Sounds\\Pluck\\obj8p.wav";
+            CheckFile(_file);
         }
 
+        /// <summary>
+        ///     Constructor with custom parameter.
+        /// </summary>
+        /// <param name="filePath"></param>
         public ConstantAudioDesign(string filePath)
         {
             _file = filePath;
+            CheckFile(_file);
+        }
+
+        /// <summary>
+        ///     Method that checks if the file exists.
+        /// </summary>
+        /// <param name="file"></param>
+        private void CheckFile(string file)
+        {
+            if (!File.Exists(file))
+            {
+                throw new AudioException("File does not exist: " + _file);
+            }
         }
 
         /// <summary>
         ///     Plays the file through the speaker.
         /// </summary>
-        public override void Play(double distance, float volume)
+        public override void Play(float volume)
         {
             //check speaker
             if (Speaker == null)
@@ -60,18 +81,19 @@ namespace HandTracking.Implementation.AudioDesigns
         }
 
         /// <summary>
-        /// Method that sets the current distance between speaker and hand.
-        /// Not used in constant design.
+        ///     Method that sets the current distance between speaker and hand.
+        ///     Not used in constant design.
         /// </summary>
-        public override void SetDistance()
-        {}
+        public override void SetDistance(double distance)
+        {
+        }
 
         #region audiodesign vars
 
-        private string _file;
+        private readonly string _file;
         private Timer _timer;
         private int _stream;
-        private int _interval = 200;
+        private readonly int _interval = 200;
 
         #endregion
     }

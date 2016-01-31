@@ -8,7 +8,7 @@ namespace HandTracking.Interfaces.AudioController
         /// <summary>
         ///     Method that plays audio feedback from referenced speakers.
         /// </summary>
-        public abstract void Play(double distance, float volume);
+        public abstract void Play(float volume);
 
         /// <summary>
         ///     Sets the speaker for the AudioDesign
@@ -45,17 +45,9 @@ namespace HandTracking.Interfaces.AudioController
         }
 
         /// <summary>
-        ///     Method that sets the volume of the speaker
-        /// </summary>
-        public void SetVolume(float volume)
-        {
-            
-        }
-
-        /// <summary>
         /// Method that sets the distance between hand and target speaker.
         /// </summary>
-        public abstract void SetDistance();
+        public abstract void SetDistance(double distance);
 
         #region vars
 

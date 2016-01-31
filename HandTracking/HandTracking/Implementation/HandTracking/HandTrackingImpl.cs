@@ -165,7 +165,15 @@ namespace HandTracking.Implementation.HandTracking
         {
             // Querying how many hands were detected
             var numberOfHands = handData.QueryNumberOfHands();
-//            Console.WriteLine(@"{0} hand(s) were detected.", numberOfHands);
+
+            if (numberOfHands == 0)
+            {
+                _handTrackingData.HandDetected = false;
+                return;
+            }
+
+            //detected at least one hand
+            _handTrackingData.HandDetected = true;
 
             // Querying the information about detected hands
             for (var i = 0; i < numberOfHands; i++)
