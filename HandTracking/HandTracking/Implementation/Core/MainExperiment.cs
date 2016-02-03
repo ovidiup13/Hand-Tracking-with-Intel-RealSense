@@ -189,31 +189,34 @@ namespace HandTracking.Implementation.Core
 
         private void ProcessingThread()
         {
-            double distance;
             //selected speaker location
             //TODO: catch exception
             _speakerController.PlaySounds(0);
-
             while (_isProcessing)
             {
                 //get hand positions
+                double distance;
                 if (!_handData.HandDetected)
                 {
-                    distance = -1;
+                    distance = 50; 
                 }
                 else
                 {
                     var handPosition = _handData.Location3D;
 
+                    Console.WriteLine(handPosition.ToString());
+
                     //get speaker position
                     var speakerPosition = _speakerController.GetSpeakerPosition();
+                    
                     //calculate distance between hand and speaker
                     distance = GetDistance(handPosition, speakerPosition);
-                }
 
-                //pass distance to speaker controller
-                _speakerController.SetDistance(distance);
-//                Console.WriteLine(@"Distance between hand and speaker is: " + distance + @" cm");
+                    Console.WriteLine(@"Distance: " + distance);
+
+                    //pass distance to speaker controller
+                    _speakerController.SetDistance(distance);
+                }
             }
         }
 

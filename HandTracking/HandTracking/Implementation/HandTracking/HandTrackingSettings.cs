@@ -34,7 +34,7 @@ namespace HandTracking.Implementation.HandTracking
         /// <summary>
         /// Joint type to tracked. Can be the center of palm, extremities, etc.
         /// </summary>
-        public PXCMHandData.JointType JointType { get; set; } = PXCMHandData.JointType.JOINT_CENTER;
+        public PXCMHandData.JointType JointType { get; set; } = PXCMHandData.JointType.JOINT_MIDDLE_TIP;
 
         #endregion
 

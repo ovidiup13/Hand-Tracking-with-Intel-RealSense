@@ -100,6 +100,7 @@ namespace HandTracking.Implementation.HandTracking
             //apply settings
             if (_handTrackingSettings != null)
             {
+//                _handConfiguration.SetTrackingMode(PXCMHandData.TrackingModeType.TRACKING_MODE_EXTREMITIES);
                 _handConfiguration.EnableStabilizer(_handTrackingSettings.EnableStabilizer);
                 _handConfiguration.SetSmoothingValue(_handTrackingSettings.SmoothingValue);
             }
@@ -126,6 +127,7 @@ namespace HandTracking.Implementation.HandTracking
         {
             Console.WriteLine(@"Hand Tracking Started.");
             ProcessingFlag = true;
+            var frameCount = -1;
             // Looping to query the hands information
             while (ProcessingFlag)
             {
@@ -135,11 +137,14 @@ namespace HandTracking.Implementation.HandTracking
                     break;
                 }
 
-                // Updating the hand data
-                _handData?.Update();
+                if (frameCount++ % 10 == 0)
+                {
+                    // Updating the hand data
+                    _handData?.Update();
 
-                // Processing Hands
-                ProcessHands(_handData);
+                    // Processing Hands
+                    ProcessHands(_handData);
+                }
 
                 // Releasing the acquired frame
                 SenseManager.ReleaseFrame();
@@ -213,7 +218,7 @@ namespace HandTracking.Implementation.HandTracking
                     if (hand.HasTrackedJoints())
                     {
                         //searching for location of center hand
-                        var jointType = PXCMHandData.JointType.JOINT_MIDDLE_TIP;
+                        var jointType = _handTrackingSettings.JointType;
                         PXCMHandData.JointData jointData;
                         var queryStatus = hand.QueryTrackedJoint(jointType, out jointData);
 

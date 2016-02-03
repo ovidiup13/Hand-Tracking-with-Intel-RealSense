@@ -11,24 +11,32 @@ namespace HandTracking.Implementation.AudioDesigns
     public class GeigerAudioDesign : AudioDesign
     {
         /// <summary>
-        /// Constructor that initializes a new geiger audio design with default sounds.
+        ///     Constructor that initializes a new geiger audio design with default sounds.
         /// </summary>
         public GeigerAudioDesign()
         {
-            _files = new List<string>() {"Sounds/Pluck/obj1p.wav", "Sounds/Pluck/obj2p.wav", "Sounds/Pluck/obj3p.wav",
-                              "Sounds/Pluck/obj4p.wav", "Sounds/Pluck/obj5p.wav", "Sounds/Pluck/obj6p.wav",
-                                "Sounds/Pluck/obj7p.wav","Sounds/Pluck/obj8p.wav"};
+            _files = new List<string>
+            {
+                "Sounds/Pluck/obj1p.wav",
+                "Sounds/Pluck/obj2p.wav",
+                "Sounds/Pluck/obj3p.wav",
+                "Sounds/Pluck/obj4p.wav",
+                "Sounds/Pluck/obj5p.wav",
+                "Sounds/Pluck/obj6p.wav",
+                "Sounds/Pluck/obj7p.wav",
+                "Sounds/Pluck/obj8p.wav"
+            };
 
             CheckFiles(_files);
         }
 
         /// <summary>
-        /// Constructor that initializes a new geiger design with custom values.
+        ///     Constructor that initializes a new geiger design with custom values.
         /// </summary>
         /// <param name="files"></param>
         public GeigerAudioDesign(List<string> files)
         {
-            if(_files.Count < 8)
+            if (_files.Count < 8)
                 throw new AudioException("Geiger counter must contain at least 8 audio files.");
 
             CheckFiles(files);
@@ -43,7 +51,7 @@ namespace HandTracking.Implementation.AudioDesigns
             {
                 throw new NullReferenceException("Speaker cannot be null.");
             }
-            
+
             //check volume
             if (volume < 0 || volume > 1)
             {
@@ -61,13 +69,12 @@ namespace HandTracking.Implementation.AudioDesigns
         }
 
         /// <summary>
-        /// Method that returns the file to be played for the current distance.
+        ///     Method that returns the file to be played for the current distance.
         /// </summary>
         /// <param name="distance"></param>
         /// <returns></returns>
         private string GetFile(double distance)
         {
-
             if (distance > 40 || distance < 0)
             {
                 return _files[0];
@@ -98,7 +105,7 @@ namespace HandTracking.Implementation.AudioDesigns
                 return _files[5];
             }
 
-            if ( distance > 10 && distance < 15)
+            if (distance > 10 && distance < 15)
             {
                 return _files[6];
             }
@@ -111,6 +118,12 @@ namespace HandTracking.Implementation.AudioDesigns
             return _files[0];
         }
 
+        /// <summary>
+        ///     Method that stops the current playback and starts a new timer with the selected file and
+        ///     the specified volume.
+        /// </summary>
+        /// <param name="file"></param>
+        /// <param name="volume"></param>
         private void Play(string file, float volume)
         {
             //stop the playback and change to other file
@@ -137,7 +150,7 @@ namespace HandTracking.Implementation.AudioDesigns
         }
 
         /// <summary>
-        /// Method that checks if all files exist.
+        ///     Method that checks if all files exist.
         /// </summary>
         /// <param name="files">List of files passed as argument to the audio design.</param>
         private static void CheckFiles(List<string> files)
@@ -148,6 +161,9 @@ namespace HandTracking.Implementation.AudioDesigns
             }
         }
 
+        /// <summary>
+        ///     Method that stops the current playback.
+        /// </summary>
         public override void StopPlayback()
         {
             _timer?.Dispose();
@@ -158,17 +174,26 @@ namespace HandTracking.Implementation.AudioDesigns
             }
         }
 
+        /// <summary>
+        ///     Method that sets the distance between hand and target speaker. It selects the appropriate
+        ///     file to be played according to the distance and calls the Play method.
+        /// </summary>
+        /// <param name="distance"></param>
         public override void SetDistance(double distance)
         {
+            //set distance
             _distance = distance;
 
+            //get file
             var file = GetFile(distance);
+
             //if we have the same file, then don't need to change feedback
             if (_currentFile != null && _currentFile == file)
             {
+                Console.WriteLine(@"Skipped current file: " + _currentFile);
                 return;
             }
-            
+
             //otherwise change the file
             _currentFile = file;
 

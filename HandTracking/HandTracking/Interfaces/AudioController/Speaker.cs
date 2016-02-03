@@ -36,7 +36,9 @@ namespace HandTracking.Interfaces.AudioController
             if (stream == 0)
                 throw new AudioException("Stream error. Stream cannot be zero. Error: " + Bass.BASS_ErrorGetCode());
 
-            //stop channel playback
+            //wait until finished
+//            while (IsPlaying(stream)) { }
+
             if (!Bass.BASS_ChannelStop(stream))
                 throw new AudioException("Cannot stop playback. Error: " + Bass.BASS_ErrorGetCode());
 
