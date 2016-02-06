@@ -100,7 +100,7 @@ namespace HandTracking.Implementation.HandTracking
             //apply settings
             if (_handTrackingSettings != null)
             {
-//                _handConfiguration.SetTrackingMode(PXCMHandData.TrackingModeType.TRACKING_MODE_EXTREMITIES);
+                _handConfiguration.SetTrackingMode(PXCMHandData.TrackingModeType.TRACKING_MODE_EXTREMITIES);
                 _handConfiguration.EnableStabilizer(_handTrackingSettings.EnableStabilizer);
                 _handConfiguration.SetSmoothingValue(_handTrackingSettings.SmoothingValue);
             }
@@ -174,11 +174,13 @@ namespace HandTracking.Implementation.HandTracking
             if (numberOfHands == 0)
             {
                 _handTrackingData.HandDetected = false;
+                Console.WriteLine(@"Hand not detected!");
                 return;
             }
 
             //detected at least one hand
             _handTrackingData.HandDetected = true;
+            Console.WriteLine(@"Hand detected! Number of hands: " + numberOfHands);
 
             // Querying the information about detected hands
             for (var i = 0; i < numberOfHands; i++)
@@ -202,18 +204,25 @@ namespace HandTracking.Implementation.HandTracking
                 // Querying the hand data
                 PXCMHandData.IHand hand;
                 var queryHandStatus = handData.QueryHandDataById(handId, out hand);
+                Console.WriteLine(@"Hand data status: " + queryHandStatus);
 
                 if (queryHandStatus == pxcmStatus.PXCM_STATUS_NO_ERROR && hand != null)
                 {
 //                    // Querying Hand 2D Position
-//                    var massCenterImage = hand.QueryMassCenterImage();
-////                    Console.WriteLine(@"Hand position on image: {0} | {1}", massCenterImage.x, massCenterImage.y);
-//
-//                    // Querying Hand 3D Position
-//                    var massCenterWorld = hand.QueryMassCenterWorld();
-////                    Console.WriteLine(@"Hand position on world: {0} | {1} | {2}", massCenterWorld.x, massCenterWorld.y,
-//                        massCenterWorld.z);
+                    PXCMPointF32 massCenterImage = hand.QueryMassCenterImage();
+//                    Console.WriteLine(@"Hand position on image: {0} | {1}", massCenterImage.x, massCenterImage.y);
 
+
+                    // Querying Hand 3D Position
+                    PXCMHandData.ExtremityData location3D;
+                    var massCenterWorld = hand.QueryExtremityPoint(PXCMHandData.ExtremityType.EXTREMITY_CENTER, out location3D);
+                    //                    Console.WriteLine(@"Hand position on world: {0} | {1} | {2}", location.x, massCenterWorld.y,
+                    //                        massCenterWorld.z);
+
+                    _handTrackingData.Location2D = location3D.pointImage;
+                    _handTrackingData.Location3D = new PXCMPoint3DF32(location3D.pointWorld.x * 1000, location3D.pointWorld.y * 1000, location3D.pointWorld.z * 1000);
+
+/*
                     // Querying Hand Joints
                     if (hand.HasTrackedJoints())
                     {
@@ -231,15 +240,15 @@ namespace HandTracking.Implementation.HandTracking
                             //set 2D position in hand Data
                             _handTrackingData.Location2D = jointData.positionImage;
 
-//                            // Printing the 3D position (depth)
-//                            Console.WriteLine(@"	3D Position: {0} | {1} | {2}", jointData.positionWorld.x,
-//                                jointData.positionWorld.y, jointData.positionWorld.z);
+                            // Printing the 3D position (depth)
+                            Console.WriteLine(@"	3D Position: {0} | {1} | {2}", jointData.positionWorld.x,
+                                jointData.positionWorld.y, jointData.positionWorld.z);
 
                             //set 3D position in hand Data (in mm)
                             var p = jointData.positionWorld;
                             _handTrackingData.Location3D = new PXCMPoint3DF32(p.x * 1000, p.y*1000, p.z*1000);
                         }
-                    }
+                    }*/
                 }
             }
         }

@@ -3,12 +3,22 @@ using Un4seen.Bass;
 
 namespace HandTracking.Interfaces.AudioController
 {
+    internal interface ICoalescentDesign
+    {
+        void PlayBoth();
+    }
+
+    internal interface INdividualDesign
+    {
+        void PlayIndividual();
+    }
+
     public abstract class AudioDesign
     {
         /// <summary>
         ///     Method that plays audio feedback from referenced speakers.
         /// </summary>
-        public abstract void Play(float volume);
+        public abstract void Play();
 
         /// <summary>
         ///     Sets the speaker for the AudioDesign

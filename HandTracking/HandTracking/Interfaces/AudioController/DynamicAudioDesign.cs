@@ -31,7 +31,19 @@ namespace HandTracking.Interfaces.AudioController
 
             //play file
             Timer = new Timer(obj => { Speaker.Play(Stream); }, null, 20, 200);
-            Console.WriteLine(Timer.ToString());
+        }
+
+        /// <summary>
+        ///     Method that stops the current playback.
+        /// </summary>
+        public override void StopPlayback()
+        {
+            Timer?.Dispose();
+            if (Stream != 0)
+            {
+                Speaker?.StopPlayback(Stream);
+                Stream = 0;
+            }
         }
 
         #region vars

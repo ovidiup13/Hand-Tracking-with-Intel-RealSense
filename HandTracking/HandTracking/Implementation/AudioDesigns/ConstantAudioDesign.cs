@@ -42,15 +42,11 @@ namespace HandTracking.Implementation.AudioDesigns
         /// <summary>
         ///     Plays the file through the speaker.
         /// </summary>
-        public override void Play(float volume)
+        public override void Play()
         {
             //check speaker
             if (Speaker == null)
                 throw new NullReferenceException("Speaker cannot be null.");
-
-            //check volume
-            if (volume < 0 || volume > 1)
-                throw new ArgumentOutOfRangeException(nameof(volume) + " must be between 0 and 1, floating point.");
 
             //check file
             if (!File.Exists(_file))
@@ -62,10 +58,6 @@ namespace HandTracking.Implementation.AudioDesigns
             //check stream
             if (_stream == 0)
                 throw new AudioException("Stream error. Stream cannot be zero. ERROR: " + Bass.BASS_ErrorGetCode());
-
-            //set stream volume
-            if (!Bass.BASS_ChannelSetAttribute(_stream, BASSAttribute.BASS_ATTRIB_VOL, volume))
-                throw new AudioException("Cannot set volume to stream. ERROR: " + Bass.BASS_ErrorGetCode());
 
             //play file
             _timer = new Timer(obj => { Speaker.Play(_stream); }, null, 200, _interval);

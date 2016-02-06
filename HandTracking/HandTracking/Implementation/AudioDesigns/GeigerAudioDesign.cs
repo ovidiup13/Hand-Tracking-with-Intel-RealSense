@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Threading;
 using HandTracking.Interfaces.AudioController;
 using Un4seen.Bass;
@@ -15,36 +13,23 @@ namespace HandTracking.Implementation.AudioDesigns
         /// </summary>
         public GeigerAudioDesign()
         {
-            _files = new List<string>
-            {
-                "Sounds/Pluck/obj1p.wav",
-                "Sounds/Pluck/obj2p.wav",
-                "Sounds/Pluck/obj3p.wav",
-                "Sounds/Pluck/obj4p.wav",
-                "Sounds/Pluck/obj5p.wav",
-                "Sounds/Pluck/obj6p.wav",
-                "Sounds/Pluck/obj7p.wav",
-                "Sounds/Pluck/obj8p.wav"
-            };
+            _file = "Sounds/Pluck/obj8p.wav";
 
-            CheckFiles(_files);
+            CheckFile(_file);
         }
 
         /// <summary>
         ///     Constructor that initializes a new geiger design with custom values.
         /// </summary>
-        /// <param name="files"></param>
-        public GeigerAudioDesign(List<string> files)
+        /// <param name="file"></param>
+        public GeigerAudioDesign(string file)
         {
-            if (_files.Count < 8)
-                throw new AudioException("Geiger counter must contain at least 8 audio files.");
-
-            CheckFiles(files);
-            _files = files;
+            CheckFile(file);
+            _file = file;
         }
 
 
-        public override void Play(float volume)
+        public override void Play()
         {
             //check speaker
             if (Speaker == null)
@@ -52,113 +37,25 @@ namespace HandTracking.Implementation.AudioDesigns
                 throw new NullReferenceException("Speaker cannot be null.");
             }
 
-            //check volume
-            if (volume < 0 || volume > 1)
-            {
-                throw new ArgumentOutOfRangeException(nameof(volume) + " must be between 0 and 1, floating point.");
-            }
-            _volume = volume;
-
-            //get file to be played
-            var file = GetFile(_distance);
-            _currentFile = file;
-
-            //play file
-
-            Play(file, _volume);
-        }
-
-        /// <summary>
-        ///     Method that returns the file to be played for the current distance.
-        /// </summary>
-        /// <param name="distance"></param>
-        /// <returns></returns>
-        private string GetFile(double distance)
-        {
-            if (distance > 40 || distance < 0)
-            {
-                return _files[0];
-            }
-
-            if (distance > 35 && distance < 40)
-            {
-                return _files[1];
-            }
-
-            if (distance > 30 && distance < 35)
-            {
-                return _files[2];
-            }
-
-            if (distance > 25 && distance < 30)
-            {
-                return _files[3];
-            }
-
-            if (distance > 20 && distance < 25)
-            {
-                return _files[4];
-            }
-
-            if (distance > 15 && distance < 20)
-            {
-                return _files[5];
-            }
-
-            if (distance > 10 && distance < 15)
-            {
-                return _files[6];
-            }
-
-            if (distance < 10)
-            {
-                return _files[7];
-            }
-
-            return _files[0];
-        }
-
-        /// <summary>
-        ///     Method that stops the current playback and starts a new timer with the selected file and
-        ///     the specified volume.
-        /// </summary>
-        /// <param name="file"></param>
-        /// <param name="volume"></param>
-        private void Play(string file, float volume)
-        {
-            //stop the playback and change to other file
-            StopPlayback();
-
-            //check file
-            if (!File.Exists(file))
-                throw new AudioException("File does not exist: " + Path.GetFullPath(file));
-
             //create stream
-            _stream = Bass.BASS_StreamCreateFile(file, 0L, 0L, Speaker.GetFlag());
+            _stream = Bass.BASS_StreamCreateFile(_file, 0L, 0L, Speaker.GetFlag());
 
             //check stream
             if (_stream == 0)
                 throw new AudioException("Stream error. Stream cannot be zero. ERROR: " + Bass.BASS_ErrorGetCode());
 
-            //set stream volume
-            if (!Bass.BASS_ChannelSetAttribute(_stream, BASSAttribute.BASS_ATTRIB_VOL, volume))
-                throw new AudioException("Cannot set volume to stream. ERROR: " + Bass.BASS_ErrorGetCode());
-
             //play file
-            _timer = new Timer(obj => { Speaker.Play(_stream); }, null, 20, 200);
-            Console.WriteLine(_timer.ToString());
+            _timer = new Timer(obj => { Speaker.Play(_stream); }, null, 50, _currentInterval);
         }
 
         /// <summary>
         ///     Method that checks if all files exist.
         /// </summary>
-        /// <param name="files">List of files passed as argument to the audio design.</param>
-        private static void CheckFiles(List<string> files)
+        /// <param name="file">File path passed as argument to the audio design.</param>
+        private static void CheckFile(string file)
         {
-            foreach (var file in files.Where(file => !File.Exists(file)))
-            {
+            if (!File.Exists(file))
                 throw new AudioException("File does not exist: " + file);
-            }
         }
 
         /// <summary>
@@ -167,6 +64,7 @@ namespace HandTracking.Implementation.AudioDesigns
         public override void StopPlayback()
         {
             _timer?.Dispose();
+            _timer = null;
             if (_stream != 0)
             {
                 Speaker?.StopPlayback(_stream);
@@ -181,34 +79,70 @@ namespace HandTracking.Implementation.AudioDesigns
         /// <param name="distance"></param>
         public override void SetDistance(double distance)
         {
-            //set distance
-            _distance = distance;
+            //get interval based on distance
+            var interval = GetInterval(distance);
 
-            //get file
-            var file = GetFile(distance);
-
-            //if we have the same file, then don't need to change feedback
-            if (_currentFile != null && _currentFile == file)
-            {
-                Console.WriteLine(@"Skipped current file: " + _currentFile);
+            //if we have the same interval, we don't update the timer
+            if (_currentInterval == interval)
                 return;
+
+            _currentInterval = interval;
+
+            //update timer
+            _timer?.Change(170, _currentInterval);
+        }
+
+        private int GetInterval(double distance)
+        {
+            if (distance > 40 || distance < 0)
+            {
+                return 900;
             }
 
-            //otherwise change the file
-            _currentFile = file;
+            if (distance > 35 && distance < 40)
+            {
+                return 800;
+            }
 
-            //play next sound
-            Play(file, _volume);
+            if (distance > 30 && distance < 35)
+            {
+                return 700;
+            }
+
+            if (distance > 25 && distance < 30)
+            {
+                return 600;
+            }
+
+            if (distance > 20 && distance < 25)
+            {
+                return 500;
+            }
+
+            if (distance > 15 && distance < 20)
+            {
+                return 400;
+            }
+
+            if (distance > 10 && distance < 15)
+            {
+                return 300;
+            }
+
+            if (distance < 10)
+            {
+                return 200;
+            }
+
+            return 900;
         }
 
         #region vars
 
-        private float _volume;
         private Timer _timer;
-        private readonly List<string> _files;
-        private string _currentFile;
+        private int _currentInterval = 900;
+        private readonly string _file;
         private int _stream;
-        private double _distance = -1;
 
         #endregion
     }

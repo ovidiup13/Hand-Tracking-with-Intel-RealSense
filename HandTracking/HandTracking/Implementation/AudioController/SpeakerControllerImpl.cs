@@ -25,7 +25,7 @@ namespace HandTracking.Implementation.AudioController
                 throw new Exception("An error occurred while initializing the BASS library.");
             }
 
-            Bass.BASS_SetVolume(0.2f);
+            Bass.BASS_SetConfig(BASSConfig.BASS_CONFIG_GVOL_STREAM, 500);
             Console.WriteLine(@"Volume is : " + Bass.BASS_GetVolume());
 
             //location of speakerLocations
@@ -95,8 +95,8 @@ namespace HandTracking.Implementation.AudioController
         /// un
         public override void PlaySounds(double distance)
         {
-            _audioDesign.SetDistance(distance);
-            _audioDesign.Play(Volume);
+            _audioDesign?.SetDistance(distance);
+            _audioDesign?.Play();
         }
 
         /// <summary>

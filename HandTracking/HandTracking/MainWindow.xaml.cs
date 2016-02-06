@@ -32,7 +32,7 @@ namespace HandTracking
         {
             //TODO: conditions must be initialized in another method
             //create a list of conditions
-            AudioDesign audioDesign = new GeigerAudioDesign();
+            AudioDesign audioDesign = new PitchAudioDesign();
 
             var conditions = new List<ConditionImpl>();
             for (var i = 0; i < 2; i++)

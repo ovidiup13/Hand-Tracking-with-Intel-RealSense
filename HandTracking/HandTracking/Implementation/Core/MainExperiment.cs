@@ -1,4 +1,5 @@
 ﻿using System;
+using System.CodeDom;
 using System.Diagnostics;
 using System.Threading;
 using HandTracking.Implementation.HandTracking;
@@ -194,29 +195,22 @@ namespace HandTracking.Implementation.Core
             _speakerController.PlaySounds(0);
             while (_isProcessing)
             {
-                //get hand positions
-                double distance;
-                if (!_handData.HandDetected)
-                {
-                    distance = 50; 
-                }
-                else
-                {
-                    var handPosition = _handData.Location3D;
 
-                    Console.WriteLine(handPosition.ToString());
+                if (!_handData.HandDetected) continue;
+                var handPosition = _handData.Location3D;
 
-                    //get speaker position
-                    var speakerPosition = _speakerController.GetSpeakerPosition();
+                Console.WriteLine(handPosition.ToString());
+
+                //get speaker position
+                var speakerPosition = _speakerController.GetSpeakerPosition();
                     
-                    //calculate distance between hand and speaker
-                    distance = GetDistance(handPosition, speakerPosition);
+                //calculate distance between hand and speaker
+                var distance = GetDistance(handPosition, speakerPosition);
 
-                    Console.WriteLine(@"Distance: " + distance);
+                Console.WriteLine(@"Distance: " + distance);
 
-                    //pass distance to speaker controller
-                    _speakerController.SetDistance(distance);
-                }
+                //pass distance to speaker controller
+                _speakerController.SetDistance(distance);
             }
         }
 
@@ -232,7 +226,7 @@ namespace HandTracking.Implementation.Core
             //TODO: there is a gap between centre of hand and centre of marker - aprox 3cm
             return
                 Math.Sqrt(Math.Pow(point1.x - point2.x, 2) + Math.Pow(point1.y - point2.y, 2) +
-                          Math.Pow(point1.z - point2.z, 2))/10;
+                          Math.Pow(point1.z - point2.z, 2))/10 - Offset;
         }
 
         #region main variables
@@ -260,6 +254,7 @@ namespace HandTracking.Implementation.Core
         private Tracking _handtracking;
         private HandTrackingData _handData;
 
+        private static readonly int Offset = 3;
         #endregion
 
         #region settings vars
