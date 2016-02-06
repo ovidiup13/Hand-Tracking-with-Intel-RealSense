@@ -92,12 +92,12 @@ namespace HandTracking.Implementation.AudioDesigns
 
         public override void StopPlayback()
         {
-            _timer?.Dispose();
             if (_stream != 0)
             {
                 Speaker?.StopPlayback(_stream);
                 _stream = 0;
             }
+            _timer?.Dispose();
         }
        
         /// <summary>
@@ -166,7 +166,7 @@ namespace HandTracking.Implementation.AudioDesigns
             //if we have the same file, then don't need to change feedback
             if (_currentFile != null && _currentFile == file)
             {
-                Console.WriteLine(@"Skipped current file: " + _currentFile);
+//                Console.WriteLine(@"Skipped current file: " + _currentFile);
                 return;
             }
 

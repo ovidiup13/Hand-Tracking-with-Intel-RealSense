@@ -199,10 +199,12 @@ namespace HandTracking.Implementation.Core
                 if (!_handData.HandDetected) continue;
                 var handPosition = _handData.Location3D;
 
-                Console.WriteLine(handPosition.ToString());
+//                Console.WriteLine("Hand position X:" + handPosition.x + " Y:" + handPosition.y + " Z:" + handPosition.z);
 
                 //get speaker position
                 var speakerPosition = _speakerController.GetSpeakerPosition();
+
+//                Console.WriteLine("Speaker X:" + speakerPosition.x + " Y:" + speakerPosition.y + " Z:" + speakerPosition.z);
                     
                 //calculate distance between hand and speaker
                 var distance = GetDistance(handPosition, speakerPosition);

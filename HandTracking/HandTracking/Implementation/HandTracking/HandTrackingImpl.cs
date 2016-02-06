@@ -174,13 +174,13 @@ namespace HandTracking.Implementation.HandTracking
             if (numberOfHands == 0)
             {
                 _handTrackingData.HandDetected = false;
-                Console.WriteLine(@"Hand not detected!");
+//                Console.WriteLine(@"Hand not detected!");
                 return;
             }
 
             //detected at least one hand
             _handTrackingData.HandDetected = true;
-            Console.WriteLine(@"Hand detected! Number of hands: " + numberOfHands);
+//            Console.WriteLine(@"Hand detected! Number of hands: " + numberOfHands);
 
             // Querying the information about detected hands
             for (var i = 0; i < numberOfHands; i++)
@@ -204,7 +204,7 @@ namespace HandTracking.Implementation.HandTracking
                 // Querying the hand data
                 PXCMHandData.IHand hand;
                 var queryHandStatus = handData.QueryHandDataById(handId, out hand);
-                Console.WriteLine(@"Hand data status: " + queryHandStatus);
+//                Console.WriteLine(@"Hand data status: " + queryHandStatus);
 
                 if (queryHandStatus == pxcmStatus.PXCM_STATUS_NO_ERROR && hand != null)
                 {
@@ -216,39 +216,42 @@ namespace HandTracking.Implementation.HandTracking
                     // Querying Hand 3D Position
                     PXCMHandData.ExtremityData location3D;
                     var massCenterWorld = hand.QueryExtremityPoint(PXCMHandData.ExtremityType.EXTREMITY_CENTER, out location3D);
-                    //                    Console.WriteLine(@"Hand position on world: {0} | {1} | {2}", location.x, massCenterWorld.y,
-                    //                        massCenterWorld.z);
+//                                        Console.WriteLine(@"Hand position on world: {0} | {1} | {2}", location3D.pointWorld.x, location3D.pointWorld.y,
+//                                            location3D.pointWorld.z);
+
+                    var location = hand.QueryMassCenterWorld();
 
                     _handTrackingData.Location2D = location3D.pointImage;
-                    _handTrackingData.Location3D = new PXCMPoint3DF32(location3D.pointWorld.x * 1000, location3D.pointWorld.y * 1000, location3D.pointWorld.z * 1000);
+                    //                    _handTrackingData.Location3D = new PXCMPoint3DF32(location3D.pointWorld.x * 1000, location3D.pointWorld.y * 1000, location3D.pointWorld.z * 1000);
+                    _handTrackingData.Location3D = new PXCMPoint3DF32(location.x * 100, location.y * 1000, location.z * 1000);
 
-/*
-                    // Querying Hand Joints
-                    if (hand.HasTrackedJoints())
-                    {
-                        //searching for location of center hand
-                        var jointType = _handTrackingSettings.JointType;
-                        PXCMHandData.JointData jointData;
-                        var queryStatus = hand.QueryTrackedJoint(jointType, out jointData);
+                    /*
+                                        // Querying Hand Joints
+                                        if (hand.HasTrackedJoints())
+                                        {
+                                            //searching for location of center hand
+                                            var jointType = _handTrackingSettings.JointType;
+                                            PXCMHandData.JointData jointData;
+                                            var queryStatus = hand.QueryTrackedJoint(jointType, out jointData);
 
-                        if (queryStatus == pxcmStatus.PXCM_STATUS_NO_ERROR && jointData != null)
-                        {
-//                            // Printing the 2D position (image)
-//                            Console.WriteLine(@"	2D Position: {0} | {1}", jointData.positionImage.x,
-//                                jointData.positionImage.y);
+                                            if (queryStatus == pxcmStatus.PXCM_STATUS_NO_ERROR && jointData != null)
+                                            {
+                    //                            // Printing the 2D position (image)
+                    //                            Console.WriteLine(@"	2D Position: {0} | {1}", jointData.positionImage.x,
+                    //                                jointData.positionImage.y);
 
-                            //set 2D position in hand Data
-                            _handTrackingData.Location2D = jointData.positionImage;
+                                                //set 2D position in hand Data
+                                                _handTrackingData.Location2D = jointData.positionImage;
 
-                            // Printing the 3D position (depth)
-                            Console.WriteLine(@"	3D Position: {0} | {1} | {2}", jointData.positionWorld.x,
-                                jointData.positionWorld.y, jointData.positionWorld.z);
+                                                // Printing the 3D position (depth)
+                                                Console.WriteLine(@"	3D Position: {0} | {1} | {2}", jointData.positionWorld.x,
+                                                    jointData.positionWorld.y, jointData.positionWorld.z);
 
-                            //set 3D position in hand Data (in mm)
-                            var p = jointData.positionWorld;
-                            _handTrackingData.Location3D = new PXCMPoint3DF32(p.x * 1000, p.y*1000, p.z*1000);
-                        }
-                    }*/
+                                                //set 3D position in hand Data (in mm)
+                                                var p = jointData.positionWorld;
+                                                _handTrackingData.Location3D = new PXCMPoint3DF32(p.x * 1000, p.y*1000, p.z*1000);
+                                            }
+                                        }*/
                 }
             }
         }
