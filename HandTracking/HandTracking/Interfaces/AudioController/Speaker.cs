@@ -1,4 +1,5 @@
-﻿using HandTracking.Implementation.AudioController;
+﻿using System;
+using HandTracking.Implementation.AudioController;
 using Un4seen.Bass;
 
 namespace HandTracking.Interfaces.AudioController

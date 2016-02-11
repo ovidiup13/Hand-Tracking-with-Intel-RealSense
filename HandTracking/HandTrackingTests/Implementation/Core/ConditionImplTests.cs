@@ -1,5 +1,6 @@
 ﻿using HandTracking.Implementation.AudioDesigns;
 using HandTracking.Implementation.Core;
+using HandTracking.Interfaces.AudioController.Designs;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace HandTrackingTests.Implementation.Core
@@ -22,7 +23,7 @@ namespace HandTrackingTests.Implementation.Core
             int trials = 3;
             ConditionImpl impl = new ConditionImpl(trials);
 
-            impl.AudioDesign = new ConstantAudioDesign();
+            impl.AudioDesign = new ConstantIndividual();
 
             Assert.IsNotNull(impl.AudioDesign);
         }

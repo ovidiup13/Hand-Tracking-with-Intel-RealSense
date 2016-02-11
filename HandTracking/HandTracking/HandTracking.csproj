@@ -140,7 +140,9 @@
     <Compile Include="Implementation\AudioController\SpeakerImpl.cs" />
     <Compile Include="Implementation\AudioController\SpeakerControllerImpl.cs" />
     <Compile Include="Implementation\AudioController\SpeakerSettingsImpl.cs" />
-    <Compile Include="Implementation\AudioDesigns\ConstantAudioDesign.cs" />
+    <Compile Include="Implementation\AudioDesigns\ConstantCoalescent.cs" />
+    <Compile Include="Interfaces\AudioController\Designs\ConstantDesign.cs" />
+    <Compile Include="Implementation\AudioDesigns\ConstantIndividual.cs" />
     <Compile Include="Implementation\AudioDesigns\PitchAudioDesign.cs" />
     <Compile Include="Implementation\Core\ConditionImpl.cs" />
     <Compile Include="Implementation\AudioDesigns\GeigerAudioDesign.cs" />
@@ -156,7 +158,6 @@
     <Compile Include="Implementation\MarkerTracking\MarkerTrackingModule.cs" />
     <Compile Include="Implementation\MarkerTracking\MarkerTrackingSettings.cs" />
     <Compile Include="Interfaces\AudioController\AudioException.cs" />
-    <Compile Include="Interfaces\AudioController\DynamicAudioDesign.cs" />
     <Compile Include="Interfaces\Module\IData.cs" />
     <Compile Include="Interfaces\Module\IModule.cs" />
     <Compile Include="Interfaces\Module\ModuleException.cs" />
@@ -289,7 +290,9 @@
     <Content Include="Sounds\silence.wav" />
     <Content Include="Sounds\sound.wav" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Implementation\AudioDesigns\Constant\" />
+  </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
   </ItemGroup>

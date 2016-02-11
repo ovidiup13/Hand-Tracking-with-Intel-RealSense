@@ -1,4 +1,5 @@
 ﻿using System;
+using HandTracking.Implementation.AudioController;
 using Un4seen.Bass;
 
 namespace HandTracking.Interfaces.AudioController
@@ -65,9 +66,25 @@ namespace HandTracking.Interfaces.AudioController
         /// </summary>
         public abstract void SetDistance(double distance);
 
+        public void SetWristSpeaker(BASSFlag flag)
+        {
+            WristSpeaker = new SpeakerImpl(flag);
+        }
+
+        public BASSFlag GetWristSpeaker()
+        {
+            return WristSpeaker.GetFlag();
+        }
+
         #region vars
 
         protected Speaker Speaker;
+
+        public Speaker WristSpeaker { get; set; } = new SpeakerImpl(_defaultWristSpeaker);
+    
+
+        private static BASSFlag _defaultWristSpeaker = BASSFlag.BASS_SPEAKER_FRONTRIGHT; //8
+
 
         #endregion
     }

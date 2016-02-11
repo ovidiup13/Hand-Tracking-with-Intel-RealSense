@@ -214,14 +214,13 @@ namespace HandTracking.Implementation.AudioController
         //BASSFlags
         private static readonly List<BASSFlag> SpeakerFlags = new List<BASSFlag>
         {
-            BASSFlag.BASS_SPEAKER_REARRIGHT, //8
+            BASSFlag.BASS_SPEAKER_REARRIGHT, //6
             BASSFlag.BASS_SPEAKER_LFE, //4
-            BASSFlag.BASS_SPEAKER_FRONTRIGHT, //2
             BASSFlag.BASS_SPEAKER_CENTER, //3
-            BASSFlag.BASS_SPEAKER_FRONTLEFT, //1
-            BASSFlag.BASS_SPEAKER_REARLEFT, //7
-            BASSFlag.BASS_SPEAKER_RIGHT, // 5
-            BASSFlag.BASS_SPEAKER_LEFT // 6
+            BASSFlag.BASS_SPEAKER_FRONTLEFT, //7
+            BASSFlag.BASS_SPEAKER_REARLEFT, //5
+            BASSFlag.BASS_SPEAKER_RIGHT, // 2
+            BASSFlag.BASS_SPEAKER_LEFT // 1
         };
 
         //audio design 
