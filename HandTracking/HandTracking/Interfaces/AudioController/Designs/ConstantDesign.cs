@@ -9,6 +9,25 @@ namespace HandTracking.Interfaces.AudioController.Designs
     {
 
         /// <summary>
+        ///     Initializes a new constant design.
+        /// </summary>
+        protected ConstantDesign()
+        {
+            _file = "Sounds\\Pluck\\obj8p.wav";
+            CheckFile(_file);
+        }
+
+        /// <summary>
+        ///     Constructor with custom parameter.
+        /// </summary>
+        /// <param name="filePath"></param>
+        protected ConstantDesign(string filePath)
+        {
+            _file = filePath;
+            CheckFile(_file);
+        }
+
+        /// <summary>
         ///     Method that checks if the file exists.
         /// </summary>
         /// <param name="file"></param>

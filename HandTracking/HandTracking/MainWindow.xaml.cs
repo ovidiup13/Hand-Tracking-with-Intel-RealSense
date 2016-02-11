@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Input;
 using HandTracking.Implementation.AudioController;
-using HandTracking.Implementation.AudioDesigns;
+using HandTracking.Implementation.AudioDesigns.Constant;
 using HandTracking.Implementation.Core;
 using HandTracking.Implementation.Data;
 using HandTracking.Interfaces.AudioController;
@@ -27,7 +27,7 @@ namespace HandTracking
         }
 
         /// <summary>
-        /// Method that initializes a new Experiment.
+        ///     Method that initializes a new Experiment.
         /// </summary>
         private void InitializeExperiment(Dictionary<int, PXCMPoint3DF32> markerLocation)
         {
@@ -44,11 +44,12 @@ namespace HandTracking
 
             //pass these to main experiment
             //TODO: check marker data for null
-            _mainExperiment = new MainExperiment(conditions.ToArray(), new SpeakerControllerImpl(markerLocation), new Participant(1));
+            _mainExperiment = new MainExperiment(conditions.ToArray(), new SpeakerControllerImpl(markerLocation),
+                new Participant(1));
         }
 
         /// <summary>
-        /// Method that starts the experiment.
+        ///     Method that starts the experiment.
         /// </summary>
         private void StartExperiment()
         {
@@ -92,13 +93,6 @@ namespace HandTracking
             Application.Current.Shutdown();
         }
 
-        #region experiment vars
-
-        private IExperiment _mainExperiment;
-        private static readonly int _numberOfTrials = 1;
-
-        #endregion
-
         private void Quit_Experiment(object sender, RoutedEventArgs e)
         {
             //if the experiment is running, then stop it
@@ -117,5 +111,12 @@ namespace HandTracking
         {
             StartExperiment();
         }
+
+        #region experiment vars
+
+        private IExperiment _mainExperiment;
+        private static readonly int _numberOfTrials = 1;
+
+        #endregion
     }
 }

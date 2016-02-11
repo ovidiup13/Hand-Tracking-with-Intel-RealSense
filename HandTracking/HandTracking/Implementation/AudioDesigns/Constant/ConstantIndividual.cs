@@ -1,11 +1,8 @@
-﻿using System;
-using System.IO;
-using System.Threading;
+﻿using System.Threading;
 using HandTracking.Interfaces.AudioController;
 using HandTracking.Interfaces.AudioController.Designs;
-using Un4seen.Bass;
 
-namespace HandTracking.Implementation.AudioDesigns
+namespace HandTracking.Implementation.AudioDesigns.Constant
 {
     public class ConstantIndividual : ConstantDesign, INdividualDesign
     {
@@ -14,18 +11,14 @@ namespace HandTracking.Implementation.AudioDesigns
         /// </summary>
         public ConstantIndividual()
         {
-            _file = "Sounds\\Pluck\\obj8p.wav";
-            CheckFile(_file);
         }
 
         /// <summary>
         ///     Constructor with custom parameter.
         /// </summary>
         /// <param name="filePath"></param>
-        public ConstantIndividual(string filePath)
+        public ConstantIndividual(string filePath) : base(filePath)
         {
-            _file = filePath;
-            CheckFile(_file);
         }
 
 

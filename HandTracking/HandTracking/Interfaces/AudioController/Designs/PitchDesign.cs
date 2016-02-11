@@ -3,22 +3,20 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
-using HandTracking.Interfaces.AudioController;
 using Un4seen.Bass;
-using Un4seen.Bass.AddOn.Fx;
 
-namespace HandTracking.Implementation.AudioDesigns
+namespace HandTracking.Interfaces.AudioController.Designs
 {
-    internal class PitchAudioDesign : AudioDesign
+    public abstract class PitchDesign : AudioDesign
     {
-        public PitchAudioDesign(List<string> files)
+        public PitchDesign(List<string> files)
         {
             CheckFiles(files);
             _files = files;
             _currentFile = _files[0];
         }
 
-        public PitchAudioDesign()
+        public PitchDesign()
         {
             _files = new List<string>
             {

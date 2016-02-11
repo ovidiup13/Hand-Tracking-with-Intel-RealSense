@@ -140,12 +140,14 @@
     <Compile Include="Implementation\AudioController\SpeakerImpl.cs" />
     <Compile Include="Implementation\AudioController\SpeakerControllerImpl.cs" />
     <Compile Include="Implementation\AudioController\SpeakerSettingsImpl.cs" />
-    <Compile Include="Implementation\AudioDesigns\ConstantCoalescent.cs" />
+    <Compile Include="Implementation\AudioDesigns\Constant\ConstantCoalescent.cs" />
+    <Compile Include="Implementation\AudioDesigns\Geiger\GeigerCoalescent.cs" />
+    <Compile Include="Implementation\AudioDesigns\Geiger\GeigerIndividual.cs" />
     <Compile Include="Interfaces\AudioController\Designs\ConstantDesign.cs" />
-    <Compile Include="Implementation\AudioDesigns\ConstantIndividual.cs" />
-    <Compile Include="Implementation\AudioDesigns\PitchAudioDesign.cs" />
+    <Compile Include="Implementation\AudioDesigns\Constant\ConstantIndividual.cs" />
+    <Compile Include="Interfaces\AudioController\Designs\PitchDesign.cs" />
     <Compile Include="Implementation\Core\ConditionImpl.cs" />
-    <Compile Include="Implementation\AudioDesigns\GeigerAudioDesign.cs" />
+    <Compile Include="Interfaces\AudioController\Designs\GeigerDesign.cs" />
     <Compile Include="Implementation\Core\MainExperiment.cs" />
     <Compile Include="Implementation\Data\DataExporter.cs" />
     <Compile Include="Implementation\HandTracking\HandTrackingData.cs" />
@@ -290,9 +292,7 @@
     <Content Include="Sounds\silence.wav" />
     <Content Include="Sounds\sound.wav" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Implementation\AudioDesigns\Constant\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
   </ItemGroup>

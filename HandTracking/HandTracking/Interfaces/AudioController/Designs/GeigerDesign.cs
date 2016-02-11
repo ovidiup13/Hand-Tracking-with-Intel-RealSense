@@ -1,17 +1,16 @@
 ﻿using System;
 using System.IO;
 using System.Threading;
-using HandTracking.Interfaces.AudioController;
 using Un4seen.Bass;
 
-namespace HandTracking.Implementation.AudioDesigns
+namespace HandTracking.Interfaces.AudioController.Designs
 {
-    public class GeigerAudioDesign : AudioDesign
+    public abstract class GeigerDesign : AudioDesign
     {
         /// <summary>
         ///     Constructor that initializes a new geiger audio design with default sounds.
         /// </summary>
-        public GeigerAudioDesign()
+        protected GeigerDesign()
         {
             _file = "Sounds/Pluck/obj8p.wav";
 
@@ -22,7 +21,7 @@ namespace HandTracking.Implementation.AudioDesigns
         ///     Constructor that initializes a new geiger design with custom values.
         /// </summary>
         /// <param name="file"></param>
-        public GeigerAudioDesign(string file)
+        protected GeigerDesign(string file)
         {
             CheckFile(file);
             _file = file;

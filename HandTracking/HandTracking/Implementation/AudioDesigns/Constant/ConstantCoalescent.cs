@@ -1,31 +1,25 @@
-﻿using System;
-using System.Threading;
+﻿using System.Threading;
 using HandTracking.Interfaces.AudioController;
 using HandTracking.Interfaces.AudioController.Designs;
 using Un4seen.Bass;
 
-namespace HandTracking.Implementation.AudioDesigns
+namespace HandTracking.Implementation.AudioDesigns.Constant
 {
     internal class ConstantCoalescent : ConstantDesign, ICoalescentDesign
     {
-
         /// <summary>
         ///     Initializes a new constant design.
         /// </summary>
         public ConstantCoalescent()
         {
-            _file = "Sounds\\Pluck\\obj8p.wav";
-            CheckFile(_file);
         }
 
         /// <summary>
         ///     Constructor with custom parameter.
         /// </summary>
         /// <param name="filePath"></param>
-        public ConstantCoalescent(string filePath)
+        public ConstantCoalescent(string filePath) : base(filePath)
         {
-            _file = filePath;
-            CheckFile(_file);
         }
 
         public void PlayBoth()
@@ -45,7 +39,6 @@ namespace HandTracking.Implementation.AudioDesigns
 
             //play wrist stream
             _timer2 = new Timer(obj => { WristSpeaker.Play(_stream2); }, null, 200, _interval);
-
         }
 
         public override void StopPlayback()
@@ -58,13 +51,21 @@ namespace HandTracking.Implementation.AudioDesigns
                 WristSpeaker?.StopPlayback(_stream2);
                 _stream2 = 0;
             }
-
         }
 
         public override void Play()
         {
             base.Play();
             PlayBoth();
+        }
+
+        /// <summary>
+        ///     Method that returns a string representation of the audio design.
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString()
+        {
+            return base.ToString() + "_BOT";
         }
 
         #region vars

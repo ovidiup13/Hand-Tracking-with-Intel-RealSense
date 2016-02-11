@@ -1,4 +1,5 @@
 ﻿using HandTracking.Implementation.AudioDesigns;
+using HandTracking.Implementation.AudioDesigns.Constant;
 using HandTracking.Implementation.Core;
 using HandTracking.Interfaces.AudioController.Designs;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
