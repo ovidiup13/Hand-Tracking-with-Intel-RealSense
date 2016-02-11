@@ -59,6 +59,7 @@ namespace HandTracking.Implementation.AudioController
                 //get position
                 _speakerLocations.TryGetValue(id, out position);
 
+                //TODO: initialize speaker with correct flag after implementation of mapping
                 //create a new speaker, add it to the list
                 _speakers.Add(new SpeakerImpl(id, SpeakerFlags[i], position));
             }
@@ -93,9 +94,8 @@ namespace HandTracking.Implementation.AudioController
         ///     Method that plays the sounds according to the type of Audio Design currently in place
         /// </summary>
         /// un
-        public override void PlaySounds(double distance)
+        public override void PlaySounds()
         {
-            _audioDesign?.SetDistance(distance);
             _audioDesign?.Play();
         }
 
@@ -133,7 +133,7 @@ namespace HandTracking.Implementation.AudioController
         }
 
         /// <summary>
-        /// Method that returns the position of the target speaker.
+        ///     Method that returns the position of the target speaker.
         /// </summary>
         /// <returns></returns>
         public override PXCMPoint3DF32 GetSpeakerPosition()
@@ -142,13 +142,46 @@ namespace HandTracking.Implementation.AudioController
         }
 
         /// <summary>
-        /// Method that sets the current distance between hand and target speaker.
+        ///     Method that returns the id of the target speaker.
+        /// </summary>
+        /// <returns></returns>
+        public override string GetSpeakerId()
+        {
+            return _audioDesign.GetSpeakerId();
+        }
+
+        /// <summary>
+        ///     Method that sets the current distance between hand and target speaker.
         /// </summary>
         /// <param name="distance"></param>
         public override void SetDistance(double distance)
         {
             _audioDesign.SetDistance(distance);
         }
+
+        /// <summary>
+        ///     Method that returns the id of the speaker which is physically closest to the hand position
+        ///     at the time of pressing space.
+        /// </summary>
+        /// <param name="handLocation"></param>
+        /// <returns></returns>
+        public override string GetClosest(PXCMPoint3DF32 handLocation)
+        {
+            double max = -1;
+            var id = "";
+            foreach (var speaker in _speakers)
+            {
+                var d = GetDistance(handLocation, speaker.GetPosition());
+                if (max < d)
+                {
+                    max = d;
+                    id = speaker.GetFlag().ToString();
+                }
+            }
+
+            return id;
+        }
+
 
         /// <summary>
         ///     Method that returns a reshuffled array of indexes.

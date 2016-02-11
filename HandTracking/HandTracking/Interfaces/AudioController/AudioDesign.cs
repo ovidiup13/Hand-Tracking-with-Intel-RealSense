@@ -49,10 +49,16 @@ namespace HandTracking.Interfaces.AudioController
         ///     Method that returns the id of the target speaker.
         /// </summary>
         /// <returns></returns>
-        public int GetSpeakerId()
+        public string GetSpeakerId()
         {
-            return Speaker.GetSpeakerId();
+            return Speaker.GetFlag().ToString();
         }
+
+        /// <summary>
+        /// Method that returns the string representation of the audio design.
+        /// </summary>
+        /// <returns></returns>
+        public abstract override string ToString();
 
         /// <summary>
         /// Method that sets the distance between hand and target speaker.

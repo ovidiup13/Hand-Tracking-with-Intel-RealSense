@@ -1,4 +1,6 @@
-﻿namespace HandTracking.Interfaces.Core
+﻿using HandTracking.Implementation.Data;
+
+namespace HandTracking.Interfaces.Core
 {
     public interface IExperiment
     {
@@ -33,5 +35,11 @@
         /// </summary>
         /// <returns></returns>
         bool IsStopped();
+
+        /// <summary>
+        /// Method that sets the current participant of the experiment.
+        /// </summary>
+        /// <param name="participant"></param>
+        void SetParticipant(Participant participant);
     }
 }

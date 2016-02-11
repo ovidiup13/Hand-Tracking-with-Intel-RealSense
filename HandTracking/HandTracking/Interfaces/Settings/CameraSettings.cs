@@ -16,7 +16,7 @@
         /// <summary>
         ///     Constructor that initializes the camera screen with default values.
         /// </summary>
-        public CameraSettings()
+        protected CameraSettings()
         {
             InitializeScreen(_defaultWidth, _defaultHeight, _defaultFps);
         }
@@ -44,7 +44,7 @@
 
         private static readonly int _defaultWidth = 640;
         private static readonly int _defaultHeight = 480;
-        private static readonly int _defaultFps = 30;
+        private static readonly int _defaultFps = 60;
 
         #endregion
     }

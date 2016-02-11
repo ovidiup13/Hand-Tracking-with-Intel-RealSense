@@ -5,6 +5,7 @@ using System.Windows.Input;
 using HandTracking.Implementation.AudioController;
 using HandTracking.Implementation.AudioDesigns;
 using HandTracking.Implementation.Core;
+using HandTracking.Implementation.Data;
 using HandTracking.Interfaces.AudioController;
 using HandTracking.Interfaces.Core;
 
@@ -43,7 +44,7 @@ namespace HandTracking
 
             //pass these to main experiment
             //TODO: check marker data for null
-            _mainExperiment = new MainExperiment(conditions.ToArray(), new SpeakerControllerImpl(markerLocation));
+            _mainExperiment = new MainExperiment(conditions.ToArray(), new SpeakerControllerImpl(markerLocation), new Participant(1));
         }
 
         /// <summary>

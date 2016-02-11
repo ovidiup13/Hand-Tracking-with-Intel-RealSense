@@ -2,6 +2,7 @@
 using System.CodeDom;
 using System.Diagnostics;
 using System.Threading;
+using HandTracking.Implementation.Data;
 using HandTracking.Implementation.HandTracking;
 using HandTracking.Interfaces.AudioController;
 using HandTracking.Interfaces.Core;
@@ -17,13 +18,20 @@ namespace HandTracking.Implementation.Core
         /// <summary>
         ///     Constructor for main experiment.
         /// </summary>
-        /// <param name="conditions">Conditions for the experiment, as array</param>
-        /// <param name="speakerController"></param>
-        public MainExperiment(ConditionImpl[] conditions, SpeakerController speakerController)
+        /// <param name="conditions">Conditions for the experiment, as an array</param>
+        /// <param name="speakerController">The speaker controller object</param>
+        /// <param name="participant">The participant object for the experiment</param>
+        public MainExperiment(ConditionImpl[] conditions, SpeakerController speakerController, Participant participant)
         {
             //set main experiment variables
             _conditions = conditions;
             _speakerController = speakerController;
+
+            //check participant
+            if (participant == null)
+                throw new ArgumentNullException(nameof(participant));
+            _participant = participant;
+
             _experimentThread = new Thread(MainExperimentThread);
             _stopwatch = new Stopwatch();
             _resetEvent = new AutoResetEvent(false);
@@ -37,12 +45,14 @@ namespace HandTracking.Implementation.Core
 
         /// <summary>
         /// </summary>
+        /// <exception cref="ArgumentNullException">If the participant selected for the experiment is null.</exception>
         /// TODO: must implement return values for each thread state
         public void StartExperiment()
         {
             if (_experimentThread.IsAlive)
                 return;
 
+            
             _experimentThread.Start();
         }
 
@@ -98,13 +108,21 @@ namespace HandTracking.Implementation.Core
         }
 
         /// <summary>
+        /// Method that sets the current participant of the experiment.
+        /// </summary>
+        /// <param name="participant"></param>
+        public void SetParticipant(Participant participant)
+        {
+            if(!IsStarted())
+                _participant = participant;
+        }
+
+        /// <summary>
         ///     Method that initializes the modules of the main experiment
         /// </summary>
         private void InitializeModules()
         {
-            //create instance of marker tracking module
-
-
+            
             //create an instance of hand tracking module
             _handTrackingModule = new HandTrackingModule();
             _handtracking = _handTrackingModule.GetInstance();
@@ -134,17 +152,17 @@ namespace HandTracking.Implementation.Core
 
                 //set the audio design on the speaker controller
                 _speakerController.SetAudioDesign(cond.AudioDesign);
+                _dataExporter = new DataExporter(_participant, cond.AudioDesign.ToString());
 
                 Console.WriteLine(@"Condition started");
                 for (var i = 0; i < trials; i++)
                 {
                     Console.WriteLine(@"Trial + " + i + @" started.");
+                    Console.WriteLine(@"Press space to move to next speaker");
                     for (var j = 0; j < numberOfSpeakers; j++)
                     {
                         //signal speaker controller to move to next speaker
                         _speakerController.NextSpeaker();
-
-                        Console.WriteLine(@"Press space to move to next speaker");
 
                         //start stopwatch
                         _stopwatch.Start();
@@ -161,11 +179,22 @@ namespace HandTracking.Implementation.Core
                         _stopwatch.Stop();
                         _isProcessing = false;
 
-                        Console.WriteLine(@"Space pressed. Time taken: " + _stopwatch.Elapsed +
+                        //get time elapsed
+                        var time = (long) _stopwatch.Elapsed.TotalMilliseconds;
+
+                        Console.WriteLine(@"Space pressed. Time taken: " + time +
                                           @" Moving to next trial.");
 
                         //reset stopwatch
                         _stopwatch.Reset();
+
+                        //add data
+                        var speakerPosition = _speakerController.GetSpeakerPosition();
+                        var distance = SpeakerController.GetDistance(_handData.Location3D, speakerPosition);
+                        var closest = _speakerController.GetClosest(_handData.Location3D);
+
+                        //export data to file
+                        _dataExporter.SetTrialData(_speakerController.GetSpeakerId(), closest, distance, time, _handData.Location3D);
 
                         if (!_experimentIsRunning)
                             return;
@@ -182,6 +211,9 @@ namespace HandTracking.Implementation.Core
 
                 //signal speaker controller to re-shuffle speaker flags for new condition
                 _speakerController.SignalConditionEnded(true);
+
+                //close condition stream
+                _dataExporter.CloseStream();
             }
 
             Console.WriteLine(@"Experiment ended.");
@@ -190,14 +222,22 @@ namespace HandTracking.Implementation.Core
 
         private void ProcessingThread()
         {
-            //selected speaker location
             //TODO: catch exception
-            _speakerController.PlaySounds(0);
+            _speakerController.PlaySounds();
+
+            double distance = 50;
+            PXCMPoint3DF32 handPosition;
             while (_isProcessing)
             {
 
-                if (!_handData.HandDetected) continue;
-                var handPosition = _handData.Location3D;
+                //if hand is not detected, set the distance to maximum
+                if (!_handData.HandDetected)
+                {
+                    _speakerController.SetDistance(50);
+                    continue;
+                }
+
+                handPosition = _handData.Location3D;
 
 //                Console.WriteLine("Hand position X:" + handPosition.x + " Y:" + handPosition.y + " Z:" + handPosition.z);
 
@@ -207,7 +247,7 @@ namespace HandTracking.Implementation.Core
 //                Console.WriteLine("Speaker X:" + speakerPosition.x + " Y:" + speakerPosition.y + " Z:" + speakerPosition.z);
                     
                 //calculate distance between hand and speaker
-                var distance = GetDistance(handPosition, speakerPosition);
+                distance = SpeakerController.GetDistance(handPosition, speakerPosition);
 
                 Console.WriteLine(@"Distance: " + distance);
 
@@ -216,20 +256,7 @@ namespace HandTracking.Implementation.Core
             }
         }
 
-        /// <summary>
-        ///     Method that returns the distance between two points in 3D space. The two points must
-        ///     be measured in the same units. (e.g. either meters or millimeters)
-        /// </summary>
-        /// <param name="point1">First point</param>
-        /// <param name="point2">Second point</param>
-        /// <returns>The distance in the unit of measurement between the two points in cm (assumming points are measured in mm)</returns>
-        private double GetDistance(PXCMPoint3DF32 point1, PXCMPoint3DF32 point2)
-        {
-            //TODO: there is a gap between centre of hand and centre of marker - aprox 3cm
-            return
-                Math.Sqrt(Math.Pow(point1.x - point2.x, 2) + Math.Pow(point1.y - point2.y, 2) +
-                          Math.Pow(point1.z - point2.z, 2))/10 - Offset;
-        }
+        
 
         #region main variables
 
@@ -237,6 +264,8 @@ namespace HandTracking.Implementation.Core
         private readonly SpeakerController _speakerController;
         private readonly Thread _experimentThread;
         private Thread _processingThread;
+        private DataExporter _dataExporter;
+        private Participant _participant;
 
         //other vars
         private readonly Stopwatch _stopwatch;
@@ -256,7 +285,6 @@ namespace HandTracking.Implementation.Core
         private Tracking _handtracking;
         private HandTrackingData _handData;
 
-        private static readonly int Offset = 3;
         #endregion
 
         #region settings vars

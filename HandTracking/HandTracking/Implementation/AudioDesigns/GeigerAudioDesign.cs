@@ -73,6 +73,15 @@ namespace HandTracking.Implementation.AudioDesigns
         }
 
         /// <summary>
+        /// Method that returns the string representation of the audio design.
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString()
+        {
+            return "GEI_DYNA_IND";
+        }
+
+        /// <summary>
         ///     Method that sets the distance between hand and target speaker. It selects the appropriate
         ///     file to be played according to the distance and calls the Play method.
         /// </summary>

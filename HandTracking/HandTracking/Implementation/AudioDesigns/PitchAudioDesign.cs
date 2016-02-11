@@ -92,12 +92,12 @@ namespace HandTracking.Implementation.AudioDesigns
 
         public override void StopPlayback()
         {
+            _timer?.Dispose();
             if (_stream != 0)
             {
                 Speaker?.StopPlayback(_stream);
                 _stream = 0;
             }
-            _timer?.Dispose();
         }
        
         /// <summary>
@@ -148,6 +148,15 @@ namespace HandTracking.Implementation.AudioDesigns
             }
 
             return _files[0];
+        }
+
+        /// <summary>
+        /// Method that returns the string representation of the audio design.
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString()
+        {
+            return "PIT_DYNA_IND";
         }
 
         /// <summary>

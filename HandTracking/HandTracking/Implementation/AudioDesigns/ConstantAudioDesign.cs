@@ -73,6 +73,15 @@ namespace HandTracking.Implementation.AudioDesigns
         }
 
         /// <summary>
+        /// Method that returns the string representation of the audio design.
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString()
+        {
+            return "CONST_STAT_IND";
+        }
+
+        /// <summary>
         ///     Method that sets the current distance between speaker and hand.
         ///     Not used in constant design.
         /// </summary>

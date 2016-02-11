@@ -11,7 +11,7 @@ namespace HandTrackingTests.Implementation.Core
         public void ConditionImplTestTrials()
         {
             int trials = 3;
-            ConditionImpl impl = new ConditionImpl(trials);
+            var impl = new ConditionImpl(trials);
 
             Assert.Equals(impl.NumberOfTrials, trials);
         }
@@ -33,7 +33,7 @@ namespace HandTrackingTests.Implementation.Core
             int trials = 3;
             ConditionImpl impl = new ConditionImpl(trials);
 
-            Assert.Equals(impl.ConditionId, 0);
+            Assert.AreEqual(impl.ConditionId, 2);
         }
     }
 }

@@ -79,7 +79,7 @@ namespace HandTracking.Implementation.MarkerTracking
                 throw new MarkerTrackingException(@"Failed to create projection.");
 
             _markerDetector = new MarkerDetector();
-            if (_markerDetector == null)
+            if (_markerDetector == null) 
                 throw new MarkerTrackingException(@"Failed to initialize the Aruco Marker Detector.");
 
             IsInitialized = true;
@@ -189,6 +189,8 @@ namespace HandTracking.Implementation.MarkerTracking
                     Console.WriteLine(@"Marker " + detectedMarkers[point].Id + @" has coordinates: X:" + v.x + @" Y:" +
                                       v.y +
                                       @" Z:" + v.z);
+                    Console.WriteLine("Distance to camera: " + GetDistance(_cameraCoordinate, v));
+                    
                     _markerData.AddMarker(detectedMarkers[point].Id, v);
                 }
             }
@@ -196,6 +198,14 @@ namespace HandTracking.Implementation.MarkerTracking
             color.Dispose();
             depth.Dispose();
             colorOcv.Dispose();
+        }
+
+        private double GetDistance(PXCMPoint3DF32 point1, PXCMPoint3DF32 point2)
+        {
+            //TODO: there is a gap between centre of hand and centre of marker - aprox 3cm
+            return
+                Math.Sqrt(Math.Pow(point1.x - point2.x, 2) + Math.Pow(point1.y - point2.y, 2) +
+                          Math.Pow(point1.z - point2.z, 2)) / 10;
         }
 
         /// <summary>
@@ -283,6 +293,9 @@ namespace HandTracking.Implementation.MarkerTracking
 
         //aruco detector
         private MarkerDetector _markerDetector;
+
+        //camera coordinates
+        private PXCMPoint3DF32 _cameraCoordinate = new PXCMPoint3DF32(0, 0, 0);
 
         #endregion
 

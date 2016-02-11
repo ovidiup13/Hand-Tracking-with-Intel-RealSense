@@ -46,7 +46,7 @@
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>bin\x64\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
     <DebugType>full</DebugType>
     <PlatformTarget>x64</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
@@ -145,6 +145,7 @@
     <Compile Include="Implementation\Core\ConditionImpl.cs" />
     <Compile Include="Implementation\AudioDesigns\GeigerAudioDesign.cs" />
     <Compile Include="Implementation\Core\MainExperiment.cs" />
+    <Compile Include="Implementation\Data\DataExporter.cs" />
     <Compile Include="Implementation\HandTracking\HandTrackingData.cs" />
     <Compile Include="Implementation\HandTracking\HandTrackingException.cs" />
     <Compile Include="Implementation\HandTracking\HandTrackingImpl.cs" />
