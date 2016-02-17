@@ -48,6 +48,23 @@ namespace HandTracking.Interfaces.AudioController
         }
 
         /// <summary>
+        /// Plays the confirmation sound.
+        /// </summary>
+        public void PlayConfirm()
+        {
+            int confirmStream = Bass.BASS_StreamCreateFile(ConfirmFile, 0L, 0L,
+                SpeakerFlag | BASSFlag.BASS_STREAM_AUTOFREE);
+
+            if (confirmStream == 0)
+            {
+                throw new AudioException("Confirm stream encountered an error. Error: " + Bass.BASS_ErrorGetCode());
+            }
+
+            //play the confirm sound
+            Bass.BASS_ChannelPlay(confirmStream, true);
+        }
+
+        /// <summary>
         ///     Method that returns the position of the speaker.
         /// </summary>
         /// <returns></returns>
@@ -88,6 +105,8 @@ namespace HandTracking.Interfaces.AudioController
         protected PXCMPoint3DF32 Position;
 
         protected int Id;
+
+        protected static readonly string ConfirmFile = "Sounds\\confirm.wav";
 
         #endregion
     }

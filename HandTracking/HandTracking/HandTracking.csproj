@@ -143,6 +143,8 @@
     <Compile Include="Implementation\AudioDesigns\Constant\ConstantCoalescent.cs" />
     <Compile Include="Implementation\AudioDesigns\Geiger\GeigerCoalescent.cs" />
     <Compile Include="Implementation\AudioDesigns\Geiger\GeigerIndividual.cs" />
+    <Compile Include="Implementation\AudioDesigns\Pitch\PitchCoalescent.cs" />
+    <Compile Include="Implementation\AudioDesigns\Pitch\PitchIndividual.cs" />
     <Compile Include="Interfaces\AudioController\Designs\ConstantDesign.cs" />
     <Compile Include="Implementation\AudioDesigns\Constant\ConstantIndividual.cs" />
     <Compile Include="Interfaces\AudioController\Designs\PitchDesign.cs" />
@@ -293,9 +295,6 @@
     <Content Include="Sounds\sound.wav" />
   </ItemGroup>
   <ItemGroup />
-  <ItemGroup>
-    <WCFMetadata Include="Service References\" />
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>

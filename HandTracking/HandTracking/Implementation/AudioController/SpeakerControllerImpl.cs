@@ -25,7 +25,7 @@ namespace HandTracking.Implementation.AudioController
                 throw new Exception("An error occurred while initializing the BASS library.");
             }
 
-            Bass.BASS_SetConfig(BASSConfig.BASS_CONFIG_GVOL_STREAM, 500);
+            Bass.BASS_SetConfig(BASSConfig.BASS_CONFIG_GVOL_STREAM, 100);
             Console.WriteLine(@"Volume is : " + Bass.BASS_GetVolume());
 
             //location of speakerLocations
@@ -77,8 +77,17 @@ namespace HandTracking.Implementation.AudioController
         public override void NextSpeaker()
         {
             _audioDesign.StopPlayback();
-            _audioDesign.SetSpeaker(_speakers[_currentIndex++]);
+            _targetSpeaker = _speakers[_currentIndex++];
+            _audioDesign.SetSpeaker(_targetSpeaker);
             Thread.Sleep(2000);
+        }
+
+        /// <summary>
+        ///     Method that plays a sound through the target speaker indicating that the current feedback has ended.
+        /// </summary>
+        public override void PlayConfirm()
+        {
+            _targetSpeaker?.PlayConfirm();
         }
 
         /// <summary>
@@ -117,6 +126,7 @@ namespace HandTracking.Implementation.AudioController
             _audioDesign.StopPlayback();
             _currentIndex = 0;
             _audioDesign = null;
+            _targetSpeaker = null;
             _speakerIndexes = ShuffleArray(_speakerIndexes);
         }
 
@@ -129,6 +139,7 @@ namespace HandTracking.Implementation.AudioController
         {
             _audioDesign.StopPlayback();
             _currentIndex = 0;
+            _targetSpeaker = null;
             _speakerIndexes = ShuffleArray(_speakerIndexes);
         }
 
@@ -210,17 +221,18 @@ namespace HandTracking.Implementation.AudioController
         private List<SpeakerImpl> _speakers;
         private int[] _speakerIndexes;
         private int _currentIndex;
+        private Speaker _targetSpeaker;
 
         //BASSFlags
         private static readonly List<BASSFlag> SpeakerFlags = new List<BASSFlag>
         {
+            BASSFlag.BASS_SPEAKER_REAR2LEFT, //7
             BASSFlag.BASS_SPEAKER_REARRIGHT, //6
+            BASSFlag.BASS_SPEAKER_REARLEFT, //5
             BASSFlag.BASS_SPEAKER_LFE, //4
             BASSFlag.BASS_SPEAKER_CENTER, //3
-            BASSFlag.BASS_SPEAKER_FRONTLEFT, //7
-            BASSFlag.BASS_SPEAKER_REARLEFT, //5
-            BASSFlag.BASS_SPEAKER_RIGHT, // 2
-            BASSFlag.BASS_SPEAKER_LEFT // 1
+            BASSFlag.BASS_SPEAKER_FRONTLEFT, //1???
+            BASSFlag.BASS_SPEAKER_FRONTRIGHT //2???
         };
 
         //audio design 

@@ -8,8 +8,5 @@ namespace HandTracking.Implementation.AudioController
 {
     public class SpeakerSettingsImpl : Interfaces.AudioController.SpeakerSettings
     {
-
-
-
     }
 }

@@ -12,9 +12,9 @@ namespace HandTracking.Interfaces.AudioController.Designs
         /// </summary>
         protected GeigerDesign()
         {
-            _file = "Sounds/Pluck/obj8p.wav";
+            File = "Sounds/Pluck/obj8p.wav";
 
-            CheckFile(_file);
+            CheckFile(File);
         }
 
         /// <summary>
@@ -24,28 +24,8 @@ namespace HandTracking.Interfaces.AudioController.Designs
         protected GeigerDesign(string file)
         {
             CheckFile(file);
-            _file = file;
-        }
-
-
-        public override void Play()
-        {
-            //check speaker
-            if (Speaker == null)
-            {
-                throw new NullReferenceException("Speaker cannot be null.");
-            }
-
-            //create stream
-            _stream = Bass.BASS_StreamCreateFile(_file, 0L, 0L, Speaker.GetFlag());
-
-            //check stream
-            if (_stream == 0)
-                throw new AudioException("Stream error. Stream cannot be zero. ERROR: " + Bass.BASS_ErrorGetCode());
-
-            //play file
-            _timer = new Timer(obj => { Speaker.Play(_stream); }, null, 50, _currentInterval);
-        }
+            File = file;
+        }    
 
         /// <summary>
         ///     Method that checks if all files exist.
@@ -53,7 +33,7 @@ namespace HandTracking.Interfaces.AudioController.Designs
         /// <param name="file">File path passed as argument to the audio design.</param>
         private static void CheckFile(string file)
         {
-            if (!File.Exists(file))
+            if (!System.IO.File.Exists(file))
                 throw new AudioException("File does not exist: " + file);
         }
 
@@ -62,13 +42,28 @@ namespace HandTracking.Interfaces.AudioController.Designs
         /// </summary>
         public override void StopPlayback()
         {
-            _timer?.Dispose();
-            _timer = null;
-            if (_stream != 0)
+            Timer?.Dispose();
+            Timer = null;
+            if (Stream != 0)
             {
-                Speaker?.StopPlayback(_stream);
-                _stream = 0;
+                Speaker?.StopPlayback(Stream);
+                Stream = 0;
             }
+        }
+
+        public override void Play()
+        {
+            //check speaker
+            if (Speaker == null)
+                throw new NullReferenceException("Speaker cannot be null.");
+
+            //create stream
+            Stream = Bass.BASS_StreamCreateFile(File, 0L, 0L, Speaker.GetFlag());
+
+            //check stream
+            if (Stream == 0)
+                throw new AudioException("Stream error. Stream cannot be zero. ERROR: " + Bass.BASS_ErrorGetCode());
+
         }
 
         /// <summary>
@@ -77,80 +72,60 @@ namespace HandTracking.Interfaces.AudioController.Designs
         /// <returns></returns>
         public override string ToString()
         {
-            return "GEI_DYNA_IND";
+            return "GEI_DYNA";
         }
 
-        /// <summary>
-        ///     Method that sets the distance between hand and target speaker. It selects the appropriate
-        ///     file to be played according to the distance and calls the Play method.
-        /// </summary>
-        /// <param name="distance"></param>
-        public override void SetDistance(double distance)
+        protected int GetInterval(double distance)
         {
-            //get interval based on distance
-            var interval = GetInterval(distance);
-
-            //if we have the same interval, we don't update the timer
-            if (_currentInterval == interval)
-                return;
-
-            _currentInterval = interval;
-
-            //update timer
-            _timer?.Change(170, _currentInterval);
-        }
-
-        private int GetInterval(double distance)
-        {
-            if (distance > 40 || distance < 0)
+            if (distance > 45)
             {
                 return 900;
             }
 
-            if (distance > 35 && distance < 40)
+            if (distance > 40 && distance < 45)
             {
                 return 800;
             }
 
-            if (distance > 30 && distance < 35)
+            if (distance > 35 && distance < 40)
             {
                 return 700;
             }
 
-            if (distance > 25 && distance < 30)
+            if (distance > 30 && distance < 35)
             {
                 return 600;
             }
 
-            if (distance > 20 && distance < 25)
+            if (distance > 25 && distance < 30)
             {
                 return 500;
             }
 
-            if (distance > 15 && distance < 20)
+            if (distance > 20 && distance < 25)
             {
                 return 400;
             }
 
-            if (distance > 10 && distance < 15)
+            if (distance > 15 && distance < 20)
             {
                 return 300;
             }
 
-            if (distance < 10)
+            if (distance > 7.5 && distance < 15)
             {
                 return 200;
             }
 
-            return 900;
+            return 100;
         }
 
         #region vars
 
-        private Timer _timer;
-        private int _currentInterval = 900;
-        private readonly string _file;
-        private int _stream;
+        protected Timer Timer;
+        protected int CurrentInterval = 900;
+        protected readonly string File;
+        protected int Stream;
 
         #endregion
     }

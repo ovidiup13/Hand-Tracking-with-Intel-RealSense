@@ -18,6 +18,11 @@ namespace HandTracking.Interfaces.AudioController
         public abstract void NextSpeaker();
 
         /// <summary>
+        /// Method that plays a confirmation sound indication for end of current trial speaker.
+        /// </summary>
+        public abstract void PlayConfirm();
+
+        /// <summary>
         ///     Set the Audio design for the current condition.
         /// </summary>
         /// <param name="audioDesign"></param>

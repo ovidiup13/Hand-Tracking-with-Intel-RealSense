@@ -1,5 +1,4 @@
 ﻿using System;
-using System.CodeDom;
 using System.Diagnostics;
 using System.Threading;
 using HandTracking.Implementation.Data;
@@ -52,7 +51,7 @@ namespace HandTracking.Implementation.Core
             if (_experimentThread.IsAlive)
                 return;
 
-            
+
             _experimentThread.Start();
         }
 
@@ -187,6 +186,7 @@ namespace HandTracking.Implementation.Core
 
                         //reset stopwatch
                         _stopwatch.Reset();
+                        _speakerController.PlayConfirm();
 
                         //add data
                         var speakerPosition = _speakerController.GetSpeakerPosition();

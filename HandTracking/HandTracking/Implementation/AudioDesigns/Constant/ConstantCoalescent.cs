@@ -25,31 +25,31 @@ namespace HandTracking.Implementation.AudioDesigns.Constant
         public void PlayBoth()
         {
             //create stream
-            _stream2 = Bass.BASS_StreamCreateFile(_file, 0L, 0L, WristSpeaker.GetFlag());
+            Stream2 = Bass.BASS_StreamCreateFile(_file, 0L, 0L, WristSpeaker.GetFlag());
 
             //check stream
-            if (_stream2 == 0)
+            if (Stream2 == 0)
                 throw new AudioException("Stream error. Stream cannot be zero. ERROR: " + Bass.BASS_ErrorGetCode());
 
             //play file
-            _timer = new Timer(obj => { Speaker.Play(_stream); }, null, 200, _interval);
+            _timer = new Timer(obj => { Speaker.Play(_stream); }, null, 0, _interval);
 
             //wait 100 ms
-            Thread.Sleep(100);
+//            Thread.Sleep(100);
 
             //play wrist stream
-            _timer2 = new Timer(obj => { WristSpeaker.Play(_stream2); }, null, 200, _interval);
+            Timer2 = new Timer(obj => { WristSpeaker.Play(Stream2); }, null, 100, _interval);
         }
 
         public override void StopPlayback()
         {
             base.StopPlayback();
-            _timer2?.Dispose();
-            _timer2 = null;
-            if (_stream2 != 0)
+            Timer2?.Dispose();
+            Timer2 = null;
+            if (Stream2 != 0)
             {
-                WristSpeaker?.StopPlayback(_stream2);
-                _stream2 = 0;
+                WristSpeaker?.StopPlayback(Stream2);
+                Stream2 = 0;
             }
         }
 
@@ -70,8 +70,8 @@ namespace HandTracking.Implementation.AudioDesigns.Constant
 
         #region vars
 
-        private Timer _timer2;
-        private int _stream2;
+        protected Timer Timer2;
+        protected int Stream2;
 
         #endregion
     }

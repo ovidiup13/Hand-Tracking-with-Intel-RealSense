@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Input;
 using HandTracking.Implementation.AudioController;
-using HandTracking.Implementation.AudioDesigns.Constant;
+using HandTracking.Implementation.AudioDesigns.Pitch;
 using HandTracking.Implementation.Core;
 using HandTracking.Implementation.Data;
 using HandTracking.Interfaces.AudioController;
@@ -33,7 +33,7 @@ namespace HandTracking
         {
             //TODO: conditions must be initialized in another method
             //create a list of conditions
-            AudioDesign audioDesign = new ConstantCoalescent();
+            AudioDesign audioDesign = new PitchCoalescent();
 
             var conditions = new List<ConditionImpl>();
             for (var i = 0; i < 2; i++)

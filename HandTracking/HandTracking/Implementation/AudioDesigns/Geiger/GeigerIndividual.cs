@@ -1,20 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Threading;
 using HandTracking.Interfaces.AudioController;
 using HandTracking.Interfaces.AudioController.Designs;
+using Un4seen.Bass;
 
 namespace HandTracking.Implementation.AudioDesigns.Geiger
 {
-    class GeigerIndividual : GeigerDesign, INdividualDesign
+    internal class GeigerIndividual : GeigerDesign, INdividualDesign
     {
-
         /// <summary>
         ///     Constructor that initializes a new geiger audio design with default sounds.
         /// </summary>
-        public GeigerIndividual() : base()
+        public GeigerIndividual()
         {
         }
 
@@ -28,7 +25,45 @@ namespace HandTracking.Implementation.AudioDesigns.Geiger
 
         public void PlayIndividual()
         {
-            throw new NotImplementedException();
+            //update timer
+            Timer?.Change(170, CurrentInterval);
         }
+
+        public override void Play()
+        {
+            base.Play();
+
+            //play file
+            Timer = new Timer(obj => { Speaker.Play(Stream); }, null, 50, CurrentInterval);
+        }
+
+        /// <summary>
+        ///     Method that sets the distance between hand and target speaker. It selects the appropriate
+        ///     file to be played according to the distance and calls the Play method.
+        /// </summary>
+        /// <param name="distance"></param>
+        public override void SetDistance(double distance)
+        {
+            //get interval based on distance
+            var interval = GetInterval(distance);
+
+            //if we have the same interval, we don't update the timer
+            if (CurrentInterval == interval)
+                return;
+
+            CurrentInterval = interval;
+
+            PlayIndividual();
+        }
+
+        /// <summary>
+        ///     Method that returns the string representation of the audio design.
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString()
+        {
+            return base.ToString() + "_IND";
+        }
+
     }
 }
