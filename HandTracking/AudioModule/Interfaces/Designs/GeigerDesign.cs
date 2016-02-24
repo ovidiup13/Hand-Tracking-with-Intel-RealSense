@@ -45,7 +45,7 @@ namespace AudioModule.Interfaces.Designs
             Timer = null;
             if (Stream != 0)
             {
-                Speaker?.StopPlayback(Stream);
+                Speaker.StopPlayback(Stream);
                 Stream = 0;
             }
         }

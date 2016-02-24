@@ -1,7 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using AudioModule.Interfaces;
+using CameraModule.Annotations;
+using MarkerTracking.Implementation;
 using Un4seen.Bass;
 
 namespace AudioModule.Implementation.AudioController
@@ -13,23 +19,30 @@ namespace AudioModule.Implementation.AudioController
     TODO: release all audio resources (BASS) before exit
         */
 
-    internal class SpeakerControllerImpl : SpeakerController
+    public class SpeakerControllerImpl : SpeakerController, INotifyPropertyChanged
     {
-        public SpeakerControllerImpl(Dictionary<int, PXCMPoint3DF32> speakerLocations)
+        /// <summary>
+        ///     No args constructor initializes the default soundcard and sets a default volume.
+        /// </summary>
+        public SpeakerControllerImpl()
         {
-            
+            InitializeSoundCard(DefaultSoundCard);
+            SetVolume(DefaultVolume);
+        }
+
+        public SpeakerControllerImpl(ObservableCollection<Marker> speakerLocations)
+        {
             //location of speakerLocations
-            _speakerLocations = speakerLocations;
+            _speakerLocations = speakerLocations.ToList();
 
             //initialize default sound card
-            InitializeSoundCard(DefaultSoundCard);
 
-            //set the default volume
-            SetVolume(DefaultVolume);
 
             //initialize the speakers
-            InitializeSpeakers(speakerLocations.Count);          
+            InitializeSpeakers(speakerLocations.Count);
         }
+
+        public event PropertyChangedEventHandler PropertyChanged;
 
         /// <summary>
         ///     Initializes the Speaker objects and maps them to flags.
@@ -39,25 +52,25 @@ namespace AudioModule.Implementation.AudioController
         {
             Console.WriteLine(@"Initializing speakers...");
 
+            //create a new list of speakers
             _speakers = new List<SpeakerImpl>(numberOfSpeakers);
             _speakerIndexes = new int[numberOfSpeakers];
 
-            var locations = new List<int>(_speakerLocations.Keys);
+//            var locations = new List<int>(_speakerLocations.Keys);
 
             for (var i = 0; i < numberOfSpeakers; i++)
             {
                 _speakerIndexes[i] = i;
 
-//                Console.WriteLine(SpeakerFlags[i].ToString());
-                var id = locations[i];
+//                var id = locations[i];
                 PXCMPoint3DF32 position;
 
                 //get position
-                _speakerLocations.TryGetValue(id, out position);
+//                _speakerLocations.TryGetValue(id, out position);
 
                 //TODO: initialize speaker with correct flag after implementation of mapping
                 //create a new speaker, add it to the list
-                _speakers.Add(new SpeakerImpl(id, SpeakerFlags[i], position));
+                _speakers.Add(new SpeakerImpl(SpeakerFlags[i]));
             }
 
             //randomize speakers indexes
@@ -189,7 +202,6 @@ namespace AudioModule.Implementation.AudioController
             return id;
         }
 
-
         /// <summary>
         ///     Method that returns a reshuffled array of indexes.
         /// </summary>
@@ -208,19 +220,39 @@ namespace AudioModule.Implementation.AudioController
             return array;
         }
 
+        [NotifyPropertyChangedInvocator]
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
         #region vars
 
         //speaker locations
-        private readonly Dictionary<int, PXCMPoint3DF32> _speakerLocations;
+        private List<Marker> _speakerLocations;
+
+        public List<Marker> SpeakerLocations
+        {
+            get { return _speakerLocations; }
+
+            set
+            {
+                if (value != null)
+                    _speakerLocations = value;
+
+                OnPropertyChanged(nameof(SpeakerLocations));
+            }
+        }
 
         //list of Speaker instances
         private List<SpeakerImpl> _speakers;
+
         private int[] _speakerIndexes;
         private int _currentIndex;
         private Speaker _targetSpeaker;
 
         //BASSFlags
-        private static readonly List<BASSFlag> SpeakerFlags = new List<BASSFlag>
+        public static readonly List<BASSFlag> SpeakerFlags = new List<BASSFlag>
         {
             BASSFlag.BASS_SPEAKER_REAR2LEFT, //7
             BASSFlag.BASS_SPEAKER_REARRIGHT, //6

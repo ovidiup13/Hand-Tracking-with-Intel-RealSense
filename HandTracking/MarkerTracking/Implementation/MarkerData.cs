@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Windows.Data;
 using CameraModule.Interfaces.Module;
 
 namespace MarkerTracking.Implementation
@@ -10,7 +12,8 @@ namespace MarkerTracking.Implementation
         /// </summary>
         internal MarkerData()
         {
-            Markers = new Dictionary<int, PXCMPoint3DF32>();
+//            Markers = new Dictionary<int, PXCMPoint3DF32>();
+//              Markers = new ObservableCollection<Marker> {new Marker(1, new PXCMPoint3DF32(1, 2, 3))};
         }
 
         /// <summary>
@@ -36,7 +39,7 @@ namespace MarkerTracking.Implementation
 
             lock (_lock1)
             {
-                //if it contains the marker 
+                /*//if it contains the marker 
                 if (Markers.ContainsKey(id))
                 {
                     //update its position
@@ -44,17 +47,19 @@ namespace MarkerTracking.Implementation
                 }
                 //otherwise, add it to the dictionary
                 else
-                {
-                    Markers.Add(id, position);
-                }
+                {*/
+//                    Markers.Add(new Marker(id, position));
+               // }
             }
         }
+
+
 
         #region vars
 
         private readonly object _lock1 = new object();
 
-        public Dictionary<int, PXCMPoint3DF32> Markers { get; }
+        public ObservableCollection<Marker> Markers { get; }
 
         #endregion
     }

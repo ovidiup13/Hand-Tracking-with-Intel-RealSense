@@ -37,7 +37,7 @@ namespace AudioModule.Interfaces.Designs
         ///     Method that checks if all files exist.
         /// </summary>
         /// <param name="files">List of files passed as argument to the audio design.</param>
-        private void CheckFiles(List<string> files)
+        private static void CheckFiles(List<string> files)
         {
             if (files.Count < 8)
                 throw new AudioException("Dynamic Pitch must contain at least 8 audio files.");
@@ -65,7 +65,7 @@ namespace AudioModule.Interfaces.Designs
             Timer?.Dispose();
             if (Stream != 0)
             {
-                Speaker?.StopPlayback(Stream);
+                Speaker.StopPlayback(Stream);
                 Stream = 0;
             }
         }

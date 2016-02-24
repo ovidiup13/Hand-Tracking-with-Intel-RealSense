@@ -2,9 +2,9 @@
 using System.Runtime.CompilerServices;
 using CameraModule.Annotations;
 
-namespace CameraModule.Interfaces.Module
+namespace CameraModule.Interfaces.Settings
 {
-    public class IData : INotifyPropertyChanged
+    public abstract class AudioSettings : ISettings
     {
         public event PropertyChangedEventHandler PropertyChanged;
 

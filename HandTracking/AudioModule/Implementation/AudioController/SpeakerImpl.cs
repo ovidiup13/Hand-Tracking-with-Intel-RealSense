@@ -1,5 +1,6 @@
 ﻿using System;
 using AudioModule.Interfaces;
+using MarkerTracking.Implementation;
 using Un4seen.Bass;
 
 namespace AudioModule.Implementation.AudioController
@@ -18,27 +19,14 @@ namespace AudioModule.Implementation.AudioController
         /// <summary>
         ///     Constructor for speaker implementation.
         /// </summary>
+        /// <param name="marker">marker object assigned to speaker</param>
         /// <param name="flag">speaker flag</param>
-        /// <param name="position">3D position</param>
-        public SpeakerImpl(BASSFlag flag, PXCMPoint3DF32 position)
+        public SpeakerImpl(Marker marker, BASSFlag flag)
         {
-            Position = position;
-            SpeakerFlag = flag;
-        }
-
-        /// <summary>
-        ///     Constructor for speaker implementation.
-        /// </summary>
-        /// <param name="id">marker id</param>
-        /// <param name="flag">speaker flag</param>
-        /// <param name="position">3D position</param>
-        public SpeakerImpl(int id, BASSFlag flag, PXCMPoint3DF32 position)
-        {
-            Id = id;
-            Position = position;
+            Marker = marker;
             SpeakerFlag = flag;
 
-            Console.WriteLine(@"Speaker initialized with id: " + Id + @", speaker: " + SpeakerFlag);
+            Console.WriteLine(@"Speaker initialized with id: " + Marker.Id + @", speaker: " + SpeakerFlag);
         }
     }
 }

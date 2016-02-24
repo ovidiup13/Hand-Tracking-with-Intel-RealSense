@@ -38,7 +38,7 @@ namespace AudioModule.Implementation.AudioDesigns.Constant
 //            Thread.Sleep(100);
 
             //play wrist stream
-            Timer2 = new Timer(obj => { WristSpeaker.Play(Stream2); }, null, 100, _interval);
+            Timer2 = new Timer(obj => { Speaker.Play(Stream2); }, null, 100, _interval);
         }
 
         public override void StopPlayback()
@@ -48,7 +48,7 @@ namespace AudioModule.Implementation.AudioDesigns.Constant
             Timer2 = null;
             if (Stream2 != 0)
             {
-                WristSpeaker?.StopPlayback(Stream2);
+                Speaker.StopPlayback(Stream2);
                 Stream2 = 0;
             }
         }

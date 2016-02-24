@@ -1,4 +1,8 @@
-﻿namespace CameraModule.Interfaces.Settings
+﻿using System.ComponentModel;
+using System.Runtime.CompilerServices;
+using CameraModule.Annotations;
+
+namespace CameraModule.Interfaces.Settings
 {
     public class CameraSettings : ISettings
     {
@@ -47,5 +51,13 @@
         private static readonly int _defaultFps = 60;
 
         #endregion
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        [NotifyPropertyChangedInvocator]
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
     }
 }

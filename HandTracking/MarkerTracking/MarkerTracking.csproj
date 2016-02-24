@@ -59,6 +59,7 @@
       <HintPath>..\packages\OpenCV.Net.3.3.0\lib\net40\OpenCV.Net.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
@@ -68,13 +69,16 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Implementation\Marker.cs" />
     <Compile Include="Implementation\MarkerData.cs" />
     <Compile Include="Implementation\MarkerTrackingException.cs" />
     <Compile Include="Implementation\MarkerTrackingImpl.cs" />
     <Compile Include="Implementation\MarkerTrackingModule.cs" />
     <Compile Include="Implementation\MarkerTrackingSettings.cs" />
+    <Compile Include="MarkerTrackingViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -1,10 +1,13 @@
 ﻿using System;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using System.Threading;
+using CameraModule.Annotations;
 using CameraModule.Interfaces.Settings;
 
 namespace CameraModule.Interfaces.Module
 {
-    public abstract class Tracking
+    public abstract class Tracking : INotifyPropertyChanged
     {
         /// <summary>
         ///     Method that sets and gets the IData field for this Tracking instance.
@@ -64,6 +67,8 @@ namespace CameraModule.Interfaces.Module
         /// <returns></returns>
         public abstract IData GetData();
 
+    
+
         #region private vars
 
         private IData _data;
@@ -80,11 +85,33 @@ namespace CameraModule.Interfaces.Module
 
         #region threading vars
 
-        public bool IsProcessing { get; protected set; }
+        private bool _isProcessing;
+
+        public bool IsProcessing
+        {
+            get
+            {
+                return _isProcessing;
+            }
+
+            set
+            {
+                _isProcessing = value;
+                OnPropertyChanged(nameof(IsProcessing));
+            }
+        }
         protected bool IsInitialized;
         protected Thread ProcessingThread;
         protected bool ProcessingFlag;
 
         #endregion
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        [NotifyPropertyChangedInvocator]
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
     }
 }

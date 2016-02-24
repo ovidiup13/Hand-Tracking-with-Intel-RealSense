@@ -8,13 +8,15 @@ namespace HandModule.Implementation.HandTracking
     /// </summary>
     public class HandTrackingModule : IModule
     {
+        private static HandTrackingImpl _tracking;
+
         /// <summary>
         /// Method that returns an instace of Tracking object, with default settings.
         /// </summary>
         /// <returns>Instance of Tracking object</returns>
-        public override Tracking GetInstance()
+        public Tracking GetInstance()
         {
-            return Tracking ?? (Tracking = new HandTrackingImpl());
+            return _tracking ?? (_tracking = new HandTrackingImpl());
         }
 
         /// <summary>
@@ -22,9 +24,9 @@ namespace HandModule.Implementation.HandTracking
         /// </summary>
         /// <param name="settings">An ISettings object specifying settings for the Tracking feature.</param>
         /// <returns></returns>
-        public override Tracking GetInstance(ISettings settings)
+        public Tracking GetInstance(ISettings settings)
         {
-            return Tracking ?? (Tracking = new HandTrackingImpl(settings));
+            return _tracking ?? (_tracking = new HandTrackingImpl(settings));
         }
     }
 }

@@ -54,7 +54,7 @@ namespace AudioModule.Implementation.AudioDesigns.Pitch
             Timer2 = null;
             if (Stream2 != 0)
             {
-                WristSpeaker?.StopPlayback(Stream2);
+                Speaker.StopPlayback(Stream2);
                 Stream2 = 0;
             }
         }
@@ -86,7 +86,7 @@ namespace AudioModule.Implementation.AudioDesigns.Pitch
 
             //play file
             Timer = new Timer(obj => { Speaker.Play(Stream); }, null, 0, Rate);
-            Timer2 = new Timer(obj => { WristSpeaker.Play(Stream2); }, null, Delay, Rate);
+            Timer2 = new Timer(obj => { Speaker.Play(Stream2); }, null, Delay, Rate);
         }
 
         #region vars

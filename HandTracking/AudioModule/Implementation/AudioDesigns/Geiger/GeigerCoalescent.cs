@@ -50,7 +50,7 @@ namespace AudioModule.Implementation.AudioDesigns.Geiger
                 throw new AudioException("Stream error. Stream cannot be zero. ERROR: " + Bass.BASS_ErrorGetCode());
 
             Timer = new Timer(obj => { Speaker.Play(Stream); }, null, 50, CurrentInterval);
-            Timer2 = new Timer(obj => { WristSpeaker.Play(Stream2); }, null, Delay, CurrentInterval);
+            Timer2 = new Timer(obj => { Speaker.Play(Stream2); }, null, Delay, CurrentInterval);
         }
 
         /// <summary>
@@ -72,7 +72,7 @@ namespace AudioModule.Implementation.AudioDesigns.Geiger
             Timer2 = null;
             if (Stream2 != 0)
             {
-                WristSpeaker?.StopPlayback(Stream2);
+                Speaker.StopPlayback(Stream2);
                 Stream2 = 0;
             }
 

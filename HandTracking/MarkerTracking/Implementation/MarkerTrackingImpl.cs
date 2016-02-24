@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Threading;
 using Aruco.Net;
@@ -16,6 +18,8 @@ namespace MarkerTracking.Implementation
         public delegate void NewImageEventHandler(object sender, NewImageArgs args);
 
         public delegate void NewMarkerEventHandler(object sender, NewMarkerArgs args);
+
+        public delegate void NoMarkerEventHandler(object sender, NewMarkerArgs args);
 
         /// <summary>
         ///     Constructor that instantiates the Marker Tracking class with default settings.
@@ -158,6 +162,11 @@ namespace MarkerTracking.Implementation
 
             //detect markers using Aruco
             var detectedMarkers = _markerDetector.Detect(colorOcv, new CameraParameters());
+            if (detectedMarkers.Count == 0)
+            {
+                NoMarkerAvailable.Invoke(this, new NewMarkerArgs());
+                return;
+            }
 
             var colorPoints = new PXCMPointF32[detectedMarkers.Count];
             var depthPoints = new PXCMPointF32[detectedMarkers.Count];
@@ -178,31 +187,36 @@ namespace MarkerTracking.Implementation
             var vertices = new PXCMPoint3DF32[depth.info.width*depth.info.height];
             _projection.QueryVertices(depth, vertices);
 
+            //collection of markers
+            ObservableCollection<Marker> markers = new ObservableCollection<Marker>();
+
             //go through detected points
             for (var point = 0; point < depthPoints.Length; point++)
             {
                 var detectedPoint = depthPoints[point];
-                if (detectedPoint.x < 0 || detectedPoint.y < 0)
-                {
-//                    Console.WriteLine(@"Marker " + detectedMarkers[point].Id + " is out of range");
-                    //add marker, with out of range position
-                    _markerData.AddMarker(detectedMarkers[point].Id, new PXCMPoint3DF32(-1, -1, -1));
-                }
-                else
-                {
-                    var v = vertices[(int) (depthPoints[point].y*depth.info.width + depthPoints[point].x)];
-                    Console.WriteLine(@"Marker " + detectedMarkers[point].Id + @" has coordinates: X:" + v.x + @" Y:" +
-                                      v.y +
-                                      @" Z:" + v.z);
-                    Console.WriteLine("Distance to camera: " + GetDistance(_cameraCoordinate, v));
+                
+                //ignore out of range
+                if (detectedPoint.x < 0 || detectedPoint.y < 0) continue;
 
-                    //notify that a new marker is available
-                    NewMarkerAvailable?.Invoke(this, new NewMarkerArgs(detectedMarkers[point].Id, v));
 
-                    //add the marker to the data
-                    _markerData.AddMarker(detectedMarkers[point].Id, v);
-                }
+                var v = vertices[(int) (depthPoints[point].y*depth.info.width + depthPoints[point].x)];
+//                Console.WriteLine(@"Marker " + detectedMarkers[point].Id + @" has coordinates: X:" + v.x + @" Y:" +
+//                                  v.y +
+//                                  @" Z:" + v.z);
+                Console.WriteLine("Distance to camera: " + GetDistance(_cameraCoordinate, v));
+
+                //add the marker to the data
+//                _markerData.AddMarker(detectedMarkers[point].Id, v);
+
+                NewMarkerAvailable?.Invoke(this, new NewMarkerArgs(new Marker(detectedMarkers[point].Id, v, colorPoints[point])));
+
+
+                markers.Add(new Marker(detectedMarkers[point].Id, v, colorPoints[point]));
             }
+
+            //notify that a new collection of markers is available
+//            NewMarkerAvailable?.Invoke(this, new NewMarkerArgs(markers));
+            
 
             color.Dispose();
             depth.Dispose();
@@ -255,7 +269,7 @@ namespace MarkerTracking.Implementation
             image.AcquireAccess(PXCMImage.Access.ACCESS_READ, format, out imageData);
 
             // Converting the color image to System.Drawing.Bitmap
-            Bitmap bitmap = imageData.ToBitmap(0, image.info.width, image.info.height);
+            var bitmap = imageData.ToBitmap(0, image.info.width, image.info.height);
             NewImageAvailable?.Invoke(this, new NewImageArgs(PXCMCapture.StreamType.STREAM_TYPE_COLOR, bitmap));
 
             //get image info
@@ -300,7 +314,7 @@ namespace MarkerTracking.Implementation
         }
 
         /// <summary>
-        /// Event arguments class for passing the image bitmap to the main view.
+        ///     Event arguments class for passing the image bitmap to the main view.
         /// </summary>
         public class NewImageArgs : EventArgs
         {
@@ -311,30 +325,34 @@ namespace MarkerTracking.Implementation
             }
 
             public Bitmap Bitmap { get; private set; }
-            public PXCMCapture.StreamType StreamType { get; private set; }
+            private PXCMCapture.StreamType StreamType { get; set; }
         }
 
         /// <summary>
-        /// Event arguments class for passing a new marker to the main view.
+        ///     Event arguments class for passing a new marker to the main view.
         /// </summary>
         public class NewMarkerArgs : EventArgs
         {
-            public NewMarkerArgs(int markerId, PXCMPoint3DF32 position)
-            {
-                Id = markerId;
-                Position = position;
-            }
 
-            public int Id;
-            public PXCMPoint3DF32 Position;
+            public Marker Marker;
+
+            public NewMarkerArgs() { }
+
+            public NewMarkerArgs(Marker marker)
+            {
+                Marker = marker;
+            }
         }
 
         #region tracking vars
 
         private readonly MarkerTrackingSettings _markerTrackingSettings;
         private readonly MarkerData _markerData;
+
+        //event handlers for new image, markers
         public event NewImageEventHandler NewImageAvailable;
         public event NewMarkerEventHandler NewMarkerAvailable;
+        public event NoMarkerEventHandler NoMarkerAvailable;
 
         //aruco detector
         private MarkerDetector _markerDetector;

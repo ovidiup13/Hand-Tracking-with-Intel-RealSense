@@ -1,4 +1,5 @@
-﻿using CameraModule.Interfaces.Settings;
+﻿using System;
+using CameraModule.Interfaces.Settings;
 
 namespace MarkerTracking.Implementation
 {
@@ -20,5 +21,14 @@ namespace MarkerTracking.Implementation
         public MarkerTrackingSettings()
         {
         }
+
+        #region vars
+
+        private bool _isProcessing;
+
+
+        #endregion
+
+
     }
 }

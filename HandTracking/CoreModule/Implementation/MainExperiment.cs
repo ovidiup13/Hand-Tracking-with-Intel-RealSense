@@ -12,7 +12,7 @@ namespace CoreModule.Implementation
 {
     /// <summary>   
     /// </summary>
-    internal class MainExperiment : IExperiment
+    public class MainExperiment : IExperiment
     {
         /// <summary>
         ///     Constructor for main experiment.

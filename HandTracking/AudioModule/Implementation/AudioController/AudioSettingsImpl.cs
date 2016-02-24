@@ -2,7 +2,7 @@
 
 namespace AudioModule.Implementation.AudioController
 {
-    public class SpeakerSettingsImpl : SpeakerSettings
+    public class AudioSettingsImpl : AudioSettings
     {
     }
 }

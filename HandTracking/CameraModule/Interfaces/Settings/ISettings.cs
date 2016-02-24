@@ -1,6 +1,8 @@
-﻿namespace CameraModule.Interfaces.Settings
+﻿using System.ComponentModel;
+
+namespace CameraModule.Interfaces.Settings
 {
-    public interface ISettings
+    public interface ISettings : INotifyPropertyChanged
     {
         
     }

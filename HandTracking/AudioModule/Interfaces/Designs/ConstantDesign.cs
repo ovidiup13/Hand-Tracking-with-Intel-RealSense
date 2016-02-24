@@ -30,7 +30,7 @@ namespace AudioModule.Interfaces.Designs
         ///     Method that checks if the file exists.
         /// </summary>
         /// <param name="file"></param>
-        protected void CheckFile(string file)
+        private void CheckFile(string file)
         {
             if (!System.IO.File.Exists(file))
             {
@@ -69,7 +69,7 @@ namespace AudioModule.Interfaces.Designs
             Timer = null;
             if (Stream != 0)
             {
-                Speaker?.StopPlayback(Stream);
+                Speaker.StopPlayback(Stream);
                 Stream = 0;
             }
         }

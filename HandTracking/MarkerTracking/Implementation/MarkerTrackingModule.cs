@@ -5,13 +5,16 @@ namespace MarkerTracking.Implementation
 {
     public class MarkerTrackingModule : IModule
     {
+        //singleton
+        private static MarkerTrackingImpl _tracking; 
+
         /// <summary>
       /// Method that returns an instace of Tracking object, with default settings.
       /// </summary>
       /// <returns>Instance of Tracking object</returns>
-        public override Tracking GetInstance()
+        public Tracking GetInstance()
         {
-            return Tracking ?? (Tracking = new MarkerTrackingImpl());
+            return _tracking ?? (_tracking = new MarkerTrackingImpl());
         }
 
         /// <summary>
@@ -19,9 +22,9 @@ namespace MarkerTracking.Implementation
         /// </summary>
         /// <param name="settings">An ISettings object specifying settings for the Tracking feature.</param>
         /// <returns></returns>
-        public override Tracking GetInstance(ISettings settings)
+        public Tracking GetInstance(ISettings settings)
         {
-            return Tracking ?? (Tracking = new MarkerTrackingImpl(settings));
+            return _tracking ?? (_tracking = new MarkerTrackingImpl(settings));
         }
     }
 }

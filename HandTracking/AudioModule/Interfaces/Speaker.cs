@@ -1,4 +1,4 @@
-﻿using AudioModule.Implementation.AudioController;
+﻿using MarkerTracking.Implementation;
 using Un4seen.Bass;
 
 namespace AudioModule.Interfaces
@@ -9,7 +9,7 @@ namespace AudioModule.Interfaces
         ///     Method that plays a sound through the Speaker instance.
         /// </summary>
         /// <param name="stream">Bass Stream to play</param>
-        public void Play(int stream)
+        public static void Play(int stream)
         {
             if (stream == 0)
                 throw new AudioException("Speaker: Stream error. Stream cannot be zero.");
@@ -30,7 +30,7 @@ namespace AudioModule.Interfaces
         /// <summary>
         ///     Method that stops the current playback.
         /// </summary>
-        public void StopPlayback(int stream)
+        public static void StopPlayback(int stream)
         {
             //if the stream is not defined, then ignore
             if (stream == 0)
@@ -47,11 +47,11 @@ namespace AudioModule.Interfaces
         }
 
         /// <summary>
-        /// Plays the confirmation sound.
+        ///     Plays the confirmation sound.
         /// </summary>
         public void PlayConfirm()
         {
-            int confirmStream = Bass.BASS_StreamCreateFile(ConfirmFile, 0L, 0L,
+            var confirmStream = Bass.BASS_StreamCreateFile(ConfirmFile, 0L, 0L,
                 SpeakerFlag | BASSFlag.BASS_STREAM_AUTOFREE);
 
             if (confirmStream == 0)
@@ -69,7 +69,7 @@ namespace AudioModule.Interfaces
         /// <returns></returns>
         public PXCMPoint3DF32 GetPosition()
         {
-            return Position;
+            return Marker.Position3D;
         }
 
         /// <summary>
@@ -78,7 +78,7 @@ namespace AudioModule.Interfaces
         /// <param name="position"></param>
         public void SetPosition(PXCMPoint3DF32 position)
         {
-            Position = position;
+            Marker.Position3D = position;
         }
 
         /// <summary>
@@ -87,7 +87,7 @@ namespace AudioModule.Interfaces
         /// <returns>id as int</returns>
         public int GetSpeakerId()
         {
-            return Id;
+            return Marker.Id;
         }
 
         public BASSFlag GetFlag()
@@ -97,15 +97,10 @@ namespace AudioModule.Interfaces
 
         #region vars
 
-        protected SpeakerSettingsImpl Settings;
-
+//        protected AudioSettingsImpl Settings;
         protected BASSFlag SpeakerFlag;
-
-        protected PXCMPoint3DF32 Position;
-
-        protected int Id;
-
-        protected static readonly string ConfirmFile = "Sounds\\confirm.wav";
+        protected Marker Marker;
+        private const string ConfirmFile = "Sounds\\confirm.wav";
 
         #endregion
     }
