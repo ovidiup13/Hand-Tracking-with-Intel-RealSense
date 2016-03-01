@@ -48,7 +48,6 @@ namespace UserInterface.ViewModel
             //initialize marker tracking module
             _markerTrackingModule = new MarkerTrackingModule();
             _markerTracking = (MarkerTrackingImpl) _markerTrackingModule.GetInstance();
-            _markerData = (MarkerData) _markerTracking.GetData();
 
             //create marker collection
             _markersDetected = new ObservableCollection<Marker>();
@@ -110,7 +109,7 @@ namespace UserInterface.ViewModel
         }
 
         /// <summary>
-        /// Event raised when no markers are detected on screen.
+        ///     Event raised when no markers are detected on screen.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="args"></param>
@@ -120,36 +119,44 @@ namespace UserInterface.ViewModel
         }
 
         /// <summary>
-        /// Method that updates the markers detected.
+        ///     Method that updates the markers detected.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="args"></param>
         private void markerData_NewMarkerAvailable(object sender, MarkerTrackingImpl.NewMarkerArgs args)
         {
-            /*_markersDetected = args.Markers;
-            foreach (var marker in _markersDetected)
-            {
-                Console.WriteLine(marker.Id);
-            }*/
-
-            //TODO: draw marker location on image
-            Application.Current.Dispatcher.Invoke(DispatcherPriority.Render, new Action(() =>  UpdateMarker(args.Marker)));
-//            UpdateMarker(args.Marker);
+            Application.Current.Dispatcher.Invoke(DispatcherPriority.Render, new Action(() => UpdateMarkers(args.Markers)));
         }
 
+        /// <summary>
+        /// Updates list of markers.
+        /// </summary>
+        /// <param name="markers"></param>
+        private void UpdateMarkers(List<Marker> markers)
+        {
+            _markersDetected.Clear();
+            foreach (var marker in markers)
+            {
+                UpdateMarker(marker);
+            }
+        }
+
+        /// <summary>
+        ///     Method that updates the list of markers detected.
+        /// </summary>
+        /// <param name="m"></param>
         private void UpdateMarker(Marker m)
         {
-
-            foreach (var marker in _markersDetected)
+            foreach (var marker in MarkersDetected)
             {
                 if (marker.Id == m.Id)
                 {
-                    _markersDetected.Clear();
-                    break;
+                    marker.Position3D = m.Position3D;
+                    return;
                 }
             }
 
-            _markersDetected.Add(m);
+            MarkersDetected.Add(m);
         }
 
         /// <summary>
@@ -190,8 +197,10 @@ namespace UserInterface.ViewModel
             set
             {
                 if (value != null)
+                {
                     _markersDetected = value;
-                RaisePropertyChanged(nameof(MarkersDetected));
+                    RaisePropertyChanged(nameof(MarkersDetected));
+                }
             }
         }
 
@@ -200,7 +209,6 @@ namespace UserInterface.ViewModel
         #region commands
 
         public ICommand StartTrackingCommand { get; private set; }
-
         public ICommand StopTrackingCommand { get; private set; }
 
         #endregion
@@ -209,7 +217,6 @@ namespace UserInterface.ViewModel
 
         private MarkerTrackingModule _markerTrackingModule;
         private MarkerTrackingImpl _markerTracking;
-        private MarkerData _markerData;
 
         #endregion
     }

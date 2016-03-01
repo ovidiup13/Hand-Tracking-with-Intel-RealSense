@@ -7,8 +7,9 @@
              xmlns:views="clr-namespace:UserInterface.Views"
              xmlns:implementation="clr-namespace:MarkerTracking.Implementation;assembly=MarkerTracking"
              mc:Ignorable="d"
-             d:DesignHeight="495.15" d:DesignWidth="657"
-             DataContext="{Binding Source={StaticResource ViewModelLocator}, Path=MarkerViewModel}">
+             d:DesignHeight="495.15" d:DesignWidth="657">
+    <!--DataContext="{Binding Source={StaticResource ViewModelLocator}, Path=MarkerViewModel}"-->
+    
     <Grid Style="{StaticResource ContentRoot}">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="39*" />
@@ -21,18 +22,18 @@
                 <TextBlock Text="Markers" Style="{StaticResource Heading1}" />
                 <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
 
-                    <ItemsControl Name="MarkerList" ItemsSource="{Binding Path=MarkersDetected}">
+                    <ItemsControl Name="MarkerList" ItemsSource="{Binding Path=MarkersDetected, Mode=TwoWay}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate DataType="implementation:Marker">
                                 <StackPanel Orientation="Vertical">
 
-                                    <TextBlock Text="{Binding Path=Id, StringFormat='Marker #{0}'}"
+                                    <TextBlock Text="{Binding Path=Id, Mode=TwoWay, StringFormat='Marker #{0}'}"
                                                Style="{StaticResource Heading2}" />
 
-                                    <StackPanel Orientation="Vertical">
-                                        <TextBlock Text="{Binding Path=XPosition, StringFormat='X:\t{0}'}" />
-                                        <TextBlock Text="{Binding Path=YPosition, StringFormat='Y:\t{0}'}" />
-                                        <TextBlock Text="{Binding Path=ZPosition, StringFormat='Z:\t{0}'}" />
+                                    <StackPanel Orientation="Vertical" xml:space="preserve">
+                                        <TextBlock Text="{Binding Path=XPosition, Mode=TwoWay, StringFormat='X: \t{0}'}" />
+                                        <TextBlock Text="{Binding Path=YPosition, Mode=OneWay, StringFormat='Y: \t{0}'}" />
+                                        <TextBlock Text="{Binding Path=ZPosition, Mode=TwoWay, StringFormat='Z: \t{0}'}" />
                                     </StackPanel>
 
                                 </StackPanel>
@@ -53,26 +54,26 @@
 
                 <!-- Color image rendered -->
                 <Image RenderOptions.BitmapScalingMode="Fant" Stretch="Fill" x:Name="ImgColorStream"
-                       HorizontalAlignment="Center" Height="261" VerticalAlignment="Top" Width="424" Margin="10,10,0,0"
+                       HorizontalAlignment="Center" VerticalAlignment="Top" Margin="10"
                        Source="{Binding Path=MarkerTrackingImage}" OpacityMask="#FFD6D3D3" />
 
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,30,0,0" Focusable="True">
+                <StackPanel Orientation="Horizontal" Margin="0,10,0,0" Focusable="True" HorizontalAlignment="Center" VerticalAlignment="Center">
 
                     <!-- Start tracking button -->
-                    <Button x:Name="StartTrackingButton" Content="Start Tracking" Margin="0,0,10,8" Height="25.96"
+                    <Button x:Name="StartTrackingButton" Content="Start Tracking" Margin="0,0,10,8"
                             HorizontalAlignment="Center" VerticalAlignment="Top" ToolTip="Start the tracking module"
                             Command="{Binding Path=StartTrackingCommand}" />
 
                     <!-- Stop tracking button -->
-                    <Button x:Name="StopTrackingButton" Content="Stop Tracking" Margin="0,0,0,32"
+                    <Button x:Name="StopTrackingButton" Content="Stop Tracking" Margin="0,0,20,32"
                             ToolTip="Stop the tracking module" Command="{Binding Path=StopTrackingCommand}" />
+                    <Button x:Name="NextButton" Content="Next" Margin="0,0,0,32" HorizontalAlignment="Right"
+                    	IsEnabled="False"
+                    	ToolTip="Continue to experiment configuration" Command="mui:LinkCommands.NavigateLink"
+                    	CommandParameter="/Pages/ExperimentPage.xaml" Width="40" />
                 </StackPanel>
 
                 <!-- Move to next view button -->
-                <Button x:Name="NextButton" Content="Next" Margin="0,0,0,32" Width="109" HorizontalAlignment="Right"
-                        IsEnabled="False"
-                        ToolTip="Continue to experiment configuration" Command="mui:LinkCommands.NavigateLink"
-                        CommandParameter="/Pages/ExperimentPage.xaml" />
             </StackPanel>
         </ScrollViewer>
     </Grid>

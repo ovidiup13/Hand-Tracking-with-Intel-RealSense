@@ -9,5 +9,6 @@ namespace UserInterface.ViewModel
 {
     public class ConditionSetupViewModel : ViewModelBase
     {
+
     }
 }

@@ -2,7 +2,7 @@
 
 namespace AudioModule.Interfaces
 {
-    class AudioException : Exception
+    public class AudioException : Exception
     {
         public AudioException() : base() { }
         public AudioException(string message) : base(message) { }

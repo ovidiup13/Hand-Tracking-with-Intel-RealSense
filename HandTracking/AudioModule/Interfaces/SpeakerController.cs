@@ -75,7 +75,7 @@ namespace AudioModule.Interfaces
         /// <summary>
         ///     Method that initializes the default soundcard as the BASS.
         /// </summary>
-        public void InitializeSoundCard(int id)
+        protected void InitializeSoundCard(int id)
         {
             //bass.net registration
             BassNet.Registration("ovidiu.popoviciu@hotmail.co.uk", "2X2417830312420");
@@ -143,8 +143,8 @@ namespace AudioModule.Interfaces
 
         #region default vars
 
-        protected const int VolumeGap = 50;
-        protected const int Offset = 2;
+        private const int VolumeGap = 50;
+        private const int Offset = 2;
         protected const int DefaultVolume = 200;
         protected const int DefaultSoundCard = -1;
 

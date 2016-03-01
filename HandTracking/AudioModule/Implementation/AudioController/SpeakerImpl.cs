@@ -5,10 +5,11 @@ using Un4seen.Bass;
 
 namespace AudioModule.Implementation.AudioController
 {
-    internal class SpeakerImpl : Speaker
+    public class SpeakerImpl : Speaker
     {
         /// <summary>
         ///     Constructor for speaker implementation.
+        /// TODO: set protection level to protected internal
         /// </summary>
         /// <param name="flag"></param>
         public SpeakerImpl(BASSFlag flag)
@@ -18,6 +19,7 @@ namespace AudioModule.Implementation.AudioController
 
         /// <summary>
         ///     Constructor for speaker implementation.
+        /// TODO: set protection level to protected internal
         /// </summary>
         /// <param name="marker">marker object assigned to speaker</param>
         /// <param name="flag">speaker flag</param>

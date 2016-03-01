@@ -41,16 +41,19 @@ namespace UserInterface.ViewModel
             ////    SimpleIoc.Default.Register<IDataService, DataService>();
             ////}
 
+            //register pages
             SimpleIoc.Default.Register<MainViewModel>();
             SimpleIoc.Default.Register<MarkerTrackingViewModel>();
             SimpleIoc.Default.Register<SpeakerSetupViewModel>();
             SimpleIoc.Default.Register<ConditionSetupViewModel>();
             SimpleIoc.Default.Register<HandSetupViewModel>();
             SimpleIoc.Default.Register<ExperimentViewModel>();
+
+            SimpleIoc.Default.Register<SpeakerViewModel>();
         }
 
         //main view model
-        public MainViewModel Main
+        public static MainViewModel Main
         {
             get { return ServiceLocator.Current.GetInstance<MainViewModel>(); }
         }
@@ -60,29 +63,30 @@ namespace UserInterface.ViewModel
         {
             get { return ServiceLocator.Current.GetInstance<MarkerTrackingViewModel>(); }
         }
-
-        //marker tracking view model
-        public SpeakerSetupViewModel SpeakerViewModel
+        
+        public static SpeakerSetupViewModel SpeakerViewModel
         {
             get { return ServiceLocator.Current.GetInstance<SpeakerSetupViewModel>(); }
         }
 
-        //marker tracking view model
-        public ConditionSetupViewModel ConditonViewModel
+        public static ConditionSetupViewModel ConditonViewModel
         {
             get { return ServiceLocator.Current.GetInstance<ConditionSetupViewModel>(); }
         }
 
-        //marker tracking view model
-        public HandSetupViewModel HandViewModel
+        public static HandSetupViewModel HandViewModel
         {
             get { return ServiceLocator.Current.GetInstance<HandSetupViewModel>(); }
         }
 
-        //marker tracking view model
-        public ExperimentViewModel ExperimentViewModel
+        public static ExperimentViewModel ExperimentViewModel
         {
             get { return ServiceLocator.Current.GetInstance<ExperimentViewModel>(); }
+        }
+
+        public static SpeakerViewModel SpeakerModel
+        {
+            get { return ServiceLocator.Current.GetInstance<SpeakerViewModel>(); }
         }
 
         public static void Cleanup()

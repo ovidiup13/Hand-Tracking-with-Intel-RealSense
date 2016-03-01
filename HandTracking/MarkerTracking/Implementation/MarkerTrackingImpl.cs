@@ -188,7 +188,7 @@ namespace MarkerTracking.Implementation
             _projection.QueryVertices(depth, vertices);
 
             //collection of markers
-            ObservableCollection<Marker> markers = new ObservableCollection<Marker>();
+            List<Marker> markers = new List<Marker>();
 
             //go through detected points
             for (var point = 0; point < depthPoints.Length; point++)
@@ -208,15 +208,14 @@ namespace MarkerTracking.Implementation
                 //add the marker to the data
 //                _markerData.AddMarker(detectedMarkers[point].Id, v);
 
-                NewMarkerAvailable?.Invoke(this, new NewMarkerArgs(new Marker(detectedMarkers[point].Id, v, colorPoints[point])));
+//                NewMarkerAvailable?.Invoke(this, new NewMarkerArgs(new Marker(detectedMarkers[point].Id, v, colorPoints[point])));
 
 
                 markers.Add(new Marker(detectedMarkers[point].Id, v, colorPoints[point]));
             }
 
             //notify that a new collection of markers is available
-//            NewMarkerAvailable?.Invoke(this, new NewMarkerArgs(markers));
-            
+            NewMarkerAvailable?.Invoke(this, new NewMarkerArgs(markers));
 
             color.Dispose();
             depth.Dispose();
@@ -335,12 +334,18 @@ namespace MarkerTracking.Implementation
         {
 
             public Marker Marker;
+            public List<Marker> Markers; 
 
             public NewMarkerArgs() { }
 
             public NewMarkerArgs(Marker marker)
             {
                 Marker = marker;
+            }
+
+            public NewMarkerArgs(List<Marker> markers)
+            {
+                Markers = markers;
             }
         }
 

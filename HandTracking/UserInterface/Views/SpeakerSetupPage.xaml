@@ -3,19 +3,12 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:mui="http://firstfloorsoftware.com/ModernUI"
+             xmlns:controls="clr-namespace:UserInterface.Controls"
+             xmlns:content="clr-namespace:UserInterface.Views.Content"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300"
-             DataContext="">
+             DataContext="{Binding Source={StaticResource ViewModelLocator}, Path=SpeakerViewModel}">
     <Grid Style="{StaticResource ContentRoot}" DataContext="">
-        <!-- TODO: set @SelectedSource -->
-        <mui:ModernTab Layout="List">
-            <mui:ModernTab.Links>
-                <!-- TODO: set @Source -->
-                
-                <mui:Link DisplayName="Item 1" />
-                <mui:Link DisplayName="Item 2" />
-            </mui:ModernTab.Links>
-        </mui:ModernTab>
+        <content:SpeakerList/>
     </Grid>
 </UserControl>

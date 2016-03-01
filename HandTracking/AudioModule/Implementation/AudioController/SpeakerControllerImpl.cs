@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using AudioModule.Interfaces;
@@ -13,13 +11,11 @@ using Un4seen.Bass;
 namespace AudioModule.Implementation.AudioController
 {
     /*
-    TODO: must check for number of speakers every time. If greater > 8, then throw an exception or smth
     TODO: add methods for displaying the names of all output devices, including their IDs
-    TODO: add method for initializing an output device to be used in the main experiment
     TODO: release all audio resources (BASS) before exit
-        */
+    */
 
-    public class SpeakerControllerImpl : SpeakerController, INotifyPropertyChanged
+    public sealed class SpeakerControllerImpl : SpeakerController, INotifyPropertyChanged
     {
         /// <summary>
         ///     No args constructor initializes the default soundcard and sets a default volume.
@@ -30,45 +26,31 @@ namespace AudioModule.Implementation.AudioController
             SetVolume(DefaultVolume);
         }
 
-        public SpeakerControllerImpl(ObservableCollection<Marker> speakerLocations)
-        {
-            //location of speakerLocations
-            _speakerLocations = speakerLocations.ToList();
-
-            //initialize default sound card
-
-
-            //initialize the speakers
-            InitializeSpeakers(speakerLocations.Count);
-        }
-
         public event PropertyChangedEventHandler PropertyChanged;
 
         /// <summary>
         ///     Initializes the Speaker objects and maps them to flags.
         /// </summary>
         /// <param name="numberOfSpeakers"></param>
-        private void InitializeSpeakers(int numberOfSpeakers)
+        public void InitializeSpeakers(int numberOfSpeakers)
         {
             Console.WriteLine(@"Initializing speakers...");
+
+            if (numberOfSpeakers > SpeakerFlags.Count)
+            {
+                throw new AudioException(
+                    "There are too many markers available. The software can only hold a maximum of " +
+                    SpeakerFlags.Count + " numbers of markers.");
+            }
 
             //create a new list of speakers
             _speakers = new List<SpeakerImpl>(numberOfSpeakers);
             _speakerIndexes = new int[numberOfSpeakers];
 
-//            var locations = new List<int>(_speakerLocations.Keys);
-
             for (var i = 0; i < numberOfSpeakers; i++)
             {
                 _speakerIndexes[i] = i;
 
-//                var id = locations[i];
-                PXCMPoint3DF32 position;
-
-                //get position
-//                _speakerLocations.TryGetValue(id, out position);
-
-                //TODO: initialize speaker with correct flag after implementation of mapping
                 //create a new speaker, add it to the list
                 _speakers.Add(new SpeakerImpl(SpeakerFlags[i]));
             }
@@ -221,7 +203,7 @@ namespace AudioModule.Implementation.AudioController
         }
 
         [NotifyPropertyChangedInvocator]
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        private void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
@@ -230,29 +212,41 @@ namespace AudioModule.Implementation.AudioController
 
         //speaker locations
         private List<Marker> _speakerLocations;
-
         public List<Marker> SpeakerLocations
         {
             get { return _speakerLocations; }
 
             set
             {
-                if (value != null)
-                    _speakerLocations = value;
+                if (value == null) return;
 
+                _speakerLocations = value;
+                InitializeSpeakers(_speakerLocations.Count);
                 OnPropertyChanged(nameof(SpeakerLocations));
             }
         }
 
         //list of Speaker instances
         private List<SpeakerImpl> _speakers;
+        public List<SpeakerImpl> Speakers
+        {
+            get { return _speakers; }
+            set
+            {
+                if (value != null && value.Count > 0)
+                {
+                    _speakers = value;
+                    OnPropertyChanged(nameof(Speakers));
+                }
+            }
+        }
 
         private int[] _speakerIndexes;
         private int _currentIndex;
         private Speaker _targetSpeaker;
 
         //BASSFlags
-        public static readonly List<BASSFlag> SpeakerFlags = new List<BASSFlag>
+        public readonly List<BASSFlag> SpeakerFlags = new List<BASSFlag>
         {
             BASSFlag.BASS_SPEAKER_REAR2LEFT, //7
             BASSFlag.BASS_SPEAKER_REARRIGHT, //6

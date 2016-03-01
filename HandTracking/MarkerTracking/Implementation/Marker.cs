@@ -1,7 +1,17 @@
-﻿namespace MarkerTracking.Implementation
+﻿using System.ComponentModel;
+using System.Runtime.CompilerServices;
+using CameraModule.Annotations;
+
+namespace MarkerTracking.Implementation
 {
-    public class Marker
+    public class Marker : INotifyPropertyChanged
     {
+        //TODO: remove this contructor
+        public Marker(int id)
+        {
+            Id = id;
+        }
+
         protected internal Marker(int id, PXCMPoint3DF32 position3D, PXCMPointF32 position2D)
         {
             Id = id;
@@ -13,9 +23,9 @@
 
         private void SetXyz()
         {
-            XPosition = Position3D.x;
-            YPosition = Position3D.y;
-            ZPosition = Position3D.z;
+            XPosition = _position3D.x;
+            YPosition = _position3D.y;
+            ZPosition = _position3D.z;
         }
 
         #region vars
@@ -30,15 +40,53 @@
             {
                 _position3D = value;
                 SetXyz();
+                OnPropertyChanged(nameof(Position3D));
             }
         }
         public PXCMPointF32 Position2D { get; set; }
 
         //for UI access
-        public float XPosition { get; set; }
-        public float YPosition { get; set; }
-        public float ZPosition { get; set; }
+        private float _x;
+        public float XPosition
+        {
+            get { return _x; }
+            set
+            {
+                _x = value;
+                OnPropertyChanged(nameof(XPosition));
+            }
+        }
+
+        private float _y;
+        public float YPosition
+        {
+            get { return _y; }
+            set
+            {
+                _y = value;
+                OnPropertyChanged(nameof(YPosition));
+            }
+        }
+
+        private float _z;
+        public float ZPosition
+        {
+            get { return _z; }
+            set
+            {
+                _z = value;
+                OnPropertyChanged(nameof(ZPosition));
+            }
+        }
 
         #endregion
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        [NotifyPropertyChangedInvocator]
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
     }
 }

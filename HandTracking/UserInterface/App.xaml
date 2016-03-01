@@ -7,13 +7,13 @@
             <ResourceDictionary.MergedDictionaries>
                 <!-- Modern UI resources -->
                 <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/ModernUI.xaml" />
-                <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/ModernUI.Light.xaml" />
+                <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/ModernUI.Dark.xaml" />
                 
                 <!-- ViewModel locator -->
                 <ResourceDictionary>
                     <vm:ViewModelLocator x:Key="ViewModelLocator" d:IsDataSource="True"
                                          xmlns:vm="clr-namespace:UserInterface.ViewModel" />
-
+                    
                 </ResourceDictionary>
 
             </ResourceDictionary.MergedDictionaries>

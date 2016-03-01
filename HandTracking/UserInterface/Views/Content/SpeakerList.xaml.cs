@@ -1,23 +1,26 @@
-﻿using System.Windows;
+﻿using System;
+using System.Linq;
+using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 using FirstFloor.ModernUI.Windows;
-using FirstFloor.ModernUI.Windows.Controls;
 using FirstFloor.ModernUI.Windows.Navigation;
 
-namespace UserInterface.Views
+namespace UserInterface.Views.Content
 {
     /// <summary>
-    ///     Interaction logic for SpeakerSetupPage.xaml
+    ///     Interaction logic for SpeakerList.xaml
     /// </summary>
-    public partial class SpeakerSetupPage : UserControl, IContent
+    public partial class SpeakerList : UserControl, IContent
     {
-        public SpeakerSetupPage()
+        public SpeakerList()
         {
             InitializeComponent();
         }
 
         public void OnFragmentNavigation(FragmentNavigationEventArgs e)
         {
+            Console.WriteLine(e.Fragment);
         }
 
         public void OnNavigatedFrom(NavigationEventArgs e)
@@ -31,5 +34,7 @@ namespace UserInterface.Views
         public void OnNavigatingFrom(NavigatingCancelEventArgs e)
         {
         }
+
+        
     }
 }
