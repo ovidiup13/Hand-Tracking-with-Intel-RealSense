@@ -14,6 +14,7 @@ namespace AudioModule.Interfaces.Designs
         {
             File = "Sounds\\Pluck\\obj8p.wav";
             CheckFile(File);
+            AudioDesignDesignType = DesignType.Constant;
         }
 
         /// <summary>
@@ -24,6 +25,7 @@ namespace AudioModule.Interfaces.Designs
         {
             File = filePath;
             CheckFile(File);
+            AudioDesignDesignType = DesignType.Constant;
         }
 
         /// <summary>

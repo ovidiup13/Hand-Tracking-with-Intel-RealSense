@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Drawing;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using CameraModule.Annotations;
@@ -35,6 +36,8 @@ namespace CameraModule.Interfaces.Module
             }
         }
 
+        public event PropertyChangedEventHandler PropertyChanged;
+
         /// <summary>
         ///     Method that initializes the camera modules and sets up the module for processing.
         /// </summary>
@@ -67,7 +70,32 @@ namespace CameraModule.Interfaces.Module
         /// <returns></returns>
         public abstract IData GetData();
 
-    
+        [NotifyPropertyChangedInvocator]
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        #region new image events
+
+        public delegate void NewImageEventHandler(object sender, NewImageArgs args);
+
+        /// <summary>
+        ///     Event arguments class for passing the image bitmap to the main view.
+        /// </summary>
+        public class NewImageArgs : EventArgs
+        {
+            public NewImageArgs(PXCMCapture.StreamType streamType, Bitmap bitmap)
+            {
+                Bitmap = bitmap;
+                StreamType = streamType;
+            }
+
+            public Bitmap Bitmap { get; private set; }
+            private PXCMCapture.StreamType StreamType { get; set; }
+        }
+
+        #endregion
 
         #region private vars
 
@@ -89,10 +117,7 @@ namespace CameraModule.Interfaces.Module
 
         public bool IsProcessing
         {
-            get
-            {
-                return _isProcessing;
-            }
+            get { return _isProcessing; }
 
             set
             {
@@ -100,18 +125,11 @@ namespace CameraModule.Interfaces.Module
                 OnPropertyChanged(nameof(IsProcessing));
             }
         }
+
         protected bool IsInitialized;
         protected Thread ProcessingThread;
         protected bool ProcessingFlag;
 
         #endregion
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        [NotifyPropertyChangedInvocator]
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
     }
 }

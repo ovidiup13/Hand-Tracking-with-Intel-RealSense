@@ -14,6 +14,8 @@ namespace AudioModule.Interfaces.Designs
             File = "Sounds/Pluck/obj8p.wav";
 
             CheckFile(File);
+
+            AudioDesignDesignType = DesignType.Geiger;
         }
 
         /// <summary>
@@ -24,6 +26,7 @@ namespace AudioModule.Interfaces.Designs
         {
             CheckFile(file);
             File = file;
+            AudioDesignDesignType = DesignType.Geiger;
         }    
 
         /// <summary>

@@ -1,4 +1,5 @@
 ﻿using System;
+using AudioModule.Implementation.AudioController;
 using Un4seen.Bass;
 
 namespace AudioModule.Interfaces
@@ -147,6 +148,8 @@ namespace AudioModule.Interfaces
         private const int Offset = 2;
         protected const int DefaultVolume = 200;
         protected const int DefaultSoundCard = -1;
+
+        public AudioSettingsImpl AudioSettings { get; protected set; }
 
         //initial volume
         private int _volume = DefaultVolume;

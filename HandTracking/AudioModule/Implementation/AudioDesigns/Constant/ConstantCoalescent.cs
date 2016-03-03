@@ -5,13 +5,14 @@ using Un4seen.Bass;
 
 namespace AudioModule.Implementation.AudioDesigns.Constant
 {
-    internal class ConstantCoalescent : ConstantDesign, ICoalescentDesign
+    public class ConstantCoalescent : ConstantDesign, ICoalescentDesign
     {
         /// <summary>
         ///     Initializes a new constant design.
         /// </summary>
         public ConstantCoalescent()
         {
+            FeedbackType = FeedbackType.Coalescent;
         }
 
         /// <summary>
@@ -20,6 +21,7 @@ namespace AudioModule.Implementation.AudioDesigns.Constant
         /// <param name="filePath"></param>
         public ConstantCoalescent(string filePath) : base(filePath)
         {
+            FeedbackType = FeedbackType.Coalescent;
         }
 
         public void PlayBoth()

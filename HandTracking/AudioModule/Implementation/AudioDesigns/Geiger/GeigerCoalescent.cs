@@ -5,8 +5,16 @@ using Un4seen.Bass;
 
 namespace AudioModule.Implementation.AudioDesigns.Geiger
 {
-    class GeigerCoalescent : GeigerDesign, ICoalescentDesign
+    public class GeigerCoalescent : GeigerDesign, ICoalescentDesign
     {
+
+        public GeigerCoalescent() : base()
+        {
+            FeedbackType = FeedbackType.Coalescent;
+        }
+
+
+
         /// <summary>
         /// 
         /// </summary>

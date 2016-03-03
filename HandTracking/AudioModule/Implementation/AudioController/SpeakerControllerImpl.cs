@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Threading;
@@ -15,7 +16,7 @@ namespace AudioModule.Implementation.AudioController
     TODO: release all audio resources (BASS) before exit
     */
 
-    public sealed class SpeakerControllerImpl : SpeakerController, INotifyPropertyChanged
+    public class SpeakerControllerImpl : SpeakerController, INotifyPropertyChanged
     {
         /// <summary>
         ///     No args constructor initializes the default soundcard and sets a default volume.
@@ -24,36 +25,51 @@ namespace AudioModule.Implementation.AudioController
         {
             InitializeSoundCard(DefaultSoundCard);
             SetVolume(DefaultVolume);
+
+            //initialize settings
+            AudioSettings = new AudioSettingsImpl();
+
+            //initialize speakers
+            Speakers = new ObservableCollection<SpeakerImpl> {AudioSettings.WristSpeaker};
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
         /// <summary>
-        ///     Initializes the Speaker objects and maps them to flags.
+        ///     Initializes the Speaker objects and maps them to flags. Iterates through all the speakers and checks if each marker
+        ///     is assigned.
+        ///     If a marker is assigned, it updates its 2D and 3D position. If a marker is not assigned, a new speaker object is
+        ///     added to the speaker collection.
+        ///     If there are speakers remaining not matching any of the markers from the updated list, they are removed.
         /// </summary>
-        /// <param name="numberOfSpeakers"></param>
-        public void InitializeSpeakers(int numberOfSpeakers)
+        /// <param name="markers">The list of markers</param>
+        public void InitializeSpeakers(List<Marker> markers)
         {
             Console.WriteLine(@"Initializing speakers...");
+            var numberOfSpeakers = markers.Count;
 
+            //clear speakers
+            Speakers.Clear();
+
+            //check if number of flags is ok
             if (numberOfSpeakers > SpeakerFlags.Count)
             {
                 throw new AudioException(
-                    "There are too many markers available. The software can only hold a maximum of " +
+                    "Too many markers detected. The software can only hold a maximum of " +
                     SpeakerFlags.Count + " numbers of markers.");
             }
 
-            //create a new list of speakers
-            _speakers = new List<SpeakerImpl>(numberOfSpeakers);
+            //update speaker indexes
             _speakerIndexes = new int[numberOfSpeakers];
 
             for (var i = 0; i < numberOfSpeakers; i++)
             {
                 _speakerIndexes[i] = i;
-
-                //create a new speaker, add it to the list
-                _speakers.Add(new SpeakerImpl(SpeakerFlags[i]));
+                _speakers.Add(new SpeakerImpl(markers[i], SpeakerFlags[i]));
             }
+
+            //re-add the wrist speaker
+            Speakers.Add(AudioSettings.WristSpeaker);
 
             //randomize speakers indexes
             _speakerIndexes = ShuffleArray(_speakerIndexes);
@@ -212,23 +228,24 @@ namespace AudioModule.Implementation.AudioController
 
         //speaker locations
         private List<Marker> _speakerLocations;
+
         public List<Marker> SpeakerLocations
         {
             get { return _speakerLocations; }
-
             set
             {
                 if (value == null) return;
 
                 _speakerLocations = value;
-                InitializeSpeakers(_speakerLocations.Count);
+                InitializeSpeakers(_speakerLocations);
                 OnPropertyChanged(nameof(SpeakerLocations));
             }
         }
 
         //list of Speaker instances
-        private List<SpeakerImpl> _speakers;
-        public List<SpeakerImpl> Speakers
+        private ObservableCollection<SpeakerImpl> _speakers;
+
+        public ObservableCollection<SpeakerImpl> Speakers
         {
             get { return _speakers; }
             set
@@ -248,6 +265,7 @@ namespace AudioModule.Implementation.AudioController
         //BASSFlags
         public readonly List<BASSFlag> SpeakerFlags = new List<BASSFlag>
         {
+            BASSFlag.BASS_SPEAKER_REAR2RIGHT, //8
             BASSFlag.BASS_SPEAKER_REAR2LEFT, //7
             BASSFlag.BASS_SPEAKER_REARRIGHT, //6
             BASSFlag.BASS_SPEAKER_REARLEFT, //5

@@ -4,13 +4,14 @@ using AudioModule.Interfaces.Designs;
 
 namespace AudioModule.Implementation.AudioDesigns.Geiger
 {
-    internal class GeigerIndividual : GeigerDesign, INdividualDesign
+    public class GeigerIndividual : GeigerDesign, INdividualDesign
     {
         /// <summary>
         ///     Constructor that initializes a new geiger audio design with default sounds.
         /// </summary>
         public GeigerIndividual()
         {
+            FeedbackType = FeedbackType.Individual;
         }
 
         /// <summary>
@@ -19,6 +20,7 @@ namespace AudioModule.Implementation.AudioDesigns.Geiger
         /// <param name="file"></param>
         public GeigerIndividual(string file) : base(file)
         {
+            FeedbackType = FeedbackType.Individual;
         }
 
         public void PlayIndividual()

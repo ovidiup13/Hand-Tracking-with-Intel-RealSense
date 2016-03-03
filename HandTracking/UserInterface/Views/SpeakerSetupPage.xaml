@@ -3,12 +3,60 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:controls="clr-namespace:UserInterface.Controls"
-             xmlns:content="clr-namespace:UserInterface.Views.Content"
+             xmlns:audioController="clr-namespace:AudioModule.Implementation.AudioController;assembly=AudioModule"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300"
              DataContext="{Binding Source={StaticResource ViewModelLocator}, Path=SpeakerViewModel}">
-    <Grid Style="{StaticResource ContentRoot}" DataContext="">
-        <content:SpeakerList/>
+    <Grid Style="{StaticResource ContentRoot}">
+        <DockPanel>
+            <TextBlock DockPanel.Dock="Top" Text="Marker-Speaker Assignment" Style="{StaticResource Heading1}"
+                           HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0" />
+
+            <StackPanel DockPanel.Dock="Top" Margin="10">
+                <ItemsControl Name="MarkerList" ItemsSource="{Binding Path=SpeakerController.Speakers}"
+                      Grid.IsSharedSizeScope="True">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Grid.IsSharedSizeScope="True" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate DataType="audioController:SpeakerImpl">
+                            <Grid>
+                                <!-- Resources -->
+                                <Grid.Resources>
+                                    <Style TargetType="{x:Type TextBlock}">
+                                        <Setter Property="Margin" Value="20, 0, 20, 0" />
+                                    </Style>
+                                </Grid.Resources>
+
+                                <!-- Definitions -->
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition SharedSizeGroup="ColumnOne" />
+                                    <ColumnDefinition Width="200" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+
+                                <!-- Data -->
+                                <TextBlock Text="{Binding Path=Marker.Id, Mode=TwoWay, StringFormat='Marker #{0}'}"
+                                   Style="{StaticResource Heading2}" HorizontalAlignment="Left" />
+                                <ComboBox
+                            ItemsSource="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl} }, Path=DataContext.SpeakerFlags, Mode=TwoWay}"
+                            SelectedItem="{Binding Path=SpeakerFlag, Mode=TwoWay}"
+                            Grid.Column="1" />
+                                <TextBlock Text="{Binding SpeakerFlag}" Grid.Column="2" />
+
+                            </Grid>
+
+                            <!--                                  DisplayMemberPath="Flag"-->
+                            <!--                                  SelectedValuePath="Flag"-->
+
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+
+                </ItemsControl>
+            </StackPanel>
+        </DockPanel>
     </Grid>
 </UserControl>

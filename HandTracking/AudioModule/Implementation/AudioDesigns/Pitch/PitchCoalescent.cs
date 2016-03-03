@@ -8,12 +8,24 @@ namespace AudioModule.Implementation.AudioDesigns.Pitch
 {
     public class PitchCoalescent : PitchDesign, ICoalescentDesign
     {
-        public PitchCoalescent()
+        /// <summary>
+        /// </summary>
+        public void PlayBoth()
         {
-        }
+            //stop the playback and change to other file
+            StopPlayback();
 
-        public PitchCoalescent(List<string> files) : base(files)
-        {
+            //create stream
+            Stream2 = Bass.BASS_StreamCreateFile(CurrentFile, 0L, 0L, WristSpeaker.GetFlag());
+            Stream = Bass.BASS_StreamCreateFile(TargetFile, 0L, 0L, Speaker.GetFlag());
+
+            //check stream
+            if (Stream == 0)
+                throw new AudioException("Stream error. Stream cannot be zero. ERROR: " + Bass.BASS_ErrorGetCode());
+
+            //play file
+            Timer = new Timer(obj => { Speaker.Play(Stream); }, null, 0, Rate);
+            Timer2 = new Timer(obj => { Speaker.Play(Stream2); }, null, Delay, Rate);
         }
 
         public override void Play()
@@ -40,12 +52,11 @@ namespace AudioModule.Implementation.AudioDesigns.Pitch
 
             //otherwise change the file
             CurrentFile = file;
-
             PlayBoth();
         }
 
         /// <summary>
-        /// Method that stops the current playback.
+        ///     Method that stops the current playback.
         /// </summary>
         public override void StopPlayback()
         {
@@ -60,7 +71,6 @@ namespace AudioModule.Implementation.AudioDesigns.Pitch
         }
 
         /// <summary>
-        /// 
         /// </summary>
         /// <returns></returns>
         public override string ToString()
@@ -68,26 +78,19 @@ namespace AudioModule.Implementation.AudioDesigns.Pitch
             return base.ToString() + "_BOT";
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        public void PlayBoth()
+        #region constructors
+
+        public PitchCoalescent()
         {
-            //stop the playback and change to other file
-            StopPlayback();
-
-            //create stream
-            Stream2 = Bass.BASS_StreamCreateFile(CurrentFile, 0L, 0L, WristSpeaker.GetFlag());
-            Stream = Bass.BASS_StreamCreateFile(TargetFile, 0L, 0L, Speaker.GetFlag());
-            
-            //check stream
-            if (Stream == 0)
-                throw new AudioException("Stream error. Stream cannot be zero. ERROR: " + Bass.BASS_ErrorGetCode());
-
-            //play file
-            Timer = new Timer(obj => { Speaker.Play(Stream); }, null, 0, Rate);
-            Timer2 = new Timer(obj => { Speaker.Play(Stream2); }, null, Delay, Rate);
+            FeedbackType = FeedbackType.Coalescent;
         }
+
+        public PitchCoalescent(List<string> files) : base(files)
+        {
+            FeedbackType = FeedbackType.Coalescent;
+        }
+
+        #endregion
 
         #region vars
 
@@ -96,7 +99,7 @@ namespace AudioModule.Implementation.AudioDesigns.Pitch
 
         private static readonly int Delay = Rate/2;
 
-        private static readonly string TargetFile = "Sounds\\Pluck\\obj8p.wav"; 
+        private static readonly string TargetFile = "Sounds\\Pluck\\obj8p.wav";
 
         #endregion
     }

@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace HandTracking.Interfaces.Core
+namespace CoreModule.Interfaces
 {
-    class ExperimentException : Exception
+    public class ExperimentException : Exception
     {
         public ExperimentException() : base() { }
         public ExperimentException(string message) : base(message) { }

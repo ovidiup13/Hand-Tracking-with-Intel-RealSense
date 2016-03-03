@@ -7,6 +7,7 @@ using AudioModule.Implementation.AudioDesigns.Constant;
 using AudioModule.Interfaces;
 using CoreModule.Implementation;
 using CoreModule.Interfaces;
+using Condition = CoreModule.Implementation.Condition;
 
 namespace UserInterface.Views
 {
@@ -27,11 +28,10 @@ namespace UserInterface.Views
         {
             //TODO: conditions and audio designs must be initialized in another page
             AudioDesign audioDesign = new ControlDesign();
-            var conditions = new List<ConditionImpl>();
+            var conditions = new List<Condition>();
             for (var i = 0; i < 2; i++)
             {
-                var condition = new ConditionImpl(_numberOfTrials) {AudioDesign = audioDesign};
-                conditions.Add(condition);
+                conditions.Add(new Condition() { AudioDesign = audioDesign, NumberOfTrials = _numberOfTrials });
             }
 
             //pass these to main experiment

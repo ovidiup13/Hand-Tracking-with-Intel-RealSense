@@ -6,7 +6,7 @@ using Un4seen.Bass;
 
 namespace AudioModule.Implementation.AudioDesigns.Pitch
 {
-    internal class PitchIndividual : PitchDesign, INdividualDesign
+    public class PitchIndividual : PitchDesign, INdividualDesign
     {
         /// <summary>
         /// </summary>

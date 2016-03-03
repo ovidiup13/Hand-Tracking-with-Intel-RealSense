@@ -14,8 +14,7 @@
                 <mui:Link DisplayName="marker" Source="/Views/MarkerTrackingPage.xaml" />
                 <mui:Link DisplayName="speaker" Source="/Views/SpeakerSetupPage.xaml" />
                 <mui:Link DisplayName="condition" Source="/Views/ConditionPage.xaml" />
-                <mui:Link DisplayName="hand" />
-                <mui:Link DisplayName="participant" />
+                <mui:Link DisplayName="hand" Source="/Views/HandPage.xaml" />
                 <mui:Link DisplayName="experiment" Source="/Views/ExperimentPage.xaml" />
             </mui:LinkGroup.Links>
         </mui:LinkGroup>

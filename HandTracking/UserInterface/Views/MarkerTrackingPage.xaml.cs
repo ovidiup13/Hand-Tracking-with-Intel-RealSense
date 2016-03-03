@@ -2,7 +2,7 @@
 using FirstFloor.ModernUI.Windows;
 using FirstFloor.ModernUI.Windows.Navigation;
 using GalaSoft.MvvmLight.Ioc;
-using MarkerTrackingViewModel = UserInterface.ViewModel.MarkerTrackingViewModel;
+using MarkerTrackingViewModel = UserInterface.ViewModels.MarkerTrackingViewModels.MarkerTrackingViewModel;
 
 namespace UserInterface.Views
 {

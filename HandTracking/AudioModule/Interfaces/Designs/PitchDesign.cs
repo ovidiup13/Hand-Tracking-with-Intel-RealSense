@@ -13,6 +13,7 @@ namespace AudioModule.Interfaces.Designs
             CheckFiles(files);
             _files = files;
             CurrentFile = _files[0];
+            AudioDesignDesignType = DesignType.Pitch;
         }
 
         protected PitchDesign()
@@ -31,6 +32,7 @@ namespace AudioModule.Interfaces.Designs
 
             CheckFiles(_files);
             CurrentFile = _files[0];
+            AudioDesignDesignType = DesignType.Pitch;
         }
 
         /// <summary>

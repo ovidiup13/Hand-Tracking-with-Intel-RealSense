@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
+using AudioModule.Implementation.AudioController;
 using AudioModule.Interfaces;
 using CameraModule.Interfaces.Module;
 using CameraModule.Interfaces.Settings;
@@ -14,13 +16,22 @@ namespace CoreModule.Implementation
     /// </summary>
     public class MainExperiment : IExperiment
     {
+
+        /// <summary>
+        ///     Constructor for main experiment.
+        /// </summary>
+        public MainExperiment()
+        {
+
+        }
+
         /// <summary>
         ///     Constructor for main experiment.
         /// </summary>
         /// <param name="conditions">Conditions for the experiment, as an array</param>
         /// <param name="speakerController">The speaker controller object</param>
         /// <param name="participant">The participant object for the experiment</param>
-        public MainExperiment(ConditionImpl[] conditions, SpeakerController speakerController, Participant participant)
+        public MainExperiment(Condition[] conditions, SpeakerController speakerController, Participant participant)
         {
             //set main experiment variables
             _conditions = conditions;
@@ -39,7 +50,7 @@ namespace CoreModule.Implementation
             cameraSettings = new CameraSettings(DEFAULT_RESOLUTION_WIDTH, DEFAULT_RESOLUTION_HEIGHT, DEFAULT_FPS);
 
             //initialize modules
-            InitializeModules();
+//            InitializeExperiment();
         }
 
         /// <summary>
@@ -57,7 +68,7 @@ namespace CoreModule.Implementation
 
         /// <summary>
         /// </summary>
-        /// TODO: must implement return values for each thread state
+        /// TODO: implement pause
         public void PauseExperiment()
         {
             throw new NotImplementedException();
@@ -119,7 +130,7 @@ namespace CoreModule.Implementation
         /// <summary>
         ///     Method that initializes the modules of the main experiment
         /// </summary>
-        private void InitializeModules()
+        public void InitializeExperiment(List<ConditionGroup> conditionGroups, SpeakerControllerImpl speakerController)
         {
             
             //create an instance of hand tracking module
@@ -260,7 +271,7 @@ namespace CoreModule.Implementation
 
         #region main variables
 
-        private readonly ConditionImpl[] _conditions;
+        private readonly Condition[] _conditions;
         private readonly SpeakerController _speakerController;
         private readonly Thread _experimentThread;
         private Thread _processingThread;

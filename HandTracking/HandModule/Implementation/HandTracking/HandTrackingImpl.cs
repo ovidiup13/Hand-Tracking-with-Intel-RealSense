@@ -5,17 +5,16 @@ using CameraModule.Interfaces.Settings;
 
 namespace HandModule.Implementation.HandTracking
 {
-    //TODO: replace all errors with exceptions
-    internal class HandTrackingImpl : Tracking
+    public class HandTrackingImpl : Tracking
     {
         /// <summary>
         ///     Create a new HandTrackingImpl instance with default settings.
         /// </summary>
-        protected internal HandTrackingImpl()
+        public HandTrackingImpl()
         {
 //            Settings = new HandTrackingSettings();
 //            Data = new HandTrackingData();
-            _handTrackingSettings = new HandTrackingSettings();
+            Settings = new HandTrackingSettings();
             _handTrackingData = new HandTrackingData();
         }
 
@@ -25,7 +24,7 @@ namespace HandModule.Implementation.HandTracking
         /// <param name="settings"></param>
         protected internal HandTrackingImpl(ISettings settings)
         {
-            _handTrackingSettings = (HandTrackingSettings) settings;
+            Settings = (HandTrackingSettings) settings;
             _handTrackingData = new HandTrackingData();
         }
 
@@ -54,6 +53,7 @@ namespace HandModule.Implementation.HandTracking
             IsProcessing = false;
         }
 
+        //TODO: implement pause
         public override void PauseProcessing()
         {
             throw new NotImplementedException();
@@ -85,6 +85,14 @@ namespace HandModule.Implementation.HandTracking
             if (enablingModuleStatus != pxcmStatus.PXCM_STATUS_NO_ERROR)
                 throw new HandTrackingException(@"Failed to enable the Hand Module");
 
+            //initialize image and depth streams
+            var imageStatus = SenseManager.EnableStream(PXCMCapture.StreamType.STREAM_TYPE_COLOR,
+                Settings.Width,
+                Settings.Height, Settings.FramesPerSecond);
+
+            if (imageStatus != pxcmStatus.PXCM_STATUS_NO_ERROR)
+                throw new HandTrackingException(@"Failed to enable Image Stream.");
+
             //getting instance of hand module
             _handModule = SenseManager.QueryHand();
 
@@ -98,11 +106,11 @@ namespace HandModule.Implementation.HandTracking
                 throw new HandTrackingException(@"Failed to create the HandConfiguration object.");
 
             //apply settings
-            if (_handTrackingSettings != null)
+            if (Settings != null)
             {
-                _handConfiguration.SetTrackingMode(PXCMHandData.TrackingModeType.TRACKING_MODE_FULL_HAND);
-                _handConfiguration.EnableStabilizer(_handTrackingSettings.EnableStabilizer);
-                _handConfiguration.SetSmoothingValue(_handTrackingSettings.SmoothingValue);
+                _handConfiguration.SetTrackingMode(Settings.TrackingModeType);
+                _handConfiguration.EnableStabilizer(Settings.EnableStabilizer);
+                _handConfiguration.SetSmoothingValue(Settings.SmoothingValue);
             }
 
             _handConfiguration.ApplyChanges();
@@ -137,7 +145,12 @@ namespace HandModule.Implementation.HandTracking
                     break;
                 }
 
-                if (frameCount++ % 10 == 0)
+                //acquire color stream and pass it to the delegate
+                //TODO: check if it works or not
+                var sample = SenseManager.QuerySample();
+                AccessImage(sample.color);
+
+                if (frameCount++%10 == 0)
                 {
                     // Updating the hand data
                     _handData?.Update();
@@ -159,6 +172,20 @@ namespace HandModule.Implementation.HandTracking
             Session.Dispose();
 
             Console.WriteLine(@"Hand Tracking terminated.");
+        }
+
+        private void AccessImage(PXCMImage image)
+        {
+            PXCMImage.ImageData imageData;
+            image.AcquireAccess(PXCMImage.Access.ACCESS_READ, PXCMImage.PixelFormat.PIXEL_FORMAT_RGB24, out imageData);
+
+            //TODO: convert to bitmap in another thread
+            // Converting the color image to System.Drawing.Bitmap
+            var bitmap = imageData.ToBitmap(0, image.info.width, image.info.height);
+            NewImageAvailable?.Invoke(this, new NewImageArgs(PXCMCapture.StreamType.STREAM_TYPE_COLOR, bitmap));
+
+            //release access to image data
+            image.ReleaseAccess(imageData);
         }
 
         /// <summary>
@@ -189,7 +216,7 @@ namespace HandModule.Implementation.HandTracking
                 int handId;
 
                 //closest hand gets smaller id
-                var queryHandIdStatus = handData.QueryHandId(PXCMHandData.AccessOrderType.ACCESS_ORDER_NEAR_TO_FAR, i,
+                var queryHandIdStatus = handData.QueryHandId(Settings.AccessOrderType, i,
                     out handId);
 
                 //check for errors
@@ -206,6 +233,7 @@ namespace HandModule.Implementation.HandTracking
                 var queryHandStatus = handData.QueryHandDataById(handId, out hand);
 //                Console.WriteLine(@"Hand data status: " + queryHandStatus);
 
+                //TODO: refactor hand position so that it updates accordingly with user settings
                 if (queryHandStatus == pxcmStatus.PXCM_STATUS_NO_ERROR && hand != null)
                 {
 //                    // Querying Hand 2D Position
@@ -229,7 +257,7 @@ namespace HandModule.Implementation.HandTracking
                     if (hand.HasTrackedJoints())
                     {
                         //searching for location of center hand
-                        var jointType = _handTrackingSettings.JointType;
+                        var jointType = Settings.JointType;
                         PXCMHandData.JointData jointData;
                         var queryStatus = hand.QueryTrackedJoint(jointType, out jointData);
 
@@ -257,8 +285,11 @@ namespace HandModule.Implementation.HandTracking
 
         #region Module vars
 
+        public event NewImageEventHandler NewImageAvailable;
+
+
         private readonly HandTrackingData _handTrackingData;
-        private readonly HandTrackingSettings _handTrackingSettings;
+        public new HandTrackingSettings Settings { get; }
 
         #endregion
 

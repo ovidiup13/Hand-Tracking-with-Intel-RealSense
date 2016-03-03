@@ -1,0 +1,110 @@
+﻿<UserControl x:Class="UserInterface.Views.HandPage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mui="http://firstfloorsoftware.com/ModernUI"
+             xmlns:forms="clr-namespace:System.Windows.Forms;assembly=System.Windows.Forms"
+             mc:Ignorable="d"
+             d:DesignHeight="300" d:DesignWidth="300"
+             DataContext="{Binding Source={StaticResource ViewModelLocator}, Path=HandViewModel}">
+    <Grid Style="{StaticResource ContentRoot}">
+
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+
+        <!-- Hand Settings -->
+
+        <StackPanel Orientation="Vertical">
+            <TextBlock Text="Hand Settings" Style="{StaticResource Heading1}"
+                       HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,0,0,20" />
+
+            <!-- Fields -->
+            <StackPanel Orientation="Vertical" Grid.Column="0">
+
+                <!-- Tracking Mode -->
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="Tracking Type: " />
+                    <ComboBox
+                        ItemsSource="{Binding TrackingModeTypes}"
+                        SelectedItem="{Binding HandTrackingSettings.TrackingModeType, Mode=TwoWay}" />
+                </StackPanel>
+
+                <!-- TODO: add checkbox for tracked joints -->
+
+                <!-- Joint Type -->
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="Joint Type: " />
+                    <ComboBox
+                        ItemsSource="{Binding JointTypes}"
+                        SelectedItem="{Binding HandTrackingSettings.JointType, Mode=TwoWay}" />
+                </StackPanel>
+
+                <!-- Joint Type -->
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="Hand Order: " />
+                    <ComboBox
+                        ItemsSource="{Binding AccessOrderTypes}"
+                        SelectedItem="{Binding HandTrackingSettings.AccessOrderType, Mode=TwoWay}" />
+                </StackPanel>
+
+                <!-- Stabilizer -->
+                <CheckBox Margin="10" x:Name="myCheckBox"
+                          IsChecked="{Binding HandTrackingSettings.EnableStabilizer}">
+                    Enable Stabilizer
+                </CheckBox>
+
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="Smoothing Value:" />
+
+                    <!-- text box validation -->
+                    <TextBox Text="{Binding HandTrackingSettings.SmoothingValue}" />
+                </StackPanel>
+
+
+            </StackPanel>
+
+        </StackPanel>
+
+
+        <!-- Participant -->
+
+        <StackPanel Grid.Column="1">
+            <TextBlock Text="Participant" Style="{StaticResource Heading1}"
+                       HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0" />
+
+            <!-- ID -->
+            <StackPanel Orientation="Horizontal">
+                <Label Content="Participant ID:" />
+
+                <!-- text box validation -->
+                <TextBox Text="{Binding HandTrackingSettings.SmoothingValue}" />
+            </StackPanel>
+
+            <!-- Age -->
+            <StackPanel Orientation="Horizontal">
+                <Label Content="Age:" />
+
+                <!-- text box validation -->
+                <TextBox Text="{Binding Participant.Age}" />
+            </StackPanel>
+
+
+            <!-- Gender -->
+            <StackPanel Orientation="Horizontal">
+                <Label Content="Gender: " />
+                <ComboBox SelectedItem="{Binding Participant.Gender}">
+                    <ComboBoxItem>Male</ComboBoxItem>
+                    <ComboBoxItem>Female</ComboBoxItem>
+                </ComboBox>
+            </StackPanel>
+        </StackPanel>
+
+    </Grid>
+</UserControl>

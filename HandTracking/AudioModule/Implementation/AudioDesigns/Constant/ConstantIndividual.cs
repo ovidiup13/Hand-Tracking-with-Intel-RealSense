@@ -11,6 +11,7 @@ namespace AudioModule.Implementation.AudioDesigns.Constant
         /// </summary>
         public ConstantIndividual()
         {
+            FeedbackType = FeedbackType.Individual;
         }
 
         /// <summary>
@@ -19,8 +20,8 @@ namespace AudioModule.Implementation.AudioDesigns.Constant
         /// <param name="filePath"></param>
         public ConstantIndividual(string filePath) : base(filePath)
         {
+            FeedbackType = FeedbackType.Individual;
         }
-
 
         public void PlayIndividual()
         {

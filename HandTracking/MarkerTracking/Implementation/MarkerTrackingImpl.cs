@@ -1,13 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Drawing;
 using System.Threading;
 using Aruco.Net;
 using CameraModule.Interfaces.Module;
 using CameraModule.Interfaces.Settings;
 using OpenCV.Net;
-using Size = OpenCV.Net.Size;
 
 namespace MarkerTracking.Implementation
 {
@@ -15,8 +12,6 @@ namespace MarkerTracking.Implementation
     //TODO: draw a circle on the image component at each marker's position
     public class MarkerTrackingImpl : Tracking
     {
-        public delegate void NewImageEventHandler(object sender, NewImageArgs args);
-
         public delegate void NewMarkerEventHandler(object sender, NewMarkerArgs args);
 
         public delegate void NoMarkerEventHandler(object sender, NewMarkerArgs args);
@@ -41,6 +36,7 @@ namespace MarkerTracking.Implementation
         }
 
         /// <summary>
+        ///     Method which initializes the camera modules.
         /// </summary>
         public override void InitializeCameraModules()
         {
@@ -164,7 +160,7 @@ namespace MarkerTracking.Implementation
             var detectedMarkers = _markerDetector.Detect(colorOcv, new CameraParameters());
             if (detectedMarkers.Count == 0)
             {
-                NoMarkerAvailable.Invoke(this, new NewMarkerArgs());
+                NoMarkerAvailable?.Invoke(this, new NewMarkerArgs());
                 return;
             }
 
@@ -188,13 +184,13 @@ namespace MarkerTracking.Implementation
             _projection.QueryVertices(depth, vertices);
 
             //collection of markers
-            List<Marker> markers = new List<Marker>();
+            var markers = new List<Marker>();
 
             //go through detected points
             for (var point = 0; point < depthPoints.Length; point++)
             {
                 var detectedPoint = depthPoints[point];
-                
+
                 //ignore out of range
                 if (detectedPoint.x < 0 || detectedPoint.y < 0) continue;
 
@@ -245,6 +241,7 @@ namespace MarkerTracking.Implementation
         }
 
         /// <summary>
+        /// TODO: implement pause
         /// </summary>
         public override void PauseProcessing()
         {
@@ -267,6 +264,7 @@ namespace MarkerTracking.Implementation
             PXCMImage.ImageData imageData;
             image.AcquireAccess(PXCMImage.Access.ACCESS_READ, format, out imageData);
 
+            //TODO: convert to bitmap in another thread
             // Converting the color image to System.Drawing.Bitmap
             var bitmap = imageData.ToBitmap(0, image.info.width, image.info.height);
             NewImageAvailable?.Invoke(this, new NewImageArgs(PXCMCapture.StreamType.STREAM_TYPE_COLOR, bitmap));
@@ -278,20 +276,20 @@ namespace MarkerTracking.Implementation
             //switch format from RealSense to OpenCV
             var channels = 1;
             var depthType = Depth.U8;
-            if (format == PXCMImage.PixelFormat.PIXEL_FORMAT_Y8)
+            switch (format)
             {
-                depthType = Depth.U8;
-                channels = 1;
-            }
-            else if (format == PXCMImage.PixelFormat.PIXEL_FORMAT_RGB24)
-            {
-                depthType = Depth.U8;
-                channels = 3;
-            }
-            else if (format == PXCMImage.PixelFormat.PIXEL_FORMAT_DEPTH_F32)
-            {
-                depthType = Depth.F32;
-                channels = 1;
+                case PXCMImage.PixelFormat.PIXEL_FORMAT_Y8:
+                    depthType = Depth.U8;
+                    channels = 1;
+                    break;
+                case PXCMImage.PixelFormat.PIXEL_FORMAT_RGB24:
+                    depthType = Depth.U8;
+                    channels = 3;
+                    break;
+                case PXCMImage.PixelFormat.PIXEL_FORMAT_DEPTH_F32:
+                    depthType = Depth.F32;
+                    channels = 1;
+                    break;
             }
 
             //convert to OpenCV format and pass first pointer to RealSense image
@@ -312,36 +310,17 @@ namespace MarkerTracking.Implementation
             return _markerData;
         }
 
-        /// <summary>
-        ///     Event arguments class for passing the image bitmap to the main view.
-        /// </summary>
-        public class NewImageArgs : EventArgs
-        {
-            public NewImageArgs(PXCMCapture.StreamType streamType, Bitmap bitmap)
-            {
-                Bitmap = bitmap;
-                StreamType = streamType;
-            }
-
-            public Bitmap Bitmap { get; private set; }
-            private PXCMCapture.StreamType StreamType { get; set; }
-        }
 
         /// <summary>
         ///     Event arguments class for passing a new marker to the main view.
         /// </summary>
         public class NewMarkerArgs : EventArgs
         {
+            public List<Marker> Markers;
 
-            public Marker Marker;
-            public List<Marker> Markers; 
-
-            public NewMarkerArgs() { }
-
-            public NewMarkerArgs(Marker marker)
+            public NewMarkerArgs()
             {
-                Marker = marker;
-            }
+            }          
 
             public NewMarkerArgs(List<Marker> markers)
             {

@@ -1,10 +1,14 @@
-﻿namespace AudioModule.Implementation.AudioDesigns.Constant
+﻿using AudioModule.Interfaces;
+
+namespace AudioModule.Implementation.AudioDesigns.Constant
 {
     public class ControlDesign : ConstantIndividual
     {
 
         public ControlDesign()
         {
+            AudioDesignDesignType = DesignType.Control;
+            FeedbackType = FeedbackType.Individual;
         }
 
         public override void Play()
