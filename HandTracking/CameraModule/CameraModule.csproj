@@ -1,5 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\Aruco.Net.2.0.0\build\net45\Aruco.Net.props" Condition="Exists('..\packages\Aruco.Net.2.0.0\build\net45\Aruco.Net.props')" />
+  <Import Project="..\packages\OpenCV.Net.3.3.0\build\net40\OpenCV.Net.props" Condition="Exists('..\packages\OpenCV.Net.3.3.0\build\net40\OpenCV.Net.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -11,6 +13,8 @@
     <AssemblyName>CameraModule</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -48,8 +52,16 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Aruco.Net, Version=2.0.0.0, Culture=neutral, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Aruco.Net.2.0.0\build\net45\bin\x64\v110\Aruco.Net.dll</HintPath>
+    </Reference>
     <Reference Include="libpxcclr.cs">
       <HintPath>..\lib\libpxcclr.cs.dll</HintPath>
+    </Reference>
+    <Reference Include="OpenCV.Net, Version=3.3.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\OpenCV.Net.3.3.0\lib\net40\OpenCV.Net.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="System" />
@@ -64,6 +76,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Implementation\HandTracking\HandTrackingData.cs" />
+    <Compile Include="Implementation\HandTracking\HandTrackingException.cs" />
+    <Compile Include="Implementation\HandTracking\HandTrackingImpl.cs" />
+    <Compile Include="Implementation\HandTracking\HandTrackingModule.cs" />
+    <Compile Include="Implementation\HandTracking\HandTrackingSettings.cs" />
     <Compile Include="Interfaces\Module\IData.cs" />
     <Compile Include="Interfaces\Module\IModule.cs" />
     <Compile Include="Interfaces\Module\ModuleException.cs" />
@@ -71,6 +88,12 @@
     <Compile Include="Interfaces\UI\CommandBase.cs" />
     <Compile Include="Interfaces\UI\Displayable.cs" />
     <Compile Include="Interfaces\UI\RelayCommand.cs" />
+    <Compile Include="Implementation\MarkerTracking\Marker.cs" />
+    <Compile Include="Implementation\MarkerTracking\MarkerData.cs" />
+    <Compile Include="Implementation\MarkerTracking\MarkerTrackingException.cs" />
+    <Compile Include="Implementation\MarkerTracking\MarkerTrackingImpl.cs" />
+    <Compile Include="Implementation\MarkerTracking\MarkerTrackingModule.cs" />
+    <Compile Include="Implementation\MarkerTracking\MarkerTrackingSettings.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Interfaces\Settings\CameraSettings.cs" />
@@ -78,9 +101,31 @@
     <Compile Include="Interfaces\Settings\AudioSettings.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Libs\" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Libs\opencv_core300.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libs\opencv_highgui300.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libs\opencv_imgproc300.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\OpenCV.Net.3.3.0\build\net40\OpenCV.Net.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\OpenCV.Net.3.3.0\build\net40\OpenCV.Net.props'))" />
+    <Error Condition="!Exists('..\packages\OpenCV.Net.3.3.0\build\net40\OpenCV.Net.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\OpenCV.Net.3.3.0\build\net40\OpenCV.Net.targets'))" />
+    <Error Condition="!Exists('..\packages\Aruco.Net.2.0.0\build\net45\Aruco.Net.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Aruco.Net.2.0.0\build\net45\Aruco.Net.props'))" />
+    <Error Condition="!Exists('..\packages\Aruco.Net.2.0.0\build\net45\Aruco.Net.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Aruco.Net.2.0.0\build\net45\Aruco.Net.targets'))" />
+  </Target>
+  <Import Project="..\packages\OpenCV.Net.3.3.0\build\net40\OpenCV.Net.targets" Condition="Exists('..\packages\OpenCV.Net.3.3.0\build\net40\OpenCV.Net.targets')" />
+  <Import Project="..\packages\Aruco.Net.2.0.0\build\net45\Aruco.Net.targets" Condition="Exists('..\packages\Aruco.Net.2.0.0\build\net45\Aruco.Net.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

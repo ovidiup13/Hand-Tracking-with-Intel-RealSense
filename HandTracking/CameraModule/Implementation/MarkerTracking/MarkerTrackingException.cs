@@ -2,7 +2,7 @@
 using System.Runtime.Serialization;
 using CameraModule.Interfaces.Module;
 
-namespace MarkerTracking.Implementation
+namespace CameraModule.Implementation.MarkerTracking
 {
     public class MarkerTrackingException : ModuleException
     {

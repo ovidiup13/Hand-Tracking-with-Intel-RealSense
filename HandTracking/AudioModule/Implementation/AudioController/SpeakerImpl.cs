@@ -1,6 +1,6 @@
 ﻿using System;
 using AudioModule.Interfaces;
-using MarkerTracking.Implementation;
+using CameraModule.Implementation.MarkerTracking;
 using Un4seen.Bass;
 
 namespace AudioModule.Implementation.AudioController

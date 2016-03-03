@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
+using CameraModule.Implementation.HandTracking;
 using CoreModule.Interfaces;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Ioc;
-using HandModule.Implementation.HandTracking;
 
 namespace UserInterface.ViewModels.HandViewModels
 {

@@ -3,7 +3,7 @@ using System.Threading;
 using CameraModule.Interfaces.Module;
 using CameraModule.Interfaces.Settings;
 
-namespace HandModule.Implementation.HandTracking
+namespace CameraModule.Implementation.HandTracking
 {
     public class HandTrackingImpl : Tracking
     {

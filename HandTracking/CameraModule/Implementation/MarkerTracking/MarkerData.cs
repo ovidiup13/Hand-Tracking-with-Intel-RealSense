@@ -1,16 +1,17 @@
-﻿using System.Collections.Generic;
-using ClassLibrary1.Interfaces.Module;
+﻿using System.Collections.ObjectModel;
+using CameraModule.Interfaces.Module;
 
-namespace HandTracking.Implementation.MarkerTracking
+namespace CameraModule.Implementation.MarkerTracking
 {
-    internal class MarkerData : IData
+    public class MarkerData : IData
     {
         /// <summary>
         ///     Constructor creates a new instance of MarkerData.
         /// </summary>
         internal MarkerData()
         {
-            Markers = new Dictionary<int, PXCMPoint3DF32>();
+//            Markers = new Dictionary<int, PXCMPoint3DF32>();
+//              Markers = new ObservableCollection<Marker> {new Marker(1, new PXCMPoint3DF32(1, 2, 3))};
         }
 
         /// <summary>
@@ -32,11 +33,11 @@ namespace HandTracking.Implementation.MarkerTracking
         internal void AddMarker(int id, PXCMPoint3DF32 position)
         {
             //check whether id is within bounds
-            if (id < 0) throw new MarkerTrackingException("ID cannot be less than zero.");
+            if (id < 0) throw new MarkerTrackingException("ID cannot be less than zero."); 
 
             lock (_lock1)
             {
-                //if it contains the marker 
+                /*//if it contains the marker 
                 if (Markers.ContainsKey(id))
                 {
                     //update its position
@@ -44,17 +45,19 @@ namespace HandTracking.Implementation.MarkerTracking
                 }
                 //otherwise, add it to the dictionary
                 else
-                {
-                    Markers.Add(id, position);
-                }
+                {*/
+//                    Markers.Add(new Marker(id, position));
+               // }
             }
         }
+
+
 
         #region vars
 
         private readonly object _lock1 = new object();
 
-        public Dictionary<int, PXCMPoint3DF32> Markers { get; }
+        public ObservableCollection<Marker> Markers { get; }
 
         #endregion
     }

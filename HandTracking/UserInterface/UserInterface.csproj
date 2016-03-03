@@ -211,14 +211,6 @@
       <Project>{63d18ef8-f5c5-4fca-a02d-60bf4520feba}</Project>
       <Name>CoreModule</Name>
     </ProjectReference>
-    <ProjectReference Include="..\HandModule\HandModule.csproj">
-      <Project>{9E17EA69-F8B6-4089-9974-B99FAF1D4193}</Project>
-      <Name>HandModule</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\MarkerTracking\MarkerTracking.csproj">
-      <Project>{34e8689d-2485-4037-9c4e-c9c8b0e06729}</Project>
-      <Name>MarkerTracking</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Content Include="libpxccpp2c.dll">

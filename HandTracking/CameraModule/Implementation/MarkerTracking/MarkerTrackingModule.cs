@@ -1,7 +1,7 @@
 ﻿using CameraModule.Interfaces.Module;
 using CameraModule.Interfaces.Settings;
 
-namespace MarkerTracking.Implementation
+namespace CameraModule.Implementation.MarkerTracking
 {
     public class MarkerTrackingModule : IModule
     {

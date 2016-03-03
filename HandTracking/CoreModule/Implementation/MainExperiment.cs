@@ -4,11 +4,11 @@ using System.Diagnostics;
 using System.Threading;
 using AudioModule.Implementation.AudioController;
 using AudioModule.Interfaces;
+using CameraModule.Implementation.HandTracking;
 using CameraModule.Interfaces.Module;
 using CameraModule.Interfaces.Settings;
 using CoreModule.Implementation.Data;
 using CoreModule.Interfaces;
-using HandModule.Implementation.HandTracking;
 
 namespace CoreModule.Implementation
 {
@@ -134,8 +134,8 @@ namespace CoreModule.Implementation
         {
             
             //create an instance of hand tracking module
-            _handTrackingModule = new HandTrackingModule();
-            _handtracking = _handTrackingModule.GetInstance();
+//            _handTrackingModule = new HandTrackingModule();
+//            _handtracking = _handTrackingModule.GetInstance();
             _handtracking.InitializeCameraModules();
             _handData = _handtracking.GetData() as HandTrackingData;
 

@@ -1,7 +1,7 @@
 ﻿using CameraModule.Interfaces.Module;
 using CameraModule.Interfaces.Settings;
 
-namespace HandModule.Implementation.HandTracking
+namespace CameraModule.Implementation.HandTracking
 {
     /// <summary>
     /// Hand Tracking Module is responsible for creating an instance of a Hand Tracking functionality.

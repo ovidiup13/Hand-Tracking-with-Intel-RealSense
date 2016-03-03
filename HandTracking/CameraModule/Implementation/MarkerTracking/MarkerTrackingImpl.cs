@@ -1,18 +1,21 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using Aruco.Net;
-using ClassLibrary1.Interfaces.Module;
-using ClassLibrary1.Interfaces.Settings;
-using HandTracking.Interfaces.Settings;
+using CameraModule.Interfaces.Module;
+using CameraModule.Interfaces.Settings;
 using OpenCV.Net;
 
-namespace HandTracking.Implementation.MarkerTracking
+namespace CameraModule.Implementation.MarkerTracking
 {
-    //TODO: pass the image stream to the marker settings window for displaying
     //TODO: get the location, in 2D image space, of the marker
     //TODO: draw a circle on the image component at each marker's position
-    internal class MarkerTrackingImpl : Tracking
+    public class MarkerTrackingImpl : Tracking
     {
+        public delegate void NewMarkerEventHandler(object sender, NewMarkerArgs args);
+
+        public delegate void NoMarkerEventHandler(object sender, NewMarkerArgs args);
+
         /// <summary>
         ///     Constructor that instantiates the Marker Tracking class with default settings.
         /// </summary>
@@ -33,6 +36,7 @@ namespace HandTracking.Implementation.MarkerTracking
         }
 
         /// <summary>
+        ///     Method which initializes the camera modules.
         /// </summary>
         public override void InitializeCameraModules()
         {
@@ -80,7 +84,7 @@ namespace HandTracking.Implementation.MarkerTracking
                 throw new MarkerTrackingException(@"Failed to create projection.");
 
             _markerDetector = new MarkerDetector();
-            if (_markerDetector == null) 
+            if (_markerDetector == null)
                 throw new MarkerTrackingException(@"Failed to initialize the Aruco Marker Detector.");
 
             IsInitialized = true;
@@ -154,6 +158,11 @@ namespace HandTracking.Implementation.MarkerTracking
 
             //detect markers using Aruco
             var detectedMarkers = _markerDetector.Detect(colorOcv, new CameraParameters());
+            if (detectedMarkers.Count == 0)
+            {
+                NoMarkerAvailable?.Invoke(this, new NewMarkerArgs());
+                return;
+            }
 
             var colorPoints = new PXCMPointF32[detectedMarkers.Count];
             var depthPoints = new PXCMPointF32[detectedMarkers.Count];
@@ -174,27 +183,35 @@ namespace HandTracking.Implementation.MarkerTracking
             var vertices = new PXCMPoint3DF32[depth.info.width*depth.info.height];
             _projection.QueryVertices(depth, vertices);
 
+            //collection of markers
+            var markers = new List<Marker>();
+
             //go through detected points
             for (var point = 0; point < depthPoints.Length; point++)
             {
                 var detectedPoint = depthPoints[point];
-                if (detectedPoint.x < 0 || detectedPoint.y < 0)
-                {
-//                    Console.WriteLine(@"Marker " + detectedMarkers[point].Id + " is out of range");
-                    //add marker, with out of range position
-                    _markerData.AddMarker(detectedMarkers[point].Id, new PXCMPoint3DF32(-1, -1, -1));
-                }
-                else
-                {
-                    var v = vertices[(int) (depthPoints[point].y*depth.info.width + depthPoints[point].x)];
-                    Console.WriteLine(@"Marker " + detectedMarkers[point].Id + @" has coordinates: X:" + v.x + @" Y:" +
-                                      v.y +
-                                      @" Z:" + v.z);
-                    Console.WriteLine("Distance to camera: " + GetDistance(_cameraCoordinate, v));
-                    
-                    _markerData.AddMarker(detectedMarkers[point].Id, v);
-                }
+
+                //ignore out of range
+                if (detectedPoint.x < 0 || detectedPoint.y < 0) continue;
+
+
+                var v = vertices[(int) (depthPoints[point].y*depth.info.width + depthPoints[point].x)];
+//                Console.WriteLine(@"Marker " + detectedMarkers[point].Id + @" has coordinates: X:" + v.x + @" Y:" +
+//                                  v.y +
+//                                  @" Z:" + v.z);
+                Console.WriteLine("Distance to camera: " + GetDistance(_cameraCoordinate, v));
+
+                //add the marker to the data
+//                _markerData.AddMarker(detectedMarkers[point].Id, v);
+
+//                NewMarkerAvailable?.Invoke(this, new NewMarkerArgs(new Marker(detectedMarkers[point].Id, v, colorPoints[point])));
+
+
+                markers.Add(new Marker(detectedMarkers[point].Id, v, colorPoints[point]));
             }
+
+            //notify that a new collection of markers is available
+            NewMarkerAvailable?.Invoke(this, new NewMarkerArgs(markers));
 
             color.Dispose();
             depth.Dispose();
@@ -206,7 +223,7 @@ namespace HandTracking.Implementation.MarkerTracking
             //TODO: there is a gap between centre of hand and centre of marker - aprox 3cm
             return
                 Math.Sqrt(Math.Pow(point1.x - point2.x, 2) + Math.Pow(point1.y - point2.y, 2) +
-                          Math.Pow(point1.z - point2.z, 2)) / 10;
+                          Math.Pow(point1.z - point2.z, 2))/10;
         }
 
         /// <summary>
@@ -224,6 +241,7 @@ namespace HandTracking.Implementation.MarkerTracking
         }
 
         /// <summary>
+        /// TODO: implement pause
         /// </summary>
         public override void PauseProcessing()
         {
@@ -246,6 +264,11 @@ namespace HandTracking.Implementation.MarkerTracking
             PXCMImage.ImageData imageData;
             image.AcquireAccess(PXCMImage.Access.ACCESS_READ, format, out imageData);
 
+            //TODO: convert to bitmap in another thread
+            // Converting the color image to System.Drawing.Bitmap
+            var bitmap = imageData.ToBitmap(0, image.info.width, image.info.height);
+            NewImageAvailable?.Invoke(this, new NewImageArgs(PXCMCapture.StreamType.STREAM_TYPE_COLOR, bitmap));
+
             //get image info
             var width = image.QueryInfo().width;
             var height = image.QueryInfo().height;
@@ -253,20 +276,20 @@ namespace HandTracking.Implementation.MarkerTracking
             //switch format from RealSense to OpenCV
             var channels = 1;
             var depthType = Depth.U8;
-            if (format == PXCMImage.PixelFormat.PIXEL_FORMAT_Y8)
+            switch (format)
             {
-                depthType = Depth.U8;
-                channels = 1;
-            }
-            else if (format == PXCMImage.PixelFormat.PIXEL_FORMAT_RGB24)
-            {
-                depthType = Depth.U8;
-                channels = 3;
-            }
-            else if (format == PXCMImage.PixelFormat.PIXEL_FORMAT_DEPTH_F32)
-            {
-                depthType = Depth.F32;
-                channels = 1;
+                case PXCMImage.PixelFormat.PIXEL_FORMAT_Y8:
+                    depthType = Depth.U8;
+                    channels = 1;
+                    break;
+                case PXCMImage.PixelFormat.PIXEL_FORMAT_RGB24:
+                    depthType = Depth.U8;
+                    channels = 3;
+                    break;
+                case PXCMImage.PixelFormat.PIXEL_FORMAT_DEPTH_F32:
+                    depthType = Depth.F32;
+                    channels = 1;
+                    break;
             }
 
             //convert to OpenCV format and pass first pointer to RealSense image
@@ -287,16 +310,39 @@ namespace HandTracking.Implementation.MarkerTracking
             return _markerData;
         }
 
+
+        /// <summary>
+        ///     Event arguments class for passing a new marker to the main view.
+        /// </summary>
+        public class NewMarkerArgs : EventArgs
+        {
+            public List<Marker> Markers;
+
+            public NewMarkerArgs()
+            {
+            }          
+
+            public NewMarkerArgs(List<Marker> markers)
+            {
+                Markers = markers;
+            }
+        }
+
         #region tracking vars
 
         private readonly MarkerTrackingSettings _markerTrackingSettings;
         private readonly MarkerData _markerData;
 
+        //event handlers for new image, markers
+        public event NewImageEventHandler NewImageAvailable;
+        public event NewMarkerEventHandler NewMarkerAvailable;
+        public event NoMarkerEventHandler NoMarkerAvailable;
+
         //aruco detector
         private MarkerDetector _markerDetector;
 
         //camera coordinates
-        private PXCMPoint3DF32 _cameraCoordinate = new PXCMPoint3DF32(0, 0, 0);
+        private readonly PXCMPoint3DF32 _cameraCoordinate = new PXCMPoint3DF32(0, 0, 0);
 
         #endregion
 

@@ -2,7 +2,7 @@
 using System.Runtime.CompilerServices;
 using CameraModule.Annotations;
 
-namespace MarkerTracking.Implementation
+namespace CameraModule.Implementation.MarkerTracking
 {
     public class Marker : INotifyPropertyChanged
     {

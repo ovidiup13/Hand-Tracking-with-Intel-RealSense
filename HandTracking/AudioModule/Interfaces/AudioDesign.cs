@@ -3,7 +3,7 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using AudioModule.Implementation.AudioController;
 using CameraModule.Annotations;
-using MarkerTracking.Implementation;
+using CameraModule.Implementation.MarkerTracking;
 using Un4seen.Bass;
 
 namespace AudioModule.Interfaces

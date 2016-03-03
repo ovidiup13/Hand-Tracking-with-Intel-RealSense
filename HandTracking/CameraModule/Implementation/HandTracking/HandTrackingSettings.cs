@@ -5,7 +5,7 @@ using System.Runtime.CompilerServices;
 using CameraModule.Annotations;
 using CameraModule.Interfaces.Settings;
 
-namespace HandModule.Implementation.HandTracking
+namespace CameraModule.Implementation.HandTracking
 {
     public class HandTrackingSettings : CameraSettings
     {

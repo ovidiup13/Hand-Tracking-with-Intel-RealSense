@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mui="http://firstfloorsoftware.com/ModernUI"
              xmlns:views="clr-namespace:UserInterface.Views"
-             xmlns:implementation="clr-namespace:MarkerTracking.Implementation;assembly=MarkerTracking"
+             xmlns:markerTracking="clr-namespace:CameraModule.Implementation.MarkerTracking;assembly=CameraModule"
              mc:Ignorable="d"
              d:DesignHeight="495.15" d:DesignWidth="657">
     <!--DataContext="{Binding Source={StaticResource ViewModelLocator}, Path=MarkerViewModel}"-->
@@ -24,7 +24,7 @@
 
                     <ItemsControl Name="MarkerList" ItemsSource="{Binding Path=MarkersDetected, Mode=TwoWay}">
                         <ItemsControl.ItemTemplate>
-                            <DataTemplate DataType="implementation:Marker">
+                            <DataTemplate DataType="markerTracking:Marker">
                                 <StackPanel Orientation="Vertical">
 
                                     <TextBlock Text="{Binding Path=Id, Mode=TwoWay, StringFormat='Marker #{0}'}"

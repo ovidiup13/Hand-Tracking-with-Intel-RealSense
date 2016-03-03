@@ -86,10 +86,6 @@
       <Project>{a944ed83-c104-49e5-a363-2127863b92bc}</Project>
       <Name>CameraModule</Name>
     </ProjectReference>
-    <ProjectReference Include="..\MarkerTracking\MarkerTracking.csproj">
-      <Project>{34E8689D-2485-4037-9C4E-C9C8B0E06729}</Project>
-      <Name>MarkerTracking</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Sounds\confirm.wav">

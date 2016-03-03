@@ -8,7 +8,6 @@ using AudioModule.Interfaces;
 using FirstFloor.ModernUI.Windows.Controls;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Ioc;
-using MarkerTracking.Implementation;
 using Un4seen.Bass;
 using UserInterface.ViewModels.MarkerTrackingViewModels;
 using UserInterface.Views;

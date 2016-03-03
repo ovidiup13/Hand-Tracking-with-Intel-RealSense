@@ -1,7 +1,6 @@
-﻿using System;
-using CameraModule.Interfaces.Settings;
+﻿using CameraModule.Interfaces.Settings;
 
-namespace MarkerTracking.Implementation
+namespace CameraModule.Implementation.MarkerTracking
 {
     internal class MarkerTrackingSettings : CameraSettings
     {

@@ -1,13 +1,14 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Windows.Input;
 using System.Windows.Media;
 using AudioModule.Implementation.AudioController;
+using CameraModule.Implementation.HandTracking;
 using CameraModule.Interfaces.Module;
 using CoreModule.Implementation;
 using CoreModule.Interfaces;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Ioc;
-using HandModule.Implementation.HandTracking;
 using UserInterface.ViewModels.ConditionViewModels;
 using UserInterface.ViewModels.HandViewModels;
 using UserInterface.ViewModels.MarkerTrackingViewModels;
@@ -93,6 +94,13 @@ namespace UserInterface.ViewModels.ExperimentPageViewModel
         public List<SpeakerImpl> SpeakerList { get; private set; }
         public List<ConditionGroup> ConditionGroups { get; private set; }
         public Participant Participant { get; private set; }
+
+        #endregion
+
+        #region commands
+
+        public ICommand StartExperimentCommand { get; set; }
+        public ICommand StopExperimentCommand { get; set; }
 
         #endregion
 

@@ -5,15 +5,11 @@ VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserInterface", "UserInterface\UserInterface.csproj", "{DAF05D63-E8CE-459B-BFC0-42C09A27E1A6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MarkerTracking", "MarkerTracking\MarkerTracking.csproj", "{34E8689D-2485-4037-9C4E-C9C8B0E06729}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AudioModule", "AudioModule\AudioModule.csproj", "{4C4B6096-412C-4804-B43F-14EB221924EC}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CameraModule", "CameraModule\CameraModule.csproj", "{A944ED83-C104-49E5-A363-2127863B92BC}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoreModule", "CoreModule\CoreModule.csproj", "{63D18EF8-F5C5-4FCA-A02D-60BF4520FEBA}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HandModule", "HandModule\HandModule.csproj", "{9E17EA69-F8B6-4089-9974-B99FAF1D4193}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "lib", "lib", "{8A5809B6-0A32-4BEE-8A3E-74AE4F73DE92}"
 	ProjectSection(SolutionItems) = preProject
@@ -43,18 +39,6 @@ Global
 		{DAF05D63-E8CE-459B-BFC0-42C09A27E1A6}.Release|x64.Build.0 = Release|Any CPU
 		{DAF05D63-E8CE-459B-BFC0-42C09A27E1A6}.Release|x86.ActiveCfg = Release|Any CPU
 		{DAF05D63-E8CE-459B-BFC0-42C09A27E1A6}.Release|x86.Build.0 = Release|Any CPU
-		{34E8689D-2485-4037-9C4E-C9C8B0E06729}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{34E8689D-2485-4037-9C4E-C9C8B0E06729}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{34E8689D-2485-4037-9C4E-C9C8B0E06729}.Debug|x64.ActiveCfg = Debug|x64
-		{34E8689D-2485-4037-9C4E-C9C8B0E06729}.Debug|x64.Build.0 = Debug|x64
-		{34E8689D-2485-4037-9C4E-C9C8B0E06729}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{34E8689D-2485-4037-9C4E-C9C8B0E06729}.Debug|x86.Build.0 = Debug|Any CPU
-		{34E8689D-2485-4037-9C4E-C9C8B0E06729}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{34E8689D-2485-4037-9C4E-C9C8B0E06729}.Release|Any CPU.Build.0 = Release|Any CPU
-		{34E8689D-2485-4037-9C4E-C9C8B0E06729}.Release|x64.ActiveCfg = Release|Any CPU
-		{34E8689D-2485-4037-9C4E-C9C8B0E06729}.Release|x64.Build.0 = Release|Any CPU
-		{34E8689D-2485-4037-9C4E-C9C8B0E06729}.Release|x86.ActiveCfg = Release|Any CPU
-		{34E8689D-2485-4037-9C4E-C9C8B0E06729}.Release|x86.Build.0 = Release|Any CPU
 		{4C4B6096-412C-4804-B43F-14EB221924EC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{4C4B6096-412C-4804-B43F-14EB221924EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4C4B6096-412C-4804-B43F-14EB221924EC}.Debug|x64.ActiveCfg = Debug|x64
@@ -91,18 +75,6 @@ Global
 		{63D18EF8-F5C5-4FCA-A02D-60BF4520FEBA}.Release|x64.Build.0 = Release|Any CPU
 		{63D18EF8-F5C5-4FCA-A02D-60BF4520FEBA}.Release|x86.ActiveCfg = Release|Any CPU
 		{63D18EF8-F5C5-4FCA-A02D-60BF4520FEBA}.Release|x86.Build.0 = Release|Any CPU
-		{9E17EA69-F8B6-4089-9974-B99FAF1D4193}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9E17EA69-F8B6-4089-9974-B99FAF1D4193}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9E17EA69-F8B6-4089-9974-B99FAF1D4193}.Debug|x64.ActiveCfg = Debug|x64
-		{9E17EA69-F8B6-4089-9974-B99FAF1D4193}.Debug|x64.Build.0 = Debug|x64
-		{9E17EA69-F8B6-4089-9974-B99FAF1D4193}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{9E17EA69-F8B6-4089-9974-B99FAF1D4193}.Debug|x86.Build.0 = Debug|Any CPU
-		{9E17EA69-F8B6-4089-9974-B99FAF1D4193}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9E17EA69-F8B6-4089-9974-B99FAF1D4193}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9E17EA69-F8B6-4089-9974-B99FAF1D4193}.Release|x64.ActiveCfg = Release|Any CPU
-		{9E17EA69-F8B6-4089-9974-B99FAF1D4193}.Release|x64.Build.0 = Release|Any CPU
-		{9E17EA69-F8B6-4089-9974-B99FAF1D4193}.Release|x86.ActiveCfg = Release|Any CPU
-		{9E17EA69-F8B6-4089-9974-B99FAF1D4193}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

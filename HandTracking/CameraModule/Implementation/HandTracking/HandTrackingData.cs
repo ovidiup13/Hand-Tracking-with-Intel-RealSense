@@ -1,6 +1,6 @@
 ﻿using CameraModule.Interfaces.Module;
 
-namespace HandModule.Implementation.HandTracking
+namespace CameraModule.Implementation.HandTracking
 {
     /// <summary>
     /// Class that holds 2D and 3D location of the hand. The fields will be accessible anywhere in the system, 

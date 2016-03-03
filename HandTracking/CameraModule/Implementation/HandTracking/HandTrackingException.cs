@@ -1,6 +1,6 @@
 ﻿using CameraModule.Interfaces.Module;
 
-namespace HandModule.Implementation.HandTracking
+namespace CameraModule.Implementation.HandTracking
 {
     class HandTrackingException : ModuleException
     {

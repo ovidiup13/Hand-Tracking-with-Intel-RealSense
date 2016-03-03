@@ -6,12 +6,11 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
+using CameraModule.Implementation.MarkerTracking;
 using CameraModule.Interfaces.Module;
 using CameraModule.Interfaces.UI;
 using FirstFloor.ModernUI.Windows.Controls;
 using GalaSoft.MvvmLight;
-using MarkerTracking.Implementation;
-using UserInterface.ViewModels.SpeakerPageViewModels;
 
 namespace UserInterface.ViewModels.MarkerTrackingViewModels
 {
@@ -189,6 +188,7 @@ namespace UserInterface.ViewModels.MarkerTrackingViewModels
         ///     Marker Tracking Image
         /// </summary>
         private ImageSource _markerTrackingImage;
+
         public ImageSource MarkerTrackingImage
         {
             get { return _markerTrackingImage; }
@@ -203,6 +203,7 @@ namespace UserInterface.ViewModels.MarkerTrackingViewModels
         ///     List of markers detected
         /// </summary>
         private ObservableCollection<Marker> _markersDetected;
+
         public ObservableCollection<Marker> MarkersDetected
         {
             get { return _markersDetected; }
@@ -220,8 +221,8 @@ namespace UserInterface.ViewModels.MarkerTrackingViewModels
 
         #region commands
 
-        public ICommand StartTrackingCommand { get; private set; }
-        public ICommand StopTrackingCommand { get; private set; }
+        public ICommand StartTrackingCommand { get; set; }
+        public ICommand StopTrackingCommand { get; set; }
 
         #endregion
 
@@ -235,6 +236,7 @@ namespace UserInterface.ViewModels.MarkerTrackingViewModels
         #region marker delegate
 
         public event NewMarkersAvailable NewMarkersAvailableEvent;
+
         public delegate void NewMarkersAvailable(object sender, NewMarkersArgs markersArgs);
 
         /// <summary>

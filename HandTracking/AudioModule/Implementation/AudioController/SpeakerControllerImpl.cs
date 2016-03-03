@@ -6,7 +6,7 @@ using System.Runtime.CompilerServices;
 using System.Threading;
 using AudioModule.Interfaces;
 using CameraModule.Annotations;
-using MarkerTracking.Implementation;
+using CameraModule.Implementation.MarkerTracking;
 using Un4seen.Bass;
 
 namespace AudioModule.Implementation.AudioController

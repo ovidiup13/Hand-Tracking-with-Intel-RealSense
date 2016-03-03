@@ -13,8 +13,8 @@
 */
 
 using AudioModule.Implementation.AudioController;
+using CameraModule.Implementation.HandTracking;
 using GalaSoft.MvvmLight.Ioc;
-using HandModule.Implementation.HandTracking;
 using Microsoft.Practices.ServiceLocation;
 using UserInterface.ViewModels.ConditionViewModels;
 using UserInterface.ViewModels.ExperimentPageViewModel;
