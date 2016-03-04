@@ -6,63 +6,38 @@ using AudioModule.Implementation.AudioController;
 using AudioModule.Interfaces;
 using CameraModule.Implementation.HandTracking;
 using CameraModule.Interfaces.Module;
-using CameraModule.Interfaces.Settings;
 using CoreModule.Implementation.Data;
 using CoreModule.Interfaces;
 
 namespace CoreModule.Implementation
 {
-    /// <summary>   
+    /// <summary>
     /// </summary>
     public class MainExperiment : IExperiment
     {
-
         /// <summary>
         ///     Constructor for main experiment.
         /// </summary>
         public MainExperiment()
         {
-
-        }
-
-        /// <summary>
-        ///     Constructor for main experiment.
-        /// </summary>
-        /// <param name="conditions">Conditions for the experiment, as an array</param>
-        /// <param name="speakerController">The speaker controller object</param>
-        /// <param name="participant">The participant object for the experiment</param>
-        public MainExperiment(Condition[] conditions, SpeakerController speakerController, Participant participant)
-        {
-            //set main experiment variables
-            _conditions = conditions;
-            _speakerController = speakerController;
-
-            //check participant
-            if (participant == null)
-                throw new ArgumentNullException(nameof(participant));
-            _participant = participant;
-
-            _experimentThread = new Thread(MainExperimentThread);
-            _stopwatch = new Stopwatch();
-            _resetEvent = new AutoResetEvent(false);
-
-            //camera settings
-            cameraSettings = new CameraSettings(DEFAULT_RESOLUTION_WIDTH, DEFAULT_RESOLUTION_HEIGHT, DEFAULT_FPS);
-
-            //initialize modules
-//            InitializeExperiment();
+            InitializeExperiment();
         }
 
         /// <summary>
         /// </summary>
         /// <exception cref="ArgumentNullException">If the participant selected for the experiment is null.</exception>
-        /// TODO: must implement return values for each thread state
         public void StartExperiment()
         {
+            InitializeExperiment();
+
             if (_experimentThread.IsAlive)
                 return;
 
+            //start variables
+            _experimentIsRunning = true;
+            _isProcessing = true;
 
+            //start experiment
             _experimentThread.Start();
         }
 
@@ -76,12 +51,16 @@ namespace CoreModule.Implementation
 
         /// <summary>
         /// </summary>
-        /// TODO: must implement return values for each thread state
         public void StopExperiment()
         {
+            
+
             //stop hand tracking thread
             _handtracking?.StopProcessing();
             _handtracking = null;
+
+            //stop playback
+            _speakerController.StopPlayback();
 
             //stop processing thread
             _isProcessing = false;
@@ -89,8 +68,13 @@ namespace CoreModule.Implementation
             //stop main experiment thread
             _experimentIsRunning = false;
 
+//            _experimentThread?.Abort();
+
             //move to next trial in case we are waiting for key pressed
             NextTrial();
+            _experimentThread.Join();
+
+            _dataExporter.CloseStream();
         }
 
         /// <summary>
@@ -118,30 +102,44 @@ namespace CoreModule.Implementation
         }
 
         /// <summary>
-        /// Method that sets the current participant of the experiment.
+        ///     Method that sets the current participant of the experiment.
         /// </summary>
         /// <param name="participant"></param>
         public void SetParticipant(Participant participant)
         {
-            if(!IsStarted())
+            if (participant == null)
+                throw new ExperimentException("Participant cannot be null");
+
+            if (!IsStarted())
                 _participant = participant;
+        }
+
+        /// <summary>
+        ///     Method which initializes a new experiment.
+        /// </summary>
+        private void InitializeExperiment()
+        {
+            _experimentThread = new Thread(MainExperimentThread);
+            _stopwatch = new Stopwatch();
+            _resetEvent = new AutoResetEvent(false);
         }
 
         /// <summary>
         ///     Method that initializes the modules of the main experiment
         /// </summary>
-        public void InitializeExperiment(List<ConditionGroup> conditionGroups, SpeakerControllerImpl speakerController)
+        public void SetExperimentData(List<ConditionGroup> conditionGroups, SpeakerControllerImpl speakerController,
+            HandTrackingImpl handTracking)
         {
-            
-            //create an instance of hand tracking module
-//            _handTrackingModule = new HandTrackingModule();
-//            _handtracking = _handTrackingModule.GetInstance();
+            //set condition groups
+            _conditionGroups = conditionGroups;
+
+            //set the speaker controller
+            _speakerController = speakerController;
+
+            // initialize hand tracking
+            _handtracking = handTracking;
             _handtracking.InitializeCameraModules();
             _handData = _handtracking.GetData() as HandTrackingData;
-
-            //start variables
-            _experimentIsRunning = true;
-            _isProcessing = true;
         }
 
         /// <summary>
@@ -155,76 +153,81 @@ namespace CoreModule.Implementation
             var numberOfSpeakers = _speakerController.GetNumberOfSpeakers();
 
             Console.WriteLine(@"Experiment started.");
-            foreach (var cond in _conditions)
+            foreach (var group in _conditionGroups)
             {
-                //get the number of trials
-                var trials = cond.NumberOfTrials;
-
-                //set the audio design on the speaker controller
-                _speakerController.SetAudioDesign(cond.AudioDesign);
-                _dataExporter = new DataExporter(_participant, cond.AudioDesign.ToString());
-
-                Console.WriteLine(@"Condition started");
-                for (var i = 0; i < trials; i++)
+                foreach (var cond in group.Conditions)
                 {
-                    Console.WriteLine(@"Trial + " + i + @" started.");
-                    Console.WriteLine(@"Press space to move to next speaker");
-                    for (var j = 0; j < numberOfSpeakers; j++)
+                    //get the number of trials
+                    var trials = cond.NumberOfTrials;
+
+                    //set the audio design on the speaker controller
+                    _speakerController.SetAudioDesign(cond.AudioDesign);
+                    _dataExporter = new DataExporter(_participant, cond.AudioDesign.ToString());
+
+                    Console.WriteLine(@"Condition started");
+                    for (var i = 0; i < trials; i++)
                     {
-                        //signal speaker controller to move to next speaker
-                        _speakerController.NextSpeaker();
+                        Console.WriteLine(@"Trial + " + i + @" started.");
+                        Console.WriteLine(@"Press space to move to next speaker");
+                        for (var j = 0; j < numberOfSpeakers; j++)
+                        {
+                            //signal speaker controller to move to next speaker
+                            _speakerController.NextSpeaker();
 
-                        //start stopwatch
-                        _stopwatch.Start();
+                            //start stopwatch
+                            _stopwatch.Start();
 
-                        //start the processing thread
-                        _isProcessing = true;
-                        _processingThread = new Thread(ProcessingThread);
-                        _processingThread.Start();
+                            //start the processing thread
+                            _isProcessing = true;
+                            _processingThread = new Thread(ProcessingThread);
+                            _processingThread.Start();
 
-                        //wait for main thread to signal key pressed
-                        _resetEvent.WaitOne();
+                            //wait for main thread to signal key pressed
+                            _resetEvent.WaitOne();
 
-                        //stop watch and processing thread
-                        _stopwatch.Stop();
-                        _isProcessing = false;
+                            //stop watch and processing thread
+                            _stopwatch.Stop();
+                            _isProcessing = false;
 
-                        //get time elapsed
-                        var time = (long) _stopwatch.Elapsed.TotalMilliseconds;
+                            //get time elapsed
+                            var time = (long) _stopwatch.Elapsed.TotalMilliseconds;
 
-                        Console.WriteLine(@"Space pressed. Time taken: " + time +
-                                          @" Moving to next trial.");
+                            Console.WriteLine(@"Space pressed. Time taken: " + time +
+                                              @" Moving to next trial.");
 
-                        //reset stopwatch
-                        _stopwatch.Reset();
-                        _speakerController.PlayConfirm();
+                            //reset stopwatch
+                            _stopwatch.Reset();
+                            _speakerController.PlayConfirm();
 
-                        //add data
-                        var speakerPosition = _speakerController.GetSpeakerPosition();
-                        var distance = SpeakerController.GetDistance(_handData.Location3D, speakerPosition);
-                        var closest = _speakerController.GetClosest(_handData.Location3D);
+                            //add data
+                            var speakerPosition = _speakerController.GetSpeakerPosition();
+                            var distance = SpeakerController.GetDistance(_handData.Location3D, speakerPosition);
+                            var closest = _speakerController.GetClosest(_handData.Location3D);
 
-                        //export data to file
-                        _dataExporter.SetTrialData(_speakerController.GetSpeakerId(), closest, distance, time, _handData.Location3D);
+                            //export data to file
+                            _dataExporter.SetTrialData(_speakerController.GetSpeakerId(), closest, distance, time,
+                                _handData.Location3D);
 
-                        if (!_experimentIsRunning)
-                            return;
+                            if (!_experimentIsRunning)
+                                return;
+                        }
+
+                        //signal speaker controller to re-shuffle speaker flags
+                        _speakerController.SignalTrialEnded(true);
                     }
 
-                    //signal speaker controller to re-shuffle speaker flags
-                    _speakerController.SignalTrialEnded(true);
+                    Console.WriteLine(@"Condition ended.");
+
+                    if (!_experimentIsRunning)
+                        return;
+
+                    //signal speaker controller to re-shuffle speaker flags for new condition
+                    _speakerController.SignalConditionEnded(true);
+
+
+                    //close condition stream
+                    _dataExporter.CloseStream();
                 }
-
-                Console.WriteLine(@"Condition ended.");
-
-                if (!_experimentIsRunning)
-                    return;
-
-                //signal speaker controller to re-shuffle speaker flags for new condition
-                _speakerController.SignalConditionEnded(true);
-
-                //close condition stream
-                _dataExporter.CloseStream();
             }
 
             Console.WriteLine(@"Experiment ended.");
@@ -236,11 +239,8 @@ namespace CoreModule.Implementation
             //TODO: catch exception
             _speakerController.PlaySounds();
 
-            double distance = 50;
-            PXCMPoint3DF32 handPosition;
             while (_isProcessing)
             {
-
                 //if hand is not detected, set the distance to maximum
                 if (!_handData.HandDetected)
                 {
@@ -248,7 +248,7 @@ namespace CoreModule.Implementation
                     continue;
                 }
 
-                handPosition = _handData.Location3D;
+                var handPosition = _handData.Location3D;
 
 //                Console.WriteLine("Hand position X:" + handPosition.x + " Y:" + handPosition.y + " Z:" + handPosition.z);
 
@@ -256,9 +256,9 @@ namespace CoreModule.Implementation
                 var speakerPosition = _speakerController.GetSpeakerPosition();
 
 //                Console.WriteLine("Speaker X:" + speakerPosition.x + " Y:" + speakerPosition.y + " Z:" + speakerPosition.z);
-                    
+
                 //calculate distance between hand and speaker
-                distance = SpeakerController.GetDistance(handPosition, speakerPosition);
+                var distance = SpeakerController.GetDistance(handPosition, speakerPosition);
 
                 Console.WriteLine(@"Distance: " + distance);
 
@@ -267,22 +267,20 @@ namespace CoreModule.Implementation
             }
         }
 
-        
-
         #region main variables
 
-        private readonly Condition[] _conditions;
-        private readonly SpeakerController _speakerController;
-        private readonly Thread _experimentThread;
+        private List<ConditionGroup> _conditionGroups;
+        private SpeakerController _speakerController;
+        private Thread _experimentThread;
         private Thread _processingThread;
         private DataExporter _dataExporter;
         private Participant _participant;
 
         //other vars
-        private readonly Stopwatch _stopwatch;
+        private Stopwatch _stopwatch;
 
         //we lock the thread on this object
-        private readonly AutoResetEvent _resetEvent;
+        private AutoResetEvent _resetEvent;
 
         private volatile bool _experimentIsRunning;
         private volatile bool _isProcessing;
@@ -291,19 +289,8 @@ namespace CoreModule.Implementation
 
         #region tracking variables
 
-        private HandTrackingModule _handTrackingModule;
-
         private Tracking _handtracking;
         private HandTrackingData _handData;
-
-        #endregion
-
-        #region settings vars
-
-        private CameraSettings cameraSettings;
-        private const int DEFAULT_RESOLUTION_WIDTH = 640;
-        private const int DEFAULT_RESOLUTION_HEIGHT = 480;
-        private const int DEFAULT_FPS = 30;
 
         #endregion
     }

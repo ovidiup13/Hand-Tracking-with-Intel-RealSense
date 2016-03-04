@@ -13,7 +13,7 @@ namespace CameraModule.Interfaces.Module
         /// <summary>
         ///     Method that sets and gets the IData field for this Tracking instance.
         /// </summary>
-        public IData Data
+        public Data Data
         {
             get { return _data; }
             internal set
@@ -68,7 +68,7 @@ namespace CameraModule.Interfaces.Module
         ///     Returns the data instance.
         /// </summary>
         /// <returns></returns>
-        public abstract IData GetData();
+        public abstract Data GetData();
 
         [NotifyPropertyChangedInvocator]
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
@@ -99,7 +99,7 @@ namespace CameraModule.Interfaces.Module
 
         #region private vars
 
-        private IData _data;
+        private Data _data;
         private ISettings _settings;
 
         #endregion

@@ -3,7 +3,7 @@ using CameraModule.Interfaces.Module;
 
 namespace CameraModule.Implementation.MarkerTracking
 {
-    public class MarkerData : IData
+    public class MarkerData : Data
     {
         /// <summary>
         ///     Constructor creates a new instance of MarkerData.

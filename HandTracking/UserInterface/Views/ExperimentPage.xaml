@@ -7,7 +7,13 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300"
              DataContext="{Binding Source={StaticResource ViewModelLocator}, Path=ExperimentViewModel}">
+    
     <Grid Style="{StaticResource ContentRoot}">
+
+        <Grid.InputBindings>
+            <KeyBinding Command="{Binding SpacePressedCommand}" Key="Space"/>
+        </Grid.InputBindings>
+
         <ScrollViewer>
             <StackPanel Orientation="Vertical" MinWidth="200">
 
@@ -30,9 +36,9 @@
                         </Style>
                     </StackPanel.Resources>
 
-                    <mui:ModernButton EllipseDiameter="32" IconWidth="20" IconHeight="20" IconData="{StaticResource StopButtonIcon}"/>
-                    <mui:ModernButton EllipseDiameter="32" IconWidth="20" IconHeight="20" IconData="{StaticResource StartButtonIcon}"/>
-                    <mui:ModernButton EllipseDiameter="32" IconWidth="20" IconHeight="20" IconData="{StaticResource PauseButtonIcon}"/>
+                    <mui:ModernButton EllipseDiameter="32" IconWidth="20" IconHeight="20" IconData="{StaticResource StopButtonIcon}" Command="{Binding Path=StopExperimentCommand}"/>
+                    <mui:ModernButton EllipseDiameter="32" IconWidth="20" IconHeight="20" IconData="{StaticResource StartButtonIcon}" Command="{Binding Path=StartExperimentCommand}"/>
+                    <mui:ModernButton EllipseDiameter="32" IconWidth="20" IconHeight="20" IconData="{StaticResource PauseButtonIcon}" />
 
                 </StackPanel>
             </StackPanel>
@@ -43,7 +49,6 @@
 	<Rectangle Width="28.5" Height="28.5" Canvas.Left="23.75" Canvas.Top="23.75" Stretch="Fill" Fill="#FF000000"/>
 </Canvas>
         -->
-       
         
     </Grid>
 </UserControl>

@@ -54,7 +54,6 @@ namespace AudioModule.Interfaces
         /// <returns>position of target speaker.</returns>
         public abstract PXCMPoint3DF32 GetSpeakerPosition();
 
-
         /// <summary>
         ///     Method that returns the target speaker id.
         /// </summary>
@@ -72,6 +71,11 @@ namespace AudioModule.Interfaces
         /// </summary>
         /// <param name="handLocation"></param>
         public abstract string GetClosest(PXCMPoint3DF32 handLocation);
+
+        /// <summary>
+        /// Method which ends the current playback.
+        /// </summary>
+        public abstract void StopPlayback();
 
         /// <summary>
         ///     Method that initializes the default soundcard as the BASS.

@@ -35,7 +35,6 @@
                                         <TextBlock Text="{Binding Path=YPosition, Mode=OneWay, StringFormat='Y: \t{0}'}" />
                                         <TextBlock Text="{Binding Path=ZPosition, Mode=TwoWay, StringFormat='Z: \t{0}'}" />
                                     </StackPanel>
-
                                 </StackPanel>
 
                             </DataTemplate>

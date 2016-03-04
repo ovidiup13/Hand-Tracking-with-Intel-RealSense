@@ -305,7 +305,7 @@ namespace CameraModule.Implementation.MarkerTracking
         ///     Method that returns the marker tracking data object associated with tracking.
         /// </summary>
         /// <returns></returns>
-        public override IData GetData()
+        public override Data GetData()
         {
             return _markerData;
         }

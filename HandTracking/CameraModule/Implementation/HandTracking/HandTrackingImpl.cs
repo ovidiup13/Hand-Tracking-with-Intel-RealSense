@@ -59,7 +59,7 @@ namespace CameraModule.Implementation.HandTracking
             throw new NotImplementedException();
         }
 
-        public override IData GetData()
+        public override Data GetData()
         {
             return _handTrackingData;
         }

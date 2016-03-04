@@ -21,7 +21,7 @@ namespace AudioModule.Implementation.AudioDesigns.Pitch
         {
         }
 
-        public void PlayIndividual()
+        public virtual void PlayIndividual()
         {
             //stop the playback and change to other file
             StopPlayback();

@@ -63,11 +63,14 @@
     <Compile Include="Implementation\AudioController\AudioSettingsImpl.cs" />
     <Compile Include="Implementation\AudioDesigns\Constant\ConstantCoalescent.cs" />
     <Compile Include="Implementation\AudioDesigns\Constant\ConstantIndividual.cs" />
+    <Compile Include="Implementation\AudioDesigns\Constant\ConstantWrist.cs" />
     <Compile Include="Implementation\AudioDesigns\Constant\ControlDesign.cs" />
     <Compile Include="Implementation\AudioDesigns\Geiger\GeigerCoalescent.cs" />
     <Compile Include="Implementation\AudioDesigns\Geiger\GeigerIndividual.cs" />
+    <Compile Include="Implementation\AudioDesigns\Geiger\GeigerWrist.cs" />
     <Compile Include="Implementation\AudioDesigns\Pitch\PitchCoalescent.cs" />
     <Compile Include="Implementation\AudioDesigns\Pitch\PitchIndividual.cs" />
+    <Compile Include="Implementation\AudioDesigns\Pitch\PitchWrist.cs" />
     <Compile Include="Interfaces\AudioDesign.cs" />
     <Compile Include="Interfaces\AudioException.cs" />
     <Compile Include="Interfaces\Designs\ConstantDesign.cs" />

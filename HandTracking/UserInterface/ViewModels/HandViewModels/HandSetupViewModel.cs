@@ -9,11 +9,13 @@ namespace UserInterface.ViewModels.HandViewModels
     public class HandSetupViewModel : ViewModelBase
     {
 
-        public HandSetupViewModel()
+        public HandSetupViewModel(HandTrackingImpl handTracking)
         {
             //retrieve hand tracking module and settings
-            var handTracking = SimpleIoc.Default.GetInstance<HandTrackingImpl>();
-            HandTrackingSettings = handTracking.Settings as HandTrackingSettings;
+            HandTrackingSettings = handTracking.Settings;
+
+            //create new participant
+            Participant = new Participant();
 
             //get various types for UI
             InitializeEnumTypes();

@@ -5,9 +5,9 @@ using AudioModule.Interfaces;
 
 namespace AudioModule.Implementation.AudioController
 {
-    public class AudioDesignFactory
+    public static class AudioDesignFactory
     {
-        public AudioDesign GetAudioDesign(DesignType designType, FeedbackType feedbackType)
+        public static AudioDesign GetAudioDesign(DesignType designType, FeedbackType feedbackType)
         {
             switch (designType)
             {
@@ -20,7 +20,7 @@ namespace AudioModule.Implementation.AudioController
                         case FeedbackType.Coalescent:
                             return new ConstantCoalescent();
                         case FeedbackType.Wrist:
-                            return null; //TODO add wrist individual
+                            return new ConstantWrist(); 
                     }
                     break;
                 }
@@ -34,7 +34,7 @@ namespace AudioModule.Implementation.AudioController
                         case FeedbackType.Coalescent:
                             return new GeigerCoalescent();
                         case FeedbackType.Wrist:
-                            return null; //TODO add wrist individual
+                            return new GeigerWrist();
                     }
                     break;
                 }
@@ -48,7 +48,7 @@ namespace AudioModule.Implementation.AudioController
                         case FeedbackType.Coalescent:
                             return new PitchCoalescent();
                         case FeedbackType.Wrist:
-                            return null; //TODO add wrist individual
+                            return new PitchWrist();
                     }
                     break;
                 }

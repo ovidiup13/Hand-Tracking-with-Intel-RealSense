@@ -25,11 +25,11 @@ namespace UserInterface.ViewModels.SpeakerPageViewModels
         //TODO: add the test command for each speaker to the grid
         //TODO: tie the speaker initialization method to the marker tracking panel]
 
-        public SpeakerSetupViewModel()
+        public SpeakerSetupViewModel(SpeakerControllerImpl speakerController, MarkerTrackingViewModel markerTrackingViewModel)
         {
-            SpeakerController = SimpleIoc.Default.GetInstance<SpeakerControllerImpl>();
+            SpeakerController = speakerController;
             
-            var markerTrackingViewModel = SimpleIoc.Default.GetInstance<MarkerTrackingViewModel>();
+            //set initialize speakers to run every time new markers are available
             markerTrackingViewModel.NewMarkersAvailableEvent += InitializeSpeakers;
 
             //initialize flags

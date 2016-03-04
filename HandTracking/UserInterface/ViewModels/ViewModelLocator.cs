@@ -14,6 +14,7 @@
 
 using AudioModule.Implementation.AudioController;
 using CameraModule.Implementation.HandTracking;
+using CoreModule.Implementation;
 using GalaSoft.MvvmLight.Ioc;
 using Microsoft.Practices.ServiceLocation;
 using UserInterface.ViewModels.ConditionViewModels;
@@ -60,6 +61,7 @@ namespace UserInterface.ViewModels
             //todo: initialize modules here
             SimpleIoc.Default.Register<SpeakerControllerImpl>();
             SimpleIoc.Default.Register<HandTrackingImpl>();
+            SimpleIoc.Default.Register<MainExperiment>();
         }
 
         //main view model
@@ -97,6 +99,11 @@ namespace UserInterface.ViewModels
         public static SpeakerControllerImpl SpeakerController
         {
             get { return ServiceLocator.Current.GetInstance<SpeakerControllerImpl>(); }
+        }
+
+        public static MainExperiment MainExperiment
+        {
+            get { return ServiceLocator.Current.GetInstance<MainExperiment>(); }
         }
 
         public static void Cleanup()

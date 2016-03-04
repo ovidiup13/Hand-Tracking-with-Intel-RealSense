@@ -121,7 +121,7 @@ namespace AudioModule.Implementation.AudioController
         /// <returns></returns>
         public override int GetNumberOfSpeakers()
         {
-            return _speakerLocations.Count;
+            return Speakers.Count;
         }
 
         /// <summary>
@@ -200,6 +200,16 @@ namespace AudioModule.Implementation.AudioController
             return id;
         }
 
+        public override void StopPlayback()
+        {
+            //stop playback, if currently running
+            _audioDesign.StopPlayback();
+            _currentIndex = 0;
+            _targetSpeaker = null;
+            _speakerIndexes = ShuffleArray(_speakerIndexes);
+        }
+
+
         /// <summary>
         ///     Method that returns a reshuffled array of indexes.
         /// </summary>
@@ -224,23 +234,7 @@ namespace AudioModule.Implementation.AudioController
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        #region vars
-
-        //speaker locations
-        private List<Marker> _speakerLocations;
-
-        public List<Marker> SpeakerLocations
-        {
-            get { return _speakerLocations; }
-            set
-            {
-                if (value == null) return;
-
-                _speakerLocations = value;
-                InitializeSpeakers(_speakerLocations);
-                OnPropertyChanged(nameof(SpeakerLocations));
-            }
-        }
+        #region vars      
 
         //list of Speaker instances
         private ObservableCollection<SpeakerImpl> _speakers;

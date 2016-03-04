@@ -4,7 +4,7 @@ using CameraModule.Annotations;
 
 namespace CameraModule.Interfaces.Module
 {
-    public class IData : INotifyPropertyChanged
+    public abstract class Data : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
 

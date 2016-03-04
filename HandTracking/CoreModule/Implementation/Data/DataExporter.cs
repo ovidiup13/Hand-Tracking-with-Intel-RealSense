@@ -36,7 +36,8 @@ namespace CoreModule.Implementation.Data
             }
             else
             {
-                _trialDataStream = new FileStream(_trialData, FileMode.Append);
+                //overwrite file
+                _trialDataStream = new FileStream(_trialData, FileMode.Create);
             }
 
             //TODO: create trace file

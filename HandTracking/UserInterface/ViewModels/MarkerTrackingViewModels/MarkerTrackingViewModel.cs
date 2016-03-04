@@ -79,7 +79,7 @@ namespace UserInterface.ViewModels.MarkerTrackingViewModels
             //update subscribers
             if (MarkersDetected.Count > 0)
             {
-                NewMarkersAvailableEvent?.Invoke(this, new NewMarkersArgs(MarkersDetected.ToList()));
+                NewMarkersAvailableEvent.Invoke(this, new NewMarkersArgs(MarkersDetected.ToList()));
             }
         }
 
@@ -203,7 +203,6 @@ namespace UserInterface.ViewModels.MarkerTrackingViewModels
         ///     List of markers detected
         /// </summary>
         private ObservableCollection<Marker> _markersDetected;
-
         public ObservableCollection<Marker> MarkersDetected
         {
             get { return _markersDetected; }
@@ -236,7 +235,6 @@ namespace UserInterface.ViewModels.MarkerTrackingViewModels
         #region marker delegate
 
         public event NewMarkersAvailable NewMarkersAvailableEvent;
-
         public delegate void NewMarkersAvailable(object sender, NewMarkersArgs markersArgs);
 
         /// <summary>

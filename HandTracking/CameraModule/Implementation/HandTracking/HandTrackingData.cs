@@ -8,7 +8,7 @@ namespace CameraModule.Implementation.HandTracking
     /// 
     /// As multiple threads will set and get the values, locking is in place in order to avoid race conditions.
     /// </summary>
-    public class HandTrackingData : IData
+    public class HandTrackingData : Data
     {
 
         #region locks

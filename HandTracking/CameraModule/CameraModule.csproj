@@ -81,7 +81,7 @@
     <Compile Include="Implementation\HandTracking\HandTrackingImpl.cs" />
     <Compile Include="Implementation\HandTracking\HandTrackingModule.cs" />
     <Compile Include="Implementation\HandTracking\HandTrackingSettings.cs" />
-    <Compile Include="Interfaces\Module\IData.cs" />
+    <Compile Include="Interfaces\Module\Data.cs" />
     <Compile Include="Interfaces\Module\IModule.cs" />
     <Compile Include="Interfaces\Module\ModuleException.cs" />
     <Compile Include="Interfaces\Module\Tracking.cs" />
