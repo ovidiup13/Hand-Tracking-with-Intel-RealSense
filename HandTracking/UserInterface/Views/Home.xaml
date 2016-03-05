@@ -4,35 +4,36 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mui="http://firstfloorsoftware.com/ModernUI"
-             mc:Ignorable="d"
-             d:DesignHeight="300" d:DesignWidth="300">
+             mc:Ignorable="d">
     <Grid Style="{StaticResource ContentRoot}">
         <Grid.RowDefinitions>
-            <RowDefinition Height="19*" />
-            <RowDefinition Height="6*" />
+            <RowDefinition Height="7*" />
+            <RowDefinition Height="68*" />
         </Grid.RowDefinitions>
-        <ScrollViewer Margin="0,0,-284,-182" Grid.RowSpan="2">
+
+        <TextBlock Grid.Row="0" HorizontalAlignment="Center" Text="Hand Tracking with Intel RealSense" Style="{StaticResource Heading1}" Height="Auto" MinHeight="30" />
+
+        <StackPanel Grid.Row="1" Margin="77,5,77,0" HorizontalAlignment="Center" MinWidth="200" ScrollViewer.VerticalScrollBarVisibility="Disabled">
+
+            <Button x:Name="StartExperimentButton"
+                            Content="New Experiment"
+                            DockPanel.Dock="Top"
+                            Margin="0"
+                            Command="mui:LinkCommands.NavigateLink"
+                            CommandParameter="/Views/MarkerTrackingPage.xaml" MinHeight="80" />
+            
+            <Separator Opacity="0" VerticalContentAlignment="Stretch" MinHeight="20" HorizontalAlignment="Center"/>
+
+            <Button x:Name="LoadExperimentButton" Content="Load Experiment&#xD;&#xA;" Margin="0" MinHeight="80" />
+
+            <Separator Opacity="0" VerticalContentAlignment="Stretch" MinHeight="20"/>
+            
+            <Button x:Name="QuitButton" Content="Quit&#xD;&#xA;" MinHeight="80" />
+        </StackPanel>
 
 
-            <StackPanel HorizontalAlignment="Left">
-                <StackPanel.Resources>
-                    <PathGeometry x:Key="NewIconData">F1 M 44.4832,15.8147L 38.0245,32.9939L 37.8017,32.9939L 31.6771,15.8147L 21.7662,21.578L 33.4588,35.6539L 33.4588,35.8755L 16.087,32.3289L 16.087,43.523L 33.5702,40.4197L 33.6815,40.6414L 21.7662,54.4955L 31.343,60.148L 37.6904,43.0797L 37.9131,43.0797L 44.3718,60.148L 54.1713,54.4955L 42.1447,40.7522L 42.1447,40.5305L 60.0713,43.523L 60.0713,32.3289L 42.256,35.8755L 42.256,35.6539L 54.1713,21.4672L 44.4832,15.8147 Z</PathGeometry>
-                    <PathGeometry x:Key="LoadIconData">F1 M 49.0833,33.25C 53.4555,33.25 57,36.7945 57,41.1667C 57,45.5389 53.4045,48.9999 49,49L 39,49L 45,43L 41,43L 41,37L 37,37L 37,43L 33,43L 39,49L 23,49C 20.814,48.9999 19,47.3111 19,45.125C 19,43.1867 20.3931,41.5738 22.2328,41.233L 22.1667,40.3749C 22.1667,37.3993 24.5123,34.9713 27.4553,34.8389C 28.7579,31.1462 32.2783,28.4999 36.4167,28.4999C 40.3459,28.4999 43.7179,30.8853 45.1637,34.2869C 46.3193,33.627 47.6573,33.25 49.0833,33.25 Z</PathGeometry>
-                    <PathGeometry x:Key="ExitIconData">F1 M 56.0143,57L 45.683,57L 39.0246,44.6245C 38.7758,44.1665 38.5156,43.3183 38.2442,42.0799L 38.1339,42.0799C 38.0095,42.6623 37.7127,43.5473 37.2433,44.7348L 30.5594,57L 20.1857,57L 32.5018,38L 21.2714,19L 31.8487,19L 37.3621,30.3915C 37.7918,31.2963 38.1763,32.365 38.5156,33.5977L 38.6259,33.5977C 38.8408,32.857 39.2394,31.7543 39.8219,30.2897L 45.8951,19L 55.4714,19L 44.0969,37.8388L 56.0143,57 Z</PathGeometry>
-                    <Style TargetType="mui:ModernButton">
-                        <Setter Property="Margin" Value="0,0,8,0" />
-                        <Setter Property="BorderThickness" Value="2" />
-                    </Style>
-                </StackPanel.Resources>
-                <!--                <mui:ModernButton EllipseDiameter="64" EllipseStrokeThickness="2" IconWidth="42" IconHeight="42" IconData="{StaticResource NewIconData}">New Experiment</mui:ModernButton>-->
-                <!--                <mui:ModernButton EllipseDiameter="64" EllipseStrokeThickness="2" IconWidth="42" IconHeight="42" IconData="{StaticResource LoadIconData}">Load Experiment</mui:ModernButton>-->
-                <!--                <mui:ModernButton EllipseDiameter="64" EllipseStrokeThickness="2" IconWidth="42" IconHeight="42" IconData="{StaticResource ExitIconData}">Exit</mui:ModernButton>-->
-
-                <TextBlock Text="Hand Tracking with Intel RealSense" Style="{StaticResource Heading1}"
-                           HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0" />
-
-                <DockPanel LastChildFill="True" Margin="190.334,81.333,168.333,82.334" Width="244">
-                    <Button x:Name="StartExperimentButton"
+        <!-- <DockPanel Grid.Row="1" HorizontalAlignment="Center" LastChildFill="True" Margin="190.334,81.333,168.333,82.334" Width="244">
+            <Button x:Name="StartExperimentButton"
                             Content="New Experiment"
                             DockPanel.Dock="Top"
                             Height="79.96"
@@ -42,13 +43,9 @@
                             CommandParameter="/Views/MarkerTrackingPage.xaml" />
 
 
-                    <Button x:Name="LoadExperimentButton" Content="Load Experiment&#xD;&#xA;" DockPanel.Dock="Top"
+            <Button x:Name="LoadExperimentButton" Content="Load Experiment&#xD;&#xA;" DockPanel.Dock="Top"
                             Height="79.96" Margin="0,0,0,30" />
-                    <Button x:Name="QuitButton" Content="Quit&#xD;&#xA;" DockPanel.Dock="Bottom" Height="79.96" />
-                </DockPanel>
-                <!--<Button Content="standard button" Margin="0,0,0,8" />
-                <Button Content="disabled button" IsEnabled="False" Margin="0,0,0,32" />-->
-            </StackPanel>
-        </ScrollViewer>
+            <Button x:Name="QuitButton" Content="Quit&#xD;&#xA;" DockPanel.Dock="Bottom" Height="79.96" />
+        </DockPanel>-->
     </Grid>
 </UserControl>

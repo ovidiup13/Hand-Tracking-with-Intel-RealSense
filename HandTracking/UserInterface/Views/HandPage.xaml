@@ -21,89 +21,108 @@
 
         <!-- Hand Settings -->
 
-        <StackPanel Orientation="Vertical">
+        <StackPanel Orientation="Vertical" Margin="0,0,5,10" Grid.RowSpan="2">
             <TextBlock Text="Hand Settings" Style="{StaticResource Heading1}"
                        HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,0,0,20" />
 
             <!-- Fields -->
-            <StackPanel Orientation="Vertical" Grid.Column="0">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="2*" />
+                    <ColumnDefinition Width="3*" />
+                </Grid.ColumnDefinitions>
 
-                <!-- Tracking Mode -->
-                <StackPanel Orientation="Horizontal">
-                    <Label Content="Tracking Type: " />
-                    <ComboBox
-                        ItemsSource="{Binding TrackingModeTypes}"
-                        SelectedItem="{Binding HandTrackingSettings.TrackingModeType, Mode=TwoWay}" />
-                </StackPanel>
 
-                <!-- TODO: add checkbox for tracked joints -->
+                <Label Grid.Column="0" Grid.Row="0" Content="Tracking Type: " VerticalAlignment="Center" Height="26" />
+                <ComboBox Grid.Column="1" Grid.Row="0"
+                          ItemsSource="{Binding TrackingModeTypes}"
+                          SelectedItem="{Binding HandTrackingSettings.TrackingModeType, Mode=TwoWay}" Height="22" Margin="1,2,0,2" />
+
+
+                <Separator Grid.Row="1" Grid.Column="0" Opacity="0" MinHeight="10" HorizontalAlignment="Center" Margin="30,2" Width="0"/>
+
 
                 <!-- Joint Type -->
-                <StackPanel Orientation="Horizontal">
-                    <Label Content="Joint Type: " />
-                    <ComboBox
-                        ItemsSource="{Binding JointTypes}"
-                        SelectedItem="{Binding HandTrackingSettings.JointType, Mode=TwoWay}" />
-                </StackPanel>
+
+                <Label Grid.Column="0" Grid.Row="2" Content="Joint Type: " VerticalAlignment="Center" Height="26" />
+                <ComboBox Grid.Column="1" Grid.Row="2"
+                ItemsSource="{Binding JointTypes}"
+                        SelectedItem="{Binding HandTrackingSettings.JointType, Mode=TwoWay}" Height="22" Margin="1,2,0,2" />
+
+                <Separator Grid.Row="3" Grid.Column="0" Opacity="0" MinHeight="10" HorizontalAlignment="Center" Margin="30,2" Width="0"/>
 
                 <!-- Joint Type -->
-                <StackPanel Orientation="Horizontal">
-                    <Label Content="Hand Order: " />
-                    <ComboBox
-                        ItemsSource="{Binding AccessOrderTypes}"
-                        SelectedItem="{Binding HandTrackingSettings.AccessOrderType, Mode=TwoWay}" />
-                </StackPanel>
+                <Label Grid.Column="0" Grid.Row="4" Content="Hand Order: " VerticalAlignment="Center" Height="26" />
+                <ComboBox Grid.Column="1" Grid.Row="4"
+                ItemsSource="{Binding AccessOrderTypes}"
+                        SelectedItem="{Binding HandTrackingSettings.AccessOrderType, Mode=TwoWay}" Height="22" Margin="1,2,0,2" />
 
-                <!-- Stabilizer -->
-                <CheckBox Margin="10" x:Name="myCheckBox"
-                          IsChecked="{Binding HandTrackingSettings.EnableStabilizer}">
-                    Enable Stabilizer
+                <Separator Grid.Row="5" Opacity="0" MinHeight="10" HorizontalAlignment="Center" Margin="30,2" Width="0"/>
+
+
+                <Label Grid.Column="0" Grid.Row="6" Content="Enable Stabilizer?" Height="26" Margin="0,5,0,4.333" VerticalAlignment="Center" />
+                <CheckBox Grid.Column="1" Grid.Row="6" Margin="10,10,10,10.333" x:Name="myCheckBox"
+                          IsChecked="{Binding HandTrackingSettings.EnableStabilizer}" VerticalAlignment="Center" Height="15" HorizontalAlignment="Center">
                 </CheckBox>
 
-                <StackPanel Orientation="Horizontal">
-                    <Label Content="Smoothing Value:" />
-
-                    <!-- text box validation -->
-                    <TextBox Text="{Binding HandTrackingSettings.SmoothingValue}" />
-                </StackPanel>
-
-
-            </StackPanel>
+            </Grid>
 
         </StackPanel>
 
 
         <!-- Participant -->
 
-        <StackPanel Grid.Column="1">
+        <StackPanel Grid.Column="1" Margin="5,0,0,10" Grid.Row="0" Grid.RowSpan="2">
             <TextBlock Text="Participant" Style="{StaticResource Heading1}"
-                       HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0" />
+                       HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,0,0,20" />
 
-            <!-- ID -->
-            <StackPanel Orientation="Horizontal">
-                <Label Content="Participant ID:" />
+            <!-- Fields -->
+            <Grid>
+                <!-- ID -->
 
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+
+                <Label Grid.Column="0" Grid.Row="0" Content="Participant ID:" />
                 <!-- text box validation -->
-                <TextBox Text="{Binding HandTrackingSettings.SmoothingValue}" />
-            </StackPanel>
+                <TextBox Grid.Column="1" Grid.Row="0" Text="{Binding HandTrackingSettings.SmoothingValue}" />
 
-            <!-- Age -->
-            <StackPanel Orientation="Horizontal">
-                <Label Content="Age:" />
+                <Separator Grid.Row="1" Grid.Column="0" Opacity="1" MinHeight="10" HorizontalAlignment="Center" Margin="30,2" Width="0"/>
 
+                <!-- Age -->
+                <Label Grid.Column="0" Grid.Row="2" Content="Age:" />
                 <!-- text box validation -->
-                <TextBox Text="{Binding Participant.Age}" />
-            </StackPanel>
+                <TextBox Grid.Column="1" Grid.Row="2" Text="{Binding Participant.Age}" />
 
+                <Separator Grid.Row="3" Grid.Column="0" Opacity="0" MinHeight="10" HorizontalAlignment="Center" Margin="30,2" Width="0"/>
 
-            <!-- Gender -->
-            <StackPanel Orientation="Horizontal">
-                <Label Content="Gender: " />
-                <ComboBox SelectedItem="{Binding Participant.Gender}">
+                <!-- Gender -->
+                <Label Grid.Column="0" Grid.Row="4" Content="Gender: " />
+                <ComboBox Grid.Column="1" Grid.Row="4" SelectedItem="{Binding Participant.Gender}" HorizontalAlignment="Center">
                     <ComboBoxItem>Male</ComboBoxItem>
                     <ComboBoxItem>Female</ComboBoxItem>
                 </ComboBox>
-            </StackPanel>
+
+            </Grid>
+
         </StackPanel>
 
     </Grid>
