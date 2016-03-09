@@ -207,7 +207,6 @@ namespace CoreModule.Implementation
                 }
             }
 
-
             CleanUpExperiment();
             Console.WriteLine(@"Experiment ended.");
         }
@@ -235,6 +234,7 @@ namespace CoreModule.Implementation
         /// </summary>
         private void CleanUpTrial()
         {
+
             //stop watch and processing thread
             _stopwatch.Stop();
             _isProcessing = false;
@@ -247,6 +247,9 @@ namespace CoreModule.Implementation
 
             //reset stopwatch
             _stopwatch.Reset();
+
+            //stop current playback and play confirm sound
+            _speakerController.StopSounds();
             _speakerController.PlayConfirm();
 
             //add data
@@ -260,6 +263,9 @@ namespace CoreModule.Implementation
 
             //reset hand detected
             _handData.ResetHand();
+
+            //wait 2 seconds before proceeding
+            Thread.Sleep(2000);
         }
 
         private void ProcessingThread()
@@ -298,7 +304,7 @@ namespace CoreModule.Implementation
         #region main variables
 
         private List<ConditionGroup> _conditionGroups;
-        private SpeakerController _speakerController;
+        private SpeakerControllerImpl _speakerController;
         private Thread _experimentThread;
         private Thread _processingThread;
         private DataExporter _dataExporter;

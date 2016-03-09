@@ -234,7 +234,7 @@ namespace CameraModule.Implementation.MarkerTracking
 
             ProcessingFlag = false;
 
-            ProcessingThread.Join();
+//            ProcessingThread.Join();
 
             ProcessingThread = null;
             IsProcessing = false;

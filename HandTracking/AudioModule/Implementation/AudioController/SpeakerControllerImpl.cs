@@ -85,7 +85,8 @@ namespace AudioModule.Implementation.AudioController
             _audioDesign.StopPlayback();
             _targetSpeaker = _speakers[_currentIndex++];
             _audioDesign.SetSpeaker(_targetSpeaker);
-            Thread.Sleep(2000);
+            _targetSpeaker.PlayInitialSound();
+            Thread.Sleep(1000);
         }
 
         /// <summary>
@@ -200,25 +201,39 @@ namespace AudioModule.Implementation.AudioController
         }
 
         /// <summary>
-        /// Method that tests the current audio configuration
+        ///     Method that stops the current playback of the audio design.
+        /// </summary>
+        public void StopSounds()
+        {
+            _audioDesign?.StopPlayback();
+        }
+
+        /// <summary>
+        ///     Method that tests the current audio configuration
         /// </summary>
         public void TestSoundCard()
         {
             //initialize current sound card
-            AudioSettings.InitializeSoundCard(-1);
+//            AudioSettings.InitializeSoundCard(-1);
 
             //create dummy stream
-            var stream = Bass.BASS_StreamCreateFile("Sounds\\Pluck\\obj8p.wav", 0L, 0L, BASSFlag.BASS_SPEAKER_REAR | BASSFlag.BASS_STREAM_AUTOFREE);
+            var stream = Bass.BASS_StreamCreateFile("Sounds\\Pluck\\obj8p.wav", 0L, 0L,
+                BASSFlag.BASS_SPEAKER_REAR | BASSFlag.BASS_STREAM_AUTOFREE);
             if (stream == 0)
             {
-                throw new AudioException("An error occurred while trying to test the soundcard." + Bass.BASS_ErrorGetCode());
+                throw new AudioException("An error occurred while trying to test the soundcard." +
+                                         Bass.BASS_ErrorGetCode());
             }
         }
 
+        /// <summary>
+        ///     Method that cleans up the speaker controller by stopping the current playback and resetting speaker
+        ///     order.
+        /// </summary>
         public override void StopPlayback()
         {
             //stop playback, if currently running
-            _audioDesign?.StopPlayback();
+            StopSounds();
             _currentIndex = 0;
             _targetSpeaker = null;
             _speakerIndexes = ShuffleArray(_speakerIndexes);
@@ -252,6 +267,7 @@ namespace AudioModule.Implementation.AudioController
 
         //list of Speaker instances
         private ObservableCollection<SpeakerImpl> _speakers;
+
         public ObservableCollection<SpeakerImpl> Speakers
         {
             get { return _speakers; }
@@ -267,7 +283,7 @@ namespace AudioModule.Implementation.AudioController
 
         private int[] _speakerIndexes;
         private int _currentIndex;
-        private Speaker _targetSpeaker;       
+        private Speaker _targetSpeaker;
 
         //audio design 
         private AudioDesign _audioDesign;

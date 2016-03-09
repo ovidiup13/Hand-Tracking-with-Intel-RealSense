@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Threading;
 using CameraModule.Annotations;
 using CameraModule.Implementation.MarkerTracking;
 using Un4seen.Bass;
@@ -70,6 +71,26 @@ namespace AudioModule.Interfaces
         }
 
         /// <summary>
+        ///     Method that plays an initial sound before the start of the audio feedback.
+        /// </summary>
+        public void PlayInitialSound()
+        {
+            var initialStream = Bass.BASS_StreamCreateFile(TestFile, 0L, 0L,
+                SpeakerFlag);
+
+            if (initialStream == 0)
+            {
+                throw new AudioException("Initial stream encountered an error. Error: " + Bass.BASS_ErrorGetCode());
+            }
+
+            var timer = new Timer(obj => { Bass.BASS_ChannelPlay(initialStream, true); }, null, 0, 200);
+            Thread.Sleep(1200); //sleep for a bit
+
+            timer.Dispose();
+            Bass.BASS_StreamFree(initialStream);
+        }
+
+        /// <summary>
         ///     Plays the confirmation sound.
         /// </summary>
         public void Test()
@@ -101,7 +122,7 @@ namespace AudioModule.Interfaces
         }
 
         [NotifyPropertyChangedInvocator]
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
