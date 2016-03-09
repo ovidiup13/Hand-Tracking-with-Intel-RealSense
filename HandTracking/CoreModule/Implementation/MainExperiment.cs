@@ -25,7 +25,6 @@ namespace CoreModule.Implementation
 
         /// <summary>
         /// </summary>
-        /// <exception cref="ArgumentNullException">If the participant selected for the experiment is null.</exception>
         public void StartExperiment()
         {
             InitializeExperiment();
@@ -33,7 +32,7 @@ namespace CoreModule.Implementation
             if (_experimentThread.IsAlive)
                 return;
 
-            //start variables
+            //start variablesE
             _experimentIsRunning = true;
             _isProcessing = true;
 
@@ -53,10 +52,8 @@ namespace CoreModule.Implementation
         /// </summary>
         public void StopExperiment()
         {
-            
-
             //stop hand tracking thread
-            _handtracking?.StopProcessing();
+            _handtracking.StopProcessing();
             _handtracking = null;
 
             //stop playback
@@ -143,6 +140,10 @@ namespace CoreModule.Implementation
         }
 
         /// <summary>
+        ///     Method that executes the main experiment thread and is run by pressing the Start button on the
+        ///     UI. If the speakers and hand tracking have been successfully instantiated, then the experiment starts.
+        ///     The method goes through all condition groups and, at each condition, it injects the audio design of the
+        ///     condition to the Speaker Controller which will output feedback based on that particular audio design.
         /// </summary>
         private void MainExperimentThread()
         {
@@ -185,28 +186,8 @@ namespace CoreModule.Implementation
                             //wait for main thread to signal key pressed
                             _resetEvent.WaitOne();
 
-                            //stop watch and processing thread
-                            _stopwatch.Stop();
-                            _isProcessing = false;
-
-                            //get time elapsed
-                            var time = (long) _stopwatch.Elapsed.TotalMilliseconds;
-
-                            Console.WriteLine(@"Space pressed. Time taken: " + time +
-                                              @" Moving to next trial.");
-
-                            //reset stopwatch
-                            _stopwatch.Reset();
-                            _speakerController.PlayConfirm();
-
-                            //add data
-                            var speakerPosition = _speakerController.GetSpeakerPosition();
-                            var distance = SpeakerController.GetDistance(_handData.Location3D, speakerPosition);
-                            var closest = _speakerController.GetClosest(_handData.Location3D);
-
-                            //export data to file
-                            _dataExporter.SetTrialData(_speakerController.GetSpeakerId(), closest, distance, time,
-                                _handData.Location3D);
+                            //clean up
+                            CleanUpTrial();
 
                             if (!_experimentIsRunning)
                                 return;
@@ -223,15 +204,62 @@ namespace CoreModule.Implementation
 
                     //signal speaker controller to re-shuffle speaker flags for new condition
                     _speakerController.SignalConditionEnded(true);
-
-
-                    //close condition stream
-                    _dataExporter.CloseStream();
                 }
             }
 
+
+            CleanUpExperiment();
             Console.WriteLine(@"Experiment ended.");
-            StopExperiment();
+        }
+
+        /// <summary>
+        ///     Method that cleans up the experiment after it has successfuly completed without user intervention.
+        /// </summary>
+        private void CleanUpExperiment()
+        {
+            _dataExporter.CloseStream();
+
+            //stop hand tracking thread
+            _handtracking.StopProcessing();
+            _handtracking = null;
+
+            //stop processing thread
+            _isProcessing = false;
+
+            //stop main experiment thread
+            _experimentIsRunning = false;
+        }
+
+        /// <summary>
+        ///     Method that cleans up after the participant has pressed Space.
+        /// </summary>
+        private void CleanUpTrial()
+        {
+            //stop watch and processing thread
+            _stopwatch.Stop();
+            _isProcessing = false;
+
+            //get time elapsed
+            var time = (long) _stopwatch.Elapsed.TotalMilliseconds;
+
+//            Console.WriteLine(@"Space pressed. Time taken: " + time +
+//                              @" Moving to next trial.");
+
+            //reset stopwatch
+            _stopwatch.Reset();
+            _speakerController.PlayConfirm();
+
+            //add data
+            var speakerPosition = _speakerController.GetSpeakerPosition();
+            var distance = SpeakerController.GetDistance(_handData.Location3D, speakerPosition);
+            var closest = _speakerController.GetClosest(_handData.Location3D);
+
+            //export data to file
+            _dataExporter.SetTrialData(_speakerController.GetSpeakerId(), closest, distance, time,
+                _handData.Location3D);
+
+            //reset hand detected
+            _handData.ResetHand();
         }
 
         private void ProcessingThread()
@@ -260,7 +288,7 @@ namespace CoreModule.Implementation
                 //calculate distance between hand and speaker
                 var distance = SpeakerController.GetDistance(handPosition, speakerPosition);
 
-                Console.WriteLine(@"Distance: " + distance);
+//                Console.WriteLine(@"Distance: " + distance);
 
                 //pass distance to speaker controller
                 _speakerController.SetDistance(distance);

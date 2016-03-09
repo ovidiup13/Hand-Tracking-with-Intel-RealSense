@@ -68,10 +68,10 @@
                 </StackPanel>
 
                 <!-- Color image rendered -->
-                <Image DockPanel.Dock="Bottom" RenderOptions.BitmapScalingMode="Fant" x:Name="ImgColorStream"
+                <Image DockPanel.Dock="Bottom" x:Name="ImgColorStream"
                        HorizontalAlignment="Center" Margin="30,10"
                        Source="{Binding Path=MarkerTrackingImage}" OpacityMask="#FFD6D3D3"
-                       ToolTip="Image Stream from Camera" VerticalAlignment="Center" />
+                       ToolTip="Image Stream from Camera" VerticalAlignment="Bottom" />
 
             </DockPanel>
 

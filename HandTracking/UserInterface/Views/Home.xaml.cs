@@ -1,4 +1,6 @@
-﻿using System.Windows.Controls;
+﻿using System.Net.Mime;
+using System.Windows;
+using System.Windows.Controls;
 using FirstFloor.ModernUI.Windows;
 using FirstFloor.ModernUI.Windows.Navigation;
 using GalaSoft.MvvmLight.Ioc;
@@ -31,6 +33,11 @@ namespace UserInterface.Views
 
         public void OnNavigatingFrom(NavigatingCancelEventArgs e)
         {
+        }
+
+        private void QuitButton_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            Application.Current.Shutdown();
         }
     }
 }

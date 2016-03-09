@@ -2,7 +2,7 @@
 
 namespace CameraModule.Implementation.MarkerTracking
 {
-    internal class MarkerTrackingSettings : CameraSettings
+    public class MarkerTrackingSettings : CameraSettings
     {
         /// <summary>
         ///     Creates a new instance of HandTrackingSettings based on its super class.
@@ -23,8 +23,8 @@ namespace CameraModule.Implementation.MarkerTracking
 
         #region vars
 
-        private bool _isProcessing;
 
+        public int ConvertTo { get; private set; } = 1000;
 
         #endregion
 

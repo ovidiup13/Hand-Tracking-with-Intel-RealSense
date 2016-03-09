@@ -14,8 +14,8 @@ namespace CameraModule.Implementation.HandTracking
         {
 //            Settings = new HandTrackingSettings();
 //            Data = new HandTrackingData();
-            Settings = new HandTrackingSettings();
-            _handTrackingData = new HandTrackingData();
+            Settings = new HandTrackingSettings(1920, 1080, 30);
+            Data = new HandTrackingData();
         }
 
         /// <summary>
@@ -25,7 +25,7 @@ namespace CameraModule.Implementation.HandTracking
         protected internal HandTrackingImpl(ISettings settings)
         {
             Settings = (HandTrackingSettings) settings;
-            _handTrackingData = new HandTrackingData();
+            Data = new HandTrackingData();
         }
 
         /// <summary>
@@ -49,7 +49,10 @@ namespace CameraModule.Implementation.HandTracking
         {
             //terminate thread
             ProcessingFlag = false;
+            ProcessingThread.Join();
+
             ProcessingThread = null;
+
             IsProcessing = false;
         }
 
@@ -61,7 +64,7 @@ namespace CameraModule.Implementation.HandTracking
 
         public override Data GetData()
         {
-            return _handTrackingData;
+            return Data;
         }
 
         /// <summary>
@@ -109,6 +112,7 @@ namespace CameraModule.Implementation.HandTracking
             if (Settings != null)
             {
                 _handConfiguration.SetTrackingMode(Settings.TrackingModeType);
+                _handConfiguration.EnableTrackedJoints(true);
                 _handConfiguration.EnableStabilizer(Settings.EnableStabilizer);
                 _handConfiguration.SetSmoothingValue(Settings.SmoothingValue);
             }
@@ -200,14 +204,14 @@ namespace CameraModule.Implementation.HandTracking
 
             if (numberOfHands == 0)
             {
-                _handTrackingData.HandDetected = false;
-                Console.WriteLine(@"Hand not detected!");
+                Data.HandDetected = false;
+//                Console.WriteLine(@"Hand not detected!");
                 return;
             }
 
             //detected at least one hand
-            _handTrackingData.HandDetected = true;
-            Console.WriteLine(@"Hand detected! Number of hands: " + numberOfHands);
+            Data.HandDetected = true;
+//            Console.WriteLine(@"Hand detected! Number of hands: " + numberOfHands);
 
             // Querying the information about detected hands
             for (var i = 0; i < numberOfHands; i++)
@@ -216,6 +220,9 @@ namespace CameraModule.Implementation.HandTracking
                 int handId;
 
                 //closest hand gets smaller id
+
+                /*if (Settings.TrackingModeType == PXCMHandData.TrackingModeType.TRACKING_MODE_FULL_HAND)
+                {*/
                 var queryHandIdStatus = handData.QueryHandId(Settings.AccessOrderType, i,
                     out handId);
 
@@ -225,59 +232,54 @@ namespace CameraModule.Implementation.HandTracking
                     Console.WriteLine(@"Failed to query the hand Id.");
                     continue;
                 }
-
-//                Console.WriteLine(@"Hand id: {0}", handId);
-
+//                }
                 // Querying the hand data
                 PXCMHandData.IHand hand;
                 var queryHandStatus = handData.QueryHandDataById(handId, out hand);
 //                Console.WriteLine(@"Hand data status: " + queryHandStatus);
 
-                //TODO: refactor hand position so that it updates accordingly with user settings
                 if (queryHandStatus == pxcmStatus.PXCM_STATUS_NO_ERROR && hand != null)
                 {
-//                    // Querying Hand 2D Position
-                    /*PXCMPointF32 massCenterImage = hand.QueryMassCenterImage();
-//                    Console.WriteLine(@"Hand position on image: {0} | {1}", massCenterImage.x, massCenterImage.y);
+                    //extremities mode
+                    if (Settings.TrackingModeType == PXCMHandData.TrackingModeType.TRACKING_MODE_EXTREMITIES)
+                    {
+                        //get extremity data
+                        PXCMHandData.ExtremityData extremityData;
+                        var extremityStatus = hand.QueryExtremityPoint(Settings.ExtremityType, out extremityData);
 
+                        //check for errors
+                        if (extremityStatus != pxcmStatus.PXCM_STATUS_NO_ERROR || extremityData == null)
+                        {
+                            Console.WriteLine("An error occurred while querying extremity data: " + extremityStatus);
+                            continue;
+                        }
 
-                    // Querying Hand 3D Position
-                    PXCMHandData.ExtremityData location3D;
-                    var massCenterWorld = hand.QueryExtremityPoint(PXCMHandData.ExtremityType.EXTREMITY_CENTER, out location3D);
-//                                        Console.WriteLine(@"Hand position on world: {0} | {1} | {2}", location3D.pointWorld.x, location3D.pointWorld.y,
-//                                            location3D.pointWorld.z);*/
+                        //update hand tracking data
+                        Data.Location2D = extremityData.pointImage;
+                        var p = extremityData.pointWorld;
+                        Data.Location3D = new PXCMPoint3DF32(p.x * 1000, p.y * 1000, p.z * 1000);
+                    }
 
-                    /* var location = hand.QueryMassCenterWorld();
-
-                    _handTrackingData.Location2D = location3D.pointImage;
-                    //                    _handTrackingData.Location3D = new PXCMPoint3DF32(location3D.pointWorld.x * 1000, location3D.pointWorld.y * 1000, location3D.pointWorld.z * 1000);
-                    _handTrackingData.Location3D = new PXCMPoint3DF32(location.x * 100, location.y * 1000, location.z * 1000);*/
-
-                    // Querying Hand Joints
+                    // full hand
                     if (hand.HasTrackedJoints())
                     {
-                        //searching for location of center hand
-                        var jointType = Settings.JointType;
+                        //get joint data
                         PXCMHandData.JointData jointData;
-                        var queryStatus = hand.QueryTrackedJoint(jointType, out jointData);
+                        var queryStatus = hand.QueryTrackedJoint(Settings.JointType, out jointData);
 
-                        if (queryStatus == pxcmStatus.PXCM_STATUS_NO_ERROR && jointData != null)
+                        //check for errors
+                        if (queryStatus != pxcmStatus.PXCM_STATUS_NO_ERROR || jointData == null)
                         {
-                            //                            // Printing the 2D position (image)
-                            //                            Console.WriteLine(@"	2D Position: {0} | {1}", jointData.positionImage.x,
-                            //                                jointData.positionImage.y);
-
-                            //set 2D position in hand Data
-                            _handTrackingData.Location2D = jointData.positionImage;
-
-                            // Printing the 3D position (depth)
-                            Console.WriteLine(@"	3D Position: {0} | {1} | {2}", jointData.positionWorld.x,
-                                jointData.positionWorld.y, jointData.positionWorld.z);
-
-                            //set 3D position in hand Data (in mm)
-                            var p = jointData.positionWorld;
-                            _handTrackingData.Location3D = new PXCMPoint3DF32(p.x*1000, p.y*1000, p.z*1000);
+                            Console.WriteLine("An error occurred while querying joint data: " + queryStatus);
+                            continue;
                         }
+
+                        //set 2D position in hand Data
+                        Data.Location2D = jointData.positionImage;
+
+                        //set 3D position in hand Data (in mm)
+                        var p = jointData.positionWorld;
+                        Data.Location3D = new PXCMPoint3DF32(p.x*1000, p.y*1000, p.z*1000);
                     }
                 }
             }
@@ -288,7 +290,7 @@ namespace CameraModule.Implementation.HandTracking
         public event NewImageEventHandler NewImageAvailable;
 
 
-        private readonly HandTrackingData _handTrackingData;
+        public new HandTrackingData Data;
         public new HandTrackingSettings Settings { get; }
 
         #endregion

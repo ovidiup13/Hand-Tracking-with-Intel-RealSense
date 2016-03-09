@@ -99,7 +99,7 @@ namespace UserInterface.ViewModels.ConditionViewModels
                 }
             });
 
-            //Geiger
+            /*//Geiger
             ConditionsGroups.Add(new ConditionGroup
             {
                 Description = "Geiger Group",
@@ -159,7 +159,7 @@ namespace UserInterface.ViewModels.ConditionViewModels
                         FeedbackType = FeedbackType.Individual
                     }
                 }
-            });
+            });*/
 
             ConditionsGroupCollectionView = CollectionViewSource.GetDefaultView(ConditionsGroups);
         }

@@ -26,7 +26,7 @@ namespace CameraModule.Interfaces.Module
         /// <summary>
         ///     Field that sets and gets the ISettings field for this Tracking instance.
         /// </summary>
-        public ISettings Settings
+        public CameraSettings Settings
         {
             get { return _settings; }
             internal set
@@ -100,7 +100,7 @@ namespace CameraModule.Interfaces.Module
         #region private vars
 
         private Data _data;
-        private ISettings _settings;
+        private CameraSettings _settings;
 
         #endregion
 

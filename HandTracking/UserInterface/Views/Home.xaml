@@ -28,7 +28,7 @@
 
             <Separator Opacity="0" VerticalContentAlignment="Stretch" MinHeight="20"/>
             
-            <Button x:Name="QuitButton" Content="Quit&#xD;&#xA;" MinHeight="80" />
+            <Button x:Name="QuitButton" Content="Quit&#xD;&#xA;" MinHeight="80" Click="QuitButton_Click" />
         </StackPanel>
 
 

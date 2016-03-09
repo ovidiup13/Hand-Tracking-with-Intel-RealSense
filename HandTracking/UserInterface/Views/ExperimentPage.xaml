@@ -1,52 +1,49 @@
 ﻿<UserControl x:Class="UserInterface.Views.ExperimentPage"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:mui="http://firstfloorsoftware.com/ModernUI"
-             mc:Ignorable="d"
+             mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300"
              DataContext="{Binding Source={StaticResource ViewModelLocator}, Path=ExperimentViewModel}">
 
     <Grid Style="{StaticResource ContentRoot}">
 
         <Grid.InputBindings>
-            <KeyBinding Command="{Binding SpacePressedCommand}" Key="Space" />
+            <KeyBinding Command="{Binding SpacePressedCommand}" Key="Space"/>
         </Grid.InputBindings>
 
-        <DockPanel MinWidth="200">
+        <ScrollViewer CanContentScroll="False">
+            <StackPanel Orientation="Vertical" MinWidth="200">
 
-            <!-- Control buttons -->
-            <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" HorizontalAlignment="Center">
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Top" HorizontalAlignment="Center">
 
-                <StackPanel.Resources>
-                    <PathGeometry x:Key="StartButtonIcon">F1 M 30.0833,22.1667L 50.6665,37.6043L 50.6665,38.7918L 30.0833,53.8333L 30.0833,22.1667 Z</PathGeometry>
-                    <!-- TODO: get data for stop button -->
-                    <PathGeometry x:Key="StopButtonIcon">F1 M 30.0833,22.1667L 50.6665,37.6043L 50.6665,38.7918L 30.0833,53.8333L 30.0833,22.1667 Z</PathGeometry>
-                    <PathGeometry x:Key="PauseButtonIcon">F1 M 26.9167,23.75L 33.25,23.75L 33.25,52.25L 26.9167,52.25L 26.9167,23.75 Z M 42.75,23.75L 49.0833,23.75L 49.0833,52.25L 42.75,52.25L 42.75,23.75 Z</PathGeometry>
+                    <StackPanel.Resources>
+                        <PathGeometry x:Key="StartButtonIcon">F1 M 30.0833,22.1667L 50.6665,37.6043L 50.6665,38.7918L 30.0833,53.8333L 30.0833,22.1667 Z</PathGeometry>
+                        <!-- TODO: get data for stop button -->
+                        <PathGeometry x:Key="StopButtonIcon">F1 M 30.0833,22.1667L 50.6665,37.6043L 50.6665,38.7918L 30.0833,53.8333L 30.0833,22.1667 Z</PathGeometry>
+                        <PathGeometry x:Key="PauseButtonIcon">F1 M 26.9167,23.75L 33.25,23.75L 33.25,52.25L 26.9167,52.25L 26.9167,23.75 Z M 42.75,23.75L 49.0833,23.75L 49.0833,52.25L 42.75,52.25L 42.75,23.75 Z</PathGeometry>
 
-                    <Style TargetType="mui:ModernButton">
-                        <Setter Property="Margin" Value="0,0,8,0" />
-                        <Setter Property="BorderThickness" Value="2" />
-                    </Style>
-                </StackPanel.Resources>
+                        <Style TargetType="mui:ModernButton">
+                            <Setter Property="Margin" Value="0,0,8,0" />
+                            <Setter Property="BorderThickness" Value="2" />
+                        </Style>
+                    </StackPanel.Resources>
 
-                <mui:ModernButton EllipseDiameter="32" IconWidth="20" IconHeight="20"
-                                  IconData="{StaticResource StopButtonIcon}"
-                                  Command="{Binding Path=StopExperimentCommand}" />
-                <mui:ModernButton EllipseDiameter="32" IconWidth="20" IconHeight="20"
-                                  IconData="{StaticResource StartButtonIcon}"
-                                  Command="{Binding Path=StartExperimentCommand}" />
-                <mui:ModernButton EllipseDiameter="32" IconWidth="20" IconHeight="20"
-                                  IconData="{StaticResource PauseButtonIcon}" />
+                    <mui:ModernButton EllipseDiameter="32" IconWidth="20" IconHeight="20" IconData="{StaticResource StopButtonIcon}" Command="{Binding Path=StopExperimentCommand}"/>
+                    <mui:ModernButton EllipseDiameter="32" IconWidth="20" IconHeight="20" IconData="{StaticResource StartButtonIcon}" Command="{Binding Path=StartExperimentCommand}"/>
+                    <mui:ModernButton EllipseDiameter="32" IconWidth="20" IconHeight="20" IconData="{StaticResource PauseButtonIcon}" />
+
+                </StackPanel>
 
             </StackPanel>
+        </ScrollViewer>
 
-            <!-- Color image rendered -->
-            <Image DockPanel.Dock="Bottom" RenderOptions.BitmapScalingMode="Fant" Stretch="Fill" x:Name="ImgColorStream"
-                   HorizontalAlignment="Center" VerticalAlignment="Top" Margin="20,10,20,20"
-                   Source="{Binding Path=ExperimentImageSource}" OpacityMask="#FFD6D3D3" />
-        </DockPanel>
+        <!-- Color image rendered -->
+        <Image RenderOptions.BitmapScalingMode="HighQuality" Stretch="Uniform" x:Name="ImgColorStream"
+                       HorizontalAlignment="Center" VerticalAlignment="Bottom"
+                       Source="{Binding Path=ExperimentImageSource}" OpacityMask="#FFD6D3D3" />
 
         <!--
         <Canvas xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" x:Name="appbar_control_stop" Width="76" Height="76" Clip="F1 M 0,0L 76,0L 76,76L 0,76L 0,0">

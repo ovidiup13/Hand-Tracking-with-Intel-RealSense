@@ -22,7 +22,7 @@ namespace CameraModule.Implementation.MarkerTracking
         protected internal MarkerTrackingImpl()
         {
             _markerData = new MarkerData();
-            _markerTrackingSettings = new MarkerTrackingSettings();
+            Settings = new MarkerTrackingSettings();
         }
 
         /// <summary>
@@ -32,7 +32,7 @@ namespace CameraModule.Implementation.MarkerTracking
         protected internal MarkerTrackingImpl(ISettings settings)
         {
             _markerData = new MarkerData();
-            _markerTrackingSettings = (MarkerTrackingSettings) settings;
+            Settings = (MarkerTrackingSettings) settings;
         }
 
         /// <summary>
@@ -54,16 +54,16 @@ namespace CameraModule.Implementation.MarkerTracking
 
             //initialize image and depth streams
             var imageStatus = SenseManager.EnableStream(PXCMCapture.StreamType.STREAM_TYPE_COLOR,
-                _markerTrackingSettings.Width,
-                _markerTrackingSettings.Height, _markerTrackingSettings.FramesPerSecond);
+                Settings.Width,
+                Settings.Height, Settings.FramesPerSecond);
 
             if (imageStatus != pxcmStatus.PXCM_STATUS_NO_ERROR)
                 throw new MarkerTrackingException(@"Failed to enable Image Stream.");
 
             //initialize image and depth streams
             var depthStatus = SenseManager.EnableStream(PXCMCapture.StreamType.STREAM_TYPE_DEPTH,
-                _markerTrackingSettings.Width,
-                _markerTrackingSettings.Height, _markerTrackingSettings.FramesPerSecond);
+                Settings.Width,
+                Settings.Height, Settings.FramesPerSecond);
 
             if (depthStatus != pxcmStatus.PXCM_STATUS_NO_ERROR)
                 throw new MarkerTrackingException(@"Failed to enable Depth Stream.");
@@ -139,6 +139,7 @@ namespace CameraModule.Implementation.MarkerTracking
             SenseManager.Close();
             SenseManager.Dispose();
             Session.Dispose();
+            _markerDetector.Dispose();
 
             Console.WriteLine(@"Marker Tracking terminated.");
         }
@@ -172,7 +173,6 @@ namespace CameraModule.Implementation.MarkerTracking
             for (var markerIndex = 0; markerIndex < detectedMarkers.Count; markerIndex++)
             {
                 var marker = detectedMarkers[markerIndex];
-//                Console.WriteLine(@"Marker detected with id " + marker.Id);
                 colorPoints[markerIndex] = new PXCMPointF32(marker.Center.X, marker.Center.Y);
             }
 
@@ -194,18 +194,8 @@ namespace CameraModule.Implementation.MarkerTracking
                 //ignore out of range
                 if (detectedPoint.x < 0 || detectedPoint.y < 0) continue;
 
-
                 var v = vertices[(int) (depthPoints[point].y*depth.info.width + depthPoints[point].x)];
-//                Console.WriteLine(@"Marker " + detectedMarkers[point].Id + @" has coordinates: X:" + v.x + @" Y:" +
-//                                  v.y +
-//                                  @" Z:" + v.z);
                 Console.WriteLine("Distance to camera: " + GetDistance(_cameraCoordinate, v));
-
-                //add the marker to the data
-//                _markerData.AddMarker(detectedMarkers[point].Id, v);
-
-//                NewMarkerAvailable?.Invoke(this, new NewMarkerArgs(new Marker(detectedMarkers[point].Id, v, colorPoints[point])));
-
 
                 markers.Add(new Marker(detectedMarkers[point].Id, v, colorPoints[point]));
             }
@@ -218,15 +208,22 @@ namespace CameraModule.Implementation.MarkerTracking
             colorOcv.Dispose();
         }
 
-        private double GetDistance(PXCMPoint3DF32 point1, PXCMPoint3DF32 point2)
+        /// <summary>
+        ///     Method that calculates the Euclidian distance between two three-dimensional points.
+        /// </summary>
+        /// <param name="point1"></param>
+        /// <param name="point2"></param>
+        /// <returns></returns>
+        private static double GetDistance(PXCMPoint3DF32 point1, PXCMPoint3DF32 point2)
         {
-            //TODO: there is a gap between centre of hand and centre of marker - aprox 3cm
             return
                 Math.Sqrt(Math.Pow(point1.x - point2.x, 2) + Math.Pow(point1.y - point2.y, 2) +
                           Math.Pow(point1.z - point2.z, 2))/10;
         }
 
         /// <summary>
+        ///     Method that stops processing of the marker tracking. The method awaits the termination of the
+        ///     tracking thread before proceeding.
         /// </summary>
         public override void StopProcessing()
         {
@@ -236,12 +233,15 @@ namespace CameraModule.Implementation.MarkerTracking
                 throw new MarkerTrackingException(@"Marker Tracking process is not running.");
 
             ProcessingFlag = false;
+
+            ProcessingThread.Join();
+
             ProcessingThread = null;
             IsProcessing = false;
         }
 
         /// <summary>
-        /// TODO: implement pause
+        ///     TODO: implement pause
         /// </summary>
         public override void PauseProcessing()
         {
@@ -249,6 +249,7 @@ namespace CameraModule.Implementation.MarkerTracking
         }
 
         /// <summary>
+        ///     Method that acquires access to the image data, gets the color stream and converts it to OpenCV format.
         ///     CV_8U - 8-bit unsigned integers ( 0..255 )
         ///     CV_8S - 8-bit signed integers( -128..127 )
         ///     CV_16U - 16-bit unsigned integers( 0..65535 )
@@ -310,7 +311,6 @@ namespace CameraModule.Implementation.MarkerTracking
             return _markerData;
         }
 
-
         /// <summary>
         ///     Event arguments class for passing a new marker to the main view.
         /// </summary>
@@ -320,7 +320,7 @@ namespace CameraModule.Implementation.MarkerTracking
 
             public NewMarkerArgs()
             {
-            }          
+            }
 
             public NewMarkerArgs(List<Marker> markers)
             {
@@ -330,8 +330,8 @@ namespace CameraModule.Implementation.MarkerTracking
 
         #region tracking vars
 
-        private readonly MarkerTrackingSettings _markerTrackingSettings;
         private readonly MarkerData _markerData;
+        public new MarkerTrackingSettings Settings { get; }
 
         //event handlers for new image, markers
         public event NewImageEventHandler NewImageAvailable;

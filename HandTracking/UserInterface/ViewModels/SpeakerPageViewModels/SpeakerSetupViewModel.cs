@@ -22,7 +22,7 @@ namespace UserInterface.ViewModels.SpeakerPageViewModels
 
         #endregion
 
-        //TODO: add the test command for each speaker to the grid
+        //TODO: add the  command for each speaker to the grid
         //TODO: tie the speaker initialization method to the marker tracking panel]
 
         public SpeakerSetupViewModel(SpeakerControllerImpl speakerController, MarkerTrackingViewModel markerTrackingViewModel)

@@ -200,22 +200,36 @@ namespace AudioModule.Implementation.AudioController
             return id;
         }
 
+        /// <summary>
+        /// Method that tests the current audio configuration
+        /// </summary>
+        public void TestSoundCard()
+        {
+            InitializeSoundCard(DefaultSoundCard);
+
+            //create dummy stream
+            var stream = Bass.BASS_StreamCreateFile("Sounds\\Pluck\\obj8p.wav", 0L, 0L, BASSFlag.BASS_SPEAKER_REAR | BASSFlag.BASS_STREAM_AUTOFREE);
+            if (stream == 0)
+            {
+                throw new AudioException("An error occurred while trying to test the soundcard.");
+            }
+        }
+
         public override void StopPlayback()
         {
             //stop playback, if currently running
-            _audioDesign.StopPlayback();
+            _audioDesign?.StopPlayback();
             _currentIndex = 0;
             _targetSpeaker = null;
             _speakerIndexes = ShuffleArray(_speakerIndexes);
         }
-
 
         /// <summary>
         ///     Method that returns a reshuffled array of indexes.
         /// </summary>
         /// <param name="array"></param>
         /// <returns></returns>
-        private int[] ShuffleArray(int[] array)
+        private static int[] ShuffleArray(int[] array)
         {
             var r = new Random();
             for (var i = array.Length; i > 0; i--)
@@ -238,7 +252,6 @@ namespace AudioModule.Implementation.AudioController
 
         //list of Speaker instances
         private ObservableCollection<SpeakerImpl> _speakers;
-
         public ObservableCollection<SpeakerImpl> Speakers
         {
             get { return _speakers; }

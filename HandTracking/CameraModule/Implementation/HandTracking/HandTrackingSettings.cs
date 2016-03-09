@@ -1,15 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
-using CameraModule.Annotations;
 using CameraModule.Interfaces.Settings;
 
 namespace CameraModule.Implementation.HandTracking
 {
     public class HandTrackingSettings : CameraSettings
     {
-
         #region constructors
 
         /// <summary>
@@ -31,22 +27,19 @@ namespace CameraModule.Implementation.HandTracking
 
         #endregion
 
-        #region notify property changed methods
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        [NotifyPropertyChangedInvocator]
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
-        #endregion
-
         #region methods retrieving enum types
 
         /// <summary>
-        /// Method that retrieves all enumeration values for JointType. 
+        ///     Method that returns a list of all extremity types.
+        /// </summary>
+        /// <returns></returns>
+        public List<PXCMHandData.ExtremityType> GetExtremeTypes()
+        {
+            return GetEnumList<PXCMHandData.ExtremityType>();
+        }
+
+        /// <summary>
+        ///     Method that retrieves all enumeration values for JointType.
         /// </summary>
         /// <returns></returns>
         public List<PXCMHandData.JointType> GetJointTypes()
@@ -55,7 +48,7 @@ namespace CameraModule.Implementation.HandTracking
         }
 
         /// <summary>
-        /// Method that retrieves all enumeration values for Tracking Mode Type.
+        ///     Method that retrieves all enumeration values for Tracking Mode Type.
         /// </summary>
         /// <returns></returns>
         public List<PXCMHandData.TrackingModeType> GetTrackingTypes()
@@ -64,7 +57,7 @@ namespace CameraModule.Implementation.HandTracking
         }
 
         /// <summary>
-        /// Method that retrieves all enumeration values for Access Order Type.
+        ///     Method that retrieves all enumeration values for Access Order Type.
         /// </summary>
         /// <returns></returns>
         public List<PXCMHandData.AccessOrderType> GetAccessOrderTypes()
@@ -73,14 +66,14 @@ namespace CameraModule.Implementation.HandTracking
         }
 
         /// <summary>
-        /// Generic method that retrieves all the values of a enumeration type.
+        ///     Generic method that retrieves all the values of a enumeration type.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
         private static List<T> GetEnumList<T>()
         {
-            T[] array = (T[])Enum.GetValues(typeof(T));
-            List<T> list = new List<T>(array);
+            var array = (T[]) Enum.GetValues(typeof (T));
+            var list = new List<T>(array);
             return list;
         }
 
@@ -89,15 +82,26 @@ namespace CameraModule.Implementation.HandTracking
         #region Hand settings vars
 
         /// <summary>
+        ///     description of extremity type to follow
+        /// </summary>
+        private PXCMHandData.ExtremityType _extremityType = PXCMHandData.ExtremityType.EXTREMITY_CLOSEST;
+        public PXCMHandData.ExtremityType ExtremityType
+        {
+            get { return _extremityType; }
+            set
+            {
+                _extremityType = value;
+                OnPropertyChanged(nameof(ExtremityType));
+            }
+        }
+
+        /// <summary>
         ///     description of stabilizer does
         /// </summary>
         private bool _enableStabilizer = true;
         public bool EnableStabilizer
         {
-            get
-            {
-                return _enableStabilizer;
-            }
+            get { return _enableStabilizer; }
             set
             {
                 _enableStabilizer = value;
@@ -126,10 +130,7 @@ namespace CameraModule.Implementation.HandTracking
         private PXCMHandData.JointType _jointType = PXCMHandData.JointType.JOINT_MIDDLE_TIP;
         public PXCMHandData.JointType JointType
         {
-            get
-            {
-                return _jointType;
-            }
+            get { return _jointType; }
             set
             {
                 _jointType = value;
@@ -138,9 +139,10 @@ namespace CameraModule.Implementation.HandTracking
         }
 
         /// <summary>
-        /// Field that sets the current tracking mode.
+        ///     Field that sets the current tracking mode.
         /// </summary>
-        private PXCMHandData.TrackingModeType _trackingModeType = PXCMHandData.TrackingModeType.TRACKING_MODE_FULL_HAND;
+        private PXCMHandData.TrackingModeType _trackingModeType = PXCMHandData.TrackingModeType.TRACKING_MODE_EXTREMITIES;
+
         public PXCMHandData.TrackingModeType TrackingModeType
         {
             get { return _trackingModeType; }
@@ -148,19 +150,17 @@ namespace CameraModule.Implementation.HandTracking
             {
                 _trackingModeType = value;
                 OnPropertyChanged(nameof(TrackingModeType));
-            }            
+            }
         }
 
         /// <summary>
-        /// Field that holds the order in which hands are assigned IDs. 
+        ///     Field that holds the order in which hands are assigned IDs.
         /// </summary>
-        private PXCMHandData.AccessOrderType _accessOrderType = PXCMHandData.AccessOrderType.ACCESS_ORDER_RIGHT_HANDS;
+        private PXCMHandData.AccessOrderType _accessOrderType = PXCMHandData.AccessOrderType.ACCESS_ORDER_BY_ID;
+
         public PXCMHandData.AccessOrderType AccessOrderType
         {
-            get
-            {
-                return _accessOrderType;
-            }
+            get { return _accessOrderType; }
             set
             {
                 _accessOrderType = value;

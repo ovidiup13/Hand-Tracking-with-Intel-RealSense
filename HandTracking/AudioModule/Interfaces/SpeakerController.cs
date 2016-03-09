@@ -85,9 +85,11 @@ namespace AudioModule.Interfaces
             //bass.net registration
             BassNet.Registration("ovidiu.popoviciu@hotmail.co.uk", "2X2417830312420");
 
+            if (Bass.BASS_ErrorGetCode() == BASSError.BASS_OK) return;
             if (!Bass.BASS_Init(id, 44100, BASSInit.BASS_DEVICE_DEFAULT, IntPtr.Zero))
             {
-                throw new Exception("An error occurred while initializing the BASS library.");
+                throw new AudioException("An error occurred while initializing the BASS library: " +
+                                         Bass.BASS_ErrorGetCode());
             }
         }
 

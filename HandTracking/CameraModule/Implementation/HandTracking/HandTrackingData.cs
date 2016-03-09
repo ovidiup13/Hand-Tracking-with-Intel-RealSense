@@ -48,10 +48,10 @@ namespace CameraModule.Implementation.HandTracking
             get { return _point3D; }
             internal set
             {
-                lock (_lock3D)
-                {
+//                lock (_lock3D)
+//                {
                     _point3D = value;
-                }
+//                }
             }
         }
 
@@ -63,10 +63,19 @@ namespace CameraModule.Implementation.HandTracking
                 lock (_lock3D)
                 {
                     _isDetected = value;
+                    OnPropertyChanged(nameof(HandDetected));
                 }
             }
         }
 
         #endregion
+
+        /// <summary>
+        /// Resets the hand module.
+        /// </summary>
+        public void ResetHand()
+        {
+            HandDetected = false;
+        }
     }
 }

@@ -4,7 +4,10 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Threading;
 using AudioModule.Implementation.AudioController;
+using AudioModule.Interfaces;
 using CameraModule.Implementation.HandTracking;
 using CameraModule.Interfaces.Module;
 using CameraModule.Interfaces.UI;
@@ -19,7 +22,8 @@ namespace UserInterface.ViewModels.ExperimentPageViewModel
 {
     public class ExperimentViewModel : ViewModelBase
     {
-        public ExperimentViewModel(HandTrackingImpl handTracking, SpeakerControllerImpl speakerController, ConditionSetupViewModel conditionSetupViewModel, HandSetupViewModel handViewModel)
+        public ExperimentViewModel(HandTrackingImpl handTracking, SpeakerControllerImpl speakerController,
+            ConditionSetupViewModel conditionSetupViewModel, HandSetupViewModel handViewModel)
         {
             //update image source when new image is available
             HandTracking = handTracking;
@@ -46,10 +50,10 @@ namespace UserInterface.ViewModels.ExperimentPageViewModel
 
         private void NextTrial()
         {
-            if (MainExperiment.IsStopped())
+              if (MainExperiment.IsStopped())
                 Console.WriteLine("Space pressed");
 
-            MainExperiment.NextTrial();
+              MainExperiment.NextTrial();
         }
 
         private bool CanStop(object arg)
@@ -97,13 +101,26 @@ namespace UserInterface.ViewModels.ExperimentPageViewModel
                 var messageBox = MessageBoxButton.OK;
                 ModernDialog.ShowMessage(
                     "Experiment cannot start because speaker list in empty. Please make sure that markers have been placed in front of the camera and were detected. ",
-                    "Info", messageBox);
+                    "Error", messageBox);
                 return false;
             }
 
             var wristSpeakerIndex = SpeakerList.Count - 1;
             SpeakerController.AudioSettings.WristSpeaker = SpeakerList[wristSpeakerIndex];
             SpeakerList.RemoveAt(wristSpeakerIndex); //remove the wrist
+
+            //test soundcard
+            try
+            {
+                SpeakerController.TestSoundCard();
+            }
+            catch (AudioException e)
+            {
+                var messageBox = MessageBoxButton.OK;
+                ModernDialog.ShowMessage(
+                    "Experiment cannot start because: " + e.Message, "Error", messageBox);
+                return false;
+            }
 
             ConditionGroups = ConditionViewModel.ConditionsGroups.ToList();
             if (ConditionGroups == null || ConditionGroups.Count == 0)
@@ -124,6 +141,9 @@ namespace UserInterface.ViewModels.ExperimentPageViewModel
             return Participant != null;
         }
 
+        /// <summary>
+        ///     Method that initializes the Audio Design for each condition.
+        /// </summary>
         private void InitializeAudioDesigns()
         {
             foreach (var group in ConditionGroups)
@@ -145,6 +165,20 @@ namespace UserInterface.ViewModels.ExperimentPageViewModel
             ExperimentImageSource = ImageUtils.ConvertBitmapToWpf(args.Bitmap);
         }
 
+        public BitmapSource Convert(System.Drawing.Bitmap bitmap)
+        {
+            var bitmapData = bitmap.LockBits(
+                new System.Drawing.Rectangle(0, 0, bitmap.Width, bitmap.Height),
+                System.Drawing.Imaging.ImageLockMode.ReadOnly, bitmap.PixelFormat);
+
+            var bitmapSource = BitmapSource.Create(
+                bitmapData.Width, bitmapData.Height, 96, 96, PixelFormats.Bgr24, null,
+                bitmapData.Scan0, bitmapData.Stride * bitmapData.Height, bitmapData.Stride);
+
+            bitmap.UnlockBits(bitmapData);
+            return bitmapSource;
+        }
+
         #region vars
 
         /// <summary>
@@ -162,9 +196,9 @@ namespace UserInterface.ViewModels.ExperimentPageViewModel
             }
         }
 
-        private MainExperiment MainExperiment { get; set; }
-        private HandTrackingImpl HandTracking { get; set; }
-        private SpeakerControllerImpl SpeakerController { get; set; }
+        private MainExperiment MainExperiment { get; }
+        private HandTrackingImpl HandTracking { get; }
+        private SpeakerControllerImpl SpeakerController { get; }
 
         public List<SpeakerImpl> SpeakerList { get; private set; }
         public List<ConditionGroup> ConditionGroups { get; private set; }
@@ -182,8 +216,8 @@ namespace UserInterface.ViewModels.ExperimentPageViewModel
 
         #region view models
 
-        private ConditionSetupViewModel ConditionViewModel { get; set; }
-        private HandSetupViewModel HandViewModel { get; set; }
+        private ConditionSetupViewModel ConditionViewModel { get; }
+        private HandSetupViewModel HandViewModel { get; }
 
         #endregion
     }

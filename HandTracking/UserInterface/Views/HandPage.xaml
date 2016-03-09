@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mui="http://firstfloorsoftware.com/ModernUI"
              xmlns:forms="clr-namespace:System.Windows.Forms;assembly=System.Windows.Forms"
+             xmlns:handViewModels="clr-namespace:UserInterface.ViewModels.HandViewModels"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300"
              DataContext="{Binding Source={StaticResource ViewModelLocator}, Path=HandViewModel}">
@@ -35,44 +36,62 @@
                     <RowDefinition />
                     <RowDefinition />
                     <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="2*" />
                     <ColumnDefinition Width="3*" />
                 </Grid.ColumnDefinitions>
 
-
+                <!-- Tracking Type -->
                 <Label Grid.Column="0" Grid.Row="0" Content="Tracking Type: " VerticalAlignment="Center" Height="26" />
-                <ComboBox Grid.Column="1" Grid.Row="0"
+                <ComboBox x:Name="TrackingComboBox" Grid.Column="1" Grid.Row="0"
                           ItemsSource="{Binding TrackingModeTypes}"
-                          SelectedItem="{Binding HandTrackingSettings.TrackingModeType, Mode=TwoWay}" Height="22" Margin="1,2,0,2" />
+                          SelectedItem="{Binding HandTrackingSettings.TrackingModeType, Mode=TwoWay}" Height="22"
+                          Margin="1,2,0,2" />
 
-
-                <Separator Grid.Row="1" Grid.Column="0" Opacity="0" MinHeight="10" HorizontalAlignment="Center" Margin="30,2" Width="0"/>
+                <Separator Grid.Row="1" Grid.Column="0" Opacity="0" MinHeight="10" HorizontalAlignment="Center"
+                           Margin="30,2" Width="0" />
 
 
                 <!-- Joint Type -->
-
                 <Label Grid.Column="0" Grid.Row="2" Content="Joint Type: " VerticalAlignment="Center" Height="26" />
                 <ComboBox Grid.Column="1" Grid.Row="2"
-                ItemsSource="{Binding JointTypes}"
-                        SelectedItem="{Binding HandTrackingSettings.JointType, Mode=TwoWay}" Height="22" Margin="1,2,0,2" />
+                          ItemsSource="{Binding JointTypes}"
+                          SelectedItem="{Binding HandTrackingSettings.JointType, Mode=TwoWay}" Height="22"
+                          Margin="1,2,0,2" />
 
-                <Separator Grid.Row="3" Grid.Column="0" Opacity="0" MinHeight="10" HorizontalAlignment="Center" Margin="30,2" Width="0"/>
+                <Separator Grid.Row="3" Grid.Column="0" Opacity="0" MinHeight="10" HorizontalAlignment="Center"
+                           Margin="30,2" Width="0" />
 
-                <!-- Joint Type -->
-                <Label Grid.Column="0" Grid.Row="4" Content="Hand Order: " VerticalAlignment="Center" Height="26" />
+                <!-- Extremity Type -->
+                <Label Grid.Column="0" Grid.Row="4" Content="Extremity Type: " VerticalAlignment="Center" Height="26" />
                 <ComboBox Grid.Column="1" Grid.Row="4"
-                ItemsSource="{Binding AccessOrderTypes}"
-                        SelectedItem="{Binding HandTrackingSettings.AccessOrderType, Mode=TwoWay}" Height="22" Margin="1,2,0,2" />
+                          ItemsSource="{Binding ExtremityTypes}"
+                          SelectedItem="{Binding HandTrackingSettings.ExtremityType, Mode=TwoWay}" Height="22"
+                          Margin="1,2,0,2" />
 
-                <Separator Grid.Row="5" Opacity="0" MinHeight="10" HorizontalAlignment="Center" Margin="30,2" Width="0"/>
+                <Separator Grid.Row="5" Grid.Column="0" Opacity="0" MinHeight="10" HorizontalAlignment="Center"
+                           Margin="30,2" Width="0" />
+
+                <!-- Hand Order -->
+                <Label Grid.Column="0" Grid.Row="6" Content="Hand Order: " VerticalAlignment="Center" Height="26" />
+                <ComboBox Grid.Column="1" Grid.Row="6"
+                          ItemsSource="{Binding AccessOrderTypes}"
+                          SelectedItem="{Binding HandTrackingSettings.AccessOrderType, Mode=TwoWay}" Height="22"
+                          Margin="1,2,0,2" />
+
+                <Separator Grid.Row="7" Grid.Column="0" Opacity="0" MinHeight="10" HorizontalAlignment="Center"
+                           Margin="30,2" Width="0" />
 
 
-                <Label Grid.Column="0" Grid.Row="6" Content="Enable Stabilizer?" Height="26" Margin="0,5,0,4.333" VerticalAlignment="Center" />
-                <CheckBox Grid.Column="1" Grid.Row="6" Margin="10,10,10,10.333" x:Name="myCheckBox"
-                          IsChecked="{Binding HandTrackingSettings.EnableStabilizer}" VerticalAlignment="Center" Height="15" HorizontalAlignment="Center">
-                </CheckBox>
+                <!-- Enable Stabilizer -->
+                <Label Grid.Column="0" Grid.Row="8" Content="Enable Stabilizer?" Height="26" Margin="0,5,0,4.333"
+                       VerticalAlignment="Center" />
+                <CheckBox Grid.Column="1" Grid.Row="8" Margin="10,10,10,10.333" x:Name="myCheckBox"
+                          IsChecked="{Binding HandTrackingSettings.EnableStabilizer}" VerticalAlignment="Center"
+                          Height="15" HorizontalAlignment="Left" />
 
             </Grid>
 
@@ -105,18 +124,21 @@
                 <!-- text box validation -->
                 <TextBox Grid.Column="1" Grid.Row="0" Text="{Binding HandTrackingSettings.SmoothingValue}" />
 
-                <Separator Grid.Row="1" Grid.Column="0" Opacity="1" MinHeight="10" HorizontalAlignment="Center" Margin="30,2" Width="0"/>
+                <Separator Grid.Row="1" Grid.Column="0" Opacity="1" MinHeight="10" HorizontalAlignment="Center"
+                           Margin="30,2" Width="0" />
 
                 <!-- Age -->
                 <Label Grid.Column="0" Grid.Row="2" Content="Age:" />
                 <!-- text box validation -->
                 <TextBox Grid.Column="1" Grid.Row="2" Text="{Binding Participant.Age}" />
 
-                <Separator Grid.Row="3" Grid.Column="0" Opacity="0" MinHeight="10" HorizontalAlignment="Center" Margin="30,2" Width="0"/>
+                <Separator Grid.Row="3" Grid.Column="0" Opacity="0" MinHeight="10" HorizontalAlignment="Center"
+                           Margin="30,2" Width="0" />
 
                 <!-- Gender -->
                 <Label Grid.Column="0" Grid.Row="4" Content="Gender: " />
-                <ComboBox Grid.Column="1" Grid.Row="4" SelectedItem="{Binding Participant.Gender}" HorizontalAlignment="Center">
+                <ComboBox Grid.Column="1" Grid.Row="4" SelectedItem="{Binding Participant.Gender}"
+                          HorizontalAlignment="Center">
                     <ComboBoxItem>Male</ComboBoxItem>
                     <ComboBoxItem>Female</ComboBoxItem>
                 </ComboBox>
