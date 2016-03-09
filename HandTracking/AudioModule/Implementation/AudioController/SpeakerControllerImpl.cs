@@ -23,8 +23,7 @@ namespace AudioModule.Implementation.AudioController
         /// </summary>
         public SpeakerControllerImpl()
         {
-            InitializeSoundCard(DefaultSoundCard);
-            SetVolume(DefaultVolume);
+//            SetVolume(AudioSettingsImpl.DefaultVolume);
 
             //initialize settings
             AudioSettings = new AudioSettingsImpl();
@@ -52,11 +51,11 @@ namespace AudioModule.Implementation.AudioController
             Speakers.Clear();
 
             //check if number of flags is ok
-            if (numberOfSpeakers > SpeakerFlags.Count)
+            if (numberOfSpeakers > AudioSettings.SpeakerFlags.Count)
             {
                 throw new AudioException(
                     "Too many markers detected. The software can only hold a maximum of " +
-                    SpeakerFlags.Count + " numbers of markers.");
+                    AudioSettings.SpeakerFlags.Count + " numbers of markers.");
             }
 
             //update speaker indexes
@@ -65,7 +64,7 @@ namespace AudioModule.Implementation.AudioController
             for (var i = 0; i < numberOfSpeakers; i++)
             {
                 _speakerIndexes[i] = i;
-                _speakers.Add(new SpeakerImpl(markers[i], SpeakerFlags[i]));
+                _speakers.Add(new SpeakerImpl(markers[i], AudioSettings.SpeakerFlags[i]));
             }
 
             //re-add the wrist speaker
@@ -205,13 +204,14 @@ namespace AudioModule.Implementation.AudioController
         /// </summary>
         public void TestSoundCard()
         {
-            InitializeSoundCard(DefaultSoundCard);
+            //initialize current sound card
+            AudioSettings.InitializeSoundCard(-1);
 
             //create dummy stream
             var stream = Bass.BASS_StreamCreateFile("Sounds\\Pluck\\obj8p.wav", 0L, 0L, BASSFlag.BASS_SPEAKER_REAR | BASSFlag.BASS_STREAM_AUTOFREE);
             if (stream == 0)
             {
-                throw new AudioException("An error occurred while trying to test the soundcard.");
+                throw new AudioException("An error occurred while trying to test the soundcard." + Bass.BASS_ErrorGetCode());
             }
         }
 
@@ -267,20 +267,7 @@ namespace AudioModule.Implementation.AudioController
 
         private int[] _speakerIndexes;
         private int _currentIndex;
-        private Speaker _targetSpeaker;
-
-        //BASSFlags
-        public readonly List<BASSFlag> SpeakerFlags = new List<BASSFlag>
-        {
-            BASSFlag.BASS_SPEAKER_REAR2RIGHT, //8
-            BASSFlag.BASS_SPEAKER_REAR2LEFT, //7
-            BASSFlag.BASS_SPEAKER_REARRIGHT, //6
-            BASSFlag.BASS_SPEAKER_REARLEFT, //5
-            BASSFlag.BASS_SPEAKER_LFE, //4
-            BASSFlag.BASS_SPEAKER_CENTER, //3
-            BASSFlag.BASS_SPEAKER_FRONTLEFT, //1???
-            BASSFlag.BASS_SPEAKER_FRONTRIGHT //2???
-        };
+        private Speaker _targetSpeaker;       
 
         //audio design 
         private AudioDesign _audioDesign;

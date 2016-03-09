@@ -1,34 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
 using System.Windows;
 using AudioModule.Implementation.AudioController;
 using AudioModule.Interfaces;
 using FirstFloor.ModernUI.Windows.Controls;
 using GalaSoft.MvvmLight;
-using GalaSoft.MvvmLight.Ioc;
 using Un4seen.Bass;
 using UserInterface.ViewModels.MarkerTrackingViewModels;
-using UserInterface.Views;
 
 namespace UserInterface.ViewModels.SpeakerPageViewModels
 {
     public class SpeakerSetupViewModel : ViewModelBase
     {
-        #region modules
-
-        public SpeakerControllerImpl SpeakerController { get; }
-
-        #endregion
-
-        //TODO: add the  command for each speaker to the grid
+        //TODO: add the test command for each speaker to the grid
         //TODO: tie the speaker initialization method to the marker tracking panel]
 
-        public SpeakerSetupViewModel(SpeakerControllerImpl speakerController, MarkerTrackingViewModel markerTrackingViewModel)
+        public SpeakerSetupViewModel(SpeakerControllerImpl speakerController,
+            MarkerTrackingViewModel markerTrackingViewModel)
         {
             SpeakerController = speakerController;
-            
+
             //set initialize speakers to run every time new markers are available
             markerTrackingViewModel.NewMarkersAvailableEvent += InitializeSpeakers;
 
@@ -36,13 +27,19 @@ namespace UserInterface.ViewModels.SpeakerPageViewModels
             InitializeSpeakerFlags();
         }
 
+        #region modules
+
+        public SpeakerControllerImpl SpeakerController { get; }
+
+        #endregion
+
         /// <summary>
         ///     Method that initializes the speaker flags to be bound to the UI.
         /// </summary>
         private void InitializeSpeakerFlags()
         {
             SpeakerFlags = new List<BASSFlag>();
-            foreach (var flag in SpeakerController.SpeakerFlags)
+            foreach (var flag in SpeakerController.AudioSettings.SpeakerFlags)
             {
                 SpeakerFlags.Add(flag);
             }
@@ -68,13 +65,11 @@ namespace UserInterface.ViewModels.SpeakerPageViewModels
 
         #region data structures
 
-
-       
-
         /// <summary>
         ///     Field that holds the speaker flags which are bound to the UI.
         /// </summary>
         private List<BASSFlag> _speakerFlags;
+
         public List<BASSFlag> SpeakerFlags
         {
             get { return _speakerFlags; }

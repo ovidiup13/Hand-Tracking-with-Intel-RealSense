@@ -2,11 +2,19 @@
 using System.Collections.Generic;
 using AudioModule.Interfaces;
 using CameraModule.Interfaces.Settings;
+using Un4seen.Bass;
 
 namespace AudioModule.Implementation.AudioController
 {
     public class AudioSettingsImpl : AudioSettings
     {
+
+        public AudioSettingsImpl()
+        {
+            InitializeSoundCard(DefaultSoundCard);
+            SetVolume(DefaultVolume);
+        }
+
         #region designs and feedback
 
         /// <summary>
@@ -54,8 +62,90 @@ namespace AudioModule.Implementation.AudioController
             }
         }
 
-        //todo: create methods to initialize speaker flags here
+        /// <summary>
+        ///     Method that sets the current volume for all speakers.
+        /// </summary>
+        /// <param name="value">Floating point value between 0 and 1.</param>
+        private void SetVolume(int value)
+        {
+            if (!Bass.BASS_SetConfig(BASSConfig.BASS_CONFIG_GVOL_STREAM, value))
+            {
+                throw new AudioException("An error occurred while setting the speaker volume.");
+            }
+        }
+
+        /// <summary>
+        ///     Method that increases the volume.
+        /// </summary>
+        public void IncreaseVolume()
+        {
+            //check if volume already maximum
+            if (Math.Abs(_volume - 1) <= 0)
+                return;
+
+            //increase volume
+            _volume += VolumeGap;
+            SetVolume(_volume);
+        }
+
+        /// <summary>
+        ///     Method that decreases the current volume.
+        /// </summary>
+        public void DecreaseVolume()
+        {
+            //if already 0, skip
+            if (Math.Abs(_volume) <= 0)
+                return;
+
+            //decrease volume
+            _volume -= VolumeGap;
+            SetVolume(_volume);
+        }
+
+        /// <summary>
+        ///     Method that initializes the default soundcard as the BASS.
+        /// </summary>
+        protected internal void InitializeSoundCard(int id)
+        {
+            //bass.net registration
+            BassNet.Registration("ovidiu.popoviciu@hotmail.co.uk", "2X2417830312420");
+
+            if (Bass.BASS_ErrorGetCode() == BASSError.BASS_OK) return;
+            if (!Bass.BASS_Init(id, 44100, BASSInit.BASS_DEVICE_DEFAULT, IntPtr.Zero))
+            {
+                throw new AudioException("An error occurred while initializing the BASS library: " +
+                                         Bass.BASS_ErrorGetCode());
+            }
+        }
+
         //todo: add all settings for speaker controller here
 
+        #region volume variables
+
+        private const int VolumeGap = 50;
+        private const int DefaultVolume = 200;
+        private int _volume = DefaultVolume;
+
+        protected const int DefaultSoundCard = -1;
+
+        #endregion
+
+        #region speaker variables
+
+        //BASSFlags
+        public readonly List<BASSFlag> SpeakerFlags = new List<BASSFlag>
+        {
+            BASSFlag.BASS_SPEAKER_REAR2LEFT, //7
+            BASSFlag.BASS_SPEAKER_REARRIGHT, //6
+            BASSFlag.BASS_SPEAKER_REARLEFT, //5
+            BASSFlag.BASS_SPEAKER_LFE, //4
+            BASSFlag.BASS_SPEAKER_CENTER, //3
+            BASSFlag.BASS_SPEAKER_FRONTLEFT, //1???
+            BASSFlag.BASS_SPEAKER_FRONTRIGHT, //2???
+            BASSFlag.BASS_SPEAKER_REAR2RIGHT //8
+
+        };
+
+        #endregion
     }
 }

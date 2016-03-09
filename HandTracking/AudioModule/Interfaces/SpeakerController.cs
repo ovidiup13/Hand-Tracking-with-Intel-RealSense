@@ -75,63 +75,8 @@ namespace AudioModule.Interfaces
         /// <summary>
         /// Method which ends the current playback.
         /// </summary>
-        public abstract void StopPlayback();
-
-        /// <summary>
-        ///     Method that initializes the default soundcard as the BASS.
-        /// </summary>
-        protected void InitializeSoundCard(int id)
-        {
-            //bass.net registration
-            BassNet.Registration("ovidiu.popoviciu@hotmail.co.uk", "2X2417830312420");
-
-            if (Bass.BASS_ErrorGetCode() == BASSError.BASS_OK) return;
-            if (!Bass.BASS_Init(id, 44100, BASSInit.BASS_DEVICE_DEFAULT, IntPtr.Zero))
-            {
-                throw new AudioException("An error occurred while initializing the BASS library: " +
-                                         Bass.BASS_ErrorGetCode());
-            }
-        }
-
-        /// <summary>
-        ///     Method that sets the current volume for all speakers.
-        /// </summary>
-        /// <param name="value">Floating point value between 0 and 1.</param>
-        protected void SetVolume(int value)
-        {
-            if (!Bass.BASS_SetConfig(BASSConfig.BASS_CONFIG_GVOL_STREAM, value))
-            {
-                throw new AudioException("An error occurred while setting the speaker volume.");
-            }
-        }
-
-        /// <summary>
-        ///     Method that increases the volume.
-        /// </summary>
-        public void IncreaseVolume()
-        {
-            //check if volume already maximum
-            if (Math.Abs(_volume - 1) <= 0)
-                return;
-
-            //increase volume
-            _volume += VolumeGap;
-            SetVolume(_volume);
-        }
-
-        /// <summary>
-        ///     Method that decreases the current volume.
-        /// </summary>
-        public void DecreaseVolume()
-        {
-            //if already 0, skip
-            if (Math.Abs(_volume) <= 0)
-                return;
-
-            //decrease volume
-            _volume -= VolumeGap;
-            SetVolume(_volume);
-        }
+        public abstract void StopPlayback();        
+       
 
         /// <summary>
         ///     Method that returns the distance between two points in 3D space. The two points must
@@ -150,15 +95,11 @@ namespace AudioModule.Interfaces
 
         #region default vars
 
-        private const int VolumeGap = 50;
         private const int Offset = 2;
-        protected const int DefaultVolume = 200;
-        protected const int DefaultSoundCard = -1;
 
         public AudioSettingsImpl AudioSettings { get; protected set; }
 
         //initial volume
-        private int _volume = DefaultVolume;
 
         #endregion
     }
