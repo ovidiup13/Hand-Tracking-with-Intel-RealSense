@@ -30,6 +30,8 @@ namespace AudioModule.Implementation.AudioController
 
             //initialize speakers
             Speakers = new ObservableCollection<SpeakerImpl> {AudioSettings.WristSpeaker};
+
+            IsPlaying = false;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -75,6 +77,7 @@ namespace AudioModule.Implementation.AudioController
 
             //set current speaker to zero
             _currentIndex = 0;
+            IsPlaying = false;
         }
 
         /// <summary>
@@ -86,7 +89,10 @@ namespace AudioModule.Implementation.AudioController
             _targetSpeaker = _speakers[_currentIndex++];
             _audioDesign.SetSpeaker(_targetSpeaker);
             _targetSpeaker.PlayInitialSound();
+
+            //wait one second before starting
             Thread.Sleep(1000);
+            IsPlaying = true;
         }
 
         /// <summary>
@@ -94,7 +100,8 @@ namespace AudioModule.Implementation.AudioController
         /// </summary>
         public override void PlayConfirm()
         {
-            _targetSpeaker?.PlayConfirm();
+            if(IsPlaying)
+                _targetSpeaker?.PlayConfirm();
         }
 
         /// <summary>
@@ -206,6 +213,7 @@ namespace AudioModule.Implementation.AudioController
         public void StopSounds()
         {
             _audioDesign?.StopPlayback();
+            IsPlaying = false;
         }
 
         /// <summary>
@@ -234,6 +242,7 @@ namespace AudioModule.Implementation.AudioController
         {
             //stop playback, if currently running
             StopSounds();
+            IsPlaying = false;
             _currentIndex = 0;
             _targetSpeaker = null;
             _speakerIndexes = ShuffleArray(_speakerIndexes);
@@ -267,7 +276,6 @@ namespace AudioModule.Implementation.AudioController
 
         //list of Speaker instances
         private ObservableCollection<SpeakerImpl> _speakers;
-
         public ObservableCollection<SpeakerImpl> Speakers
         {
             get { return _speakers; }
@@ -287,6 +295,8 @@ namespace AudioModule.Implementation.AudioController
 
         //audio design 
         private AudioDesign _audioDesign;
+
+        public bool IsPlaying { get; private set; }
 
         #endregion
     }

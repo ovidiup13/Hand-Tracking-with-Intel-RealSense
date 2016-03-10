@@ -90,11 +90,13 @@ namespace CoreModule.Implementation
         }
 
         /// <summary>
-        ///     An event which starts up the next trial.
+        ///     An event which starts up the next trial. The next trial will only be available after the speaker controller
+        /// has initialized audio feedback.
         /// </summary>
         public void NextTrial()
         {
-            _waitForSpaceEvent.Set();
+            if(_speakerController.IsPlaying)
+                _waitForSpaceEvent.Set();
         }
 
         /// <summary>
@@ -250,15 +252,12 @@ namespace CoreModule.Implementation
             //get time elapsed
             var time = (long) _stopwatch.Elapsed.TotalMilliseconds;
 
-//            Console.WriteLine(@"Space pressed. Time taken: " + time +
-//                              @" Moving to next trial.");
-
             //reset stopwatch
             _stopwatch.Reset();
 
             //stop current playback and play confirm sound
-            _speakerController.StopSounds();
             _speakerController.PlayConfirm();
+            _speakerController.StopSounds();
 
             //add data
             var speakerPosition = _speakerController.GetSpeakerPosition();
@@ -361,7 +360,6 @@ namespace CoreModule.Implementation
         private AutoResetEvent _waitForPauseEvent;
 
         private volatile bool _pauseFlag;
-        private volatile bool _stopFlag;
         private volatile bool _isProcessing;
 
         #endregion

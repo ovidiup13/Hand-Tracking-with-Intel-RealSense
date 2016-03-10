@@ -112,36 +112,44 @@ namespace CameraModule.Implementation.MarkerTracking
         {
             Console.WriteLine(@"Marker Tracking started.");
 
-            ProcessingFlag = true;
-            var frameCount = -1;
-            while (ProcessingFlag)
+            try
             {
-                // Acquiring a frame
-                if (SenseManager.AcquireFrame(true) < pxcmStatus.PXCM_STATUS_NO_ERROR)
+                ProcessingFlag = true;
+                var frameCount = -1;
+                while (ProcessingFlag)
                 {
-                    break;
-                }
+                    // Acquiring a frame
+                    if (SenseManager.AcquireFrame(true) < pxcmStatus.PXCM_STATUS_NO_ERROR)
+                    {
+                        break;
+                    }
 
-                // retrieve the sample and process it
-                // counts how many times per second the frame is processed
-                if (frameCount++%10 == 0)
-                {
-                    var sample = SenseManager.QuerySample();
-                    ProcessFrame(sample);
-                }
+                    // retrieve the sample and process it
+                    // counts how many times per second the frame is processed
+                    if (frameCount++ % 10 == 0)
+                    {
+                        var sample = SenseManager.QuerySample();
+                        ProcessFrame(sample);
+                    }
 
-                //release frame
-                SenseManager.ReleaseFrame();
+                    //release frame
+                    SenseManager.ReleaseFrame();
+                }
             }
-
-            _device.Dispose();
-            _projection.Dispose();
-            SenseManager.Close();
-            SenseManager.Dispose();
-            Session.Dispose();
-            _markerDetector.Dispose();
-
-            Console.WriteLine(@"Marker Tracking terminated.");
+            catch (ThreadAbortException abortException)
+            {
+                Console.WriteLine("Marker Tracking Thread received an Abort call. Thread will terminate.");
+            }
+            finally //executed before thread is aborted
+            {
+                _device.Dispose();
+                _projection.Dispose();
+                SenseManager.Close();
+                SenseManager.Dispose();
+                Session.Dispose();
+                _markerDetector.Dispose();
+                Console.WriteLine(@"Marker Tracking terminated.");
+            }
         }
 
         /// <summary>
@@ -234,14 +242,17 @@ namespace CameraModule.Implementation.MarkerTracking
 
             ProcessingFlag = false;
 
-//            ProcessingThread.Join();
-
+            //abort the thread and wait to clean up
+            ProcessingThread.Abort();
+            ProcessingThread.Join();
             ProcessingThread = null;
+
+            //set flag to false
             IsProcessing = false;
         }
 
         /// <summary>
-        ///     TODO: implement pause
+        ///     TODO: implement pause - not necessary for this module
         /// </summary>
         public override void PauseProcessing()
         {
