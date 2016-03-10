@@ -56,8 +56,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Aruco.Net.2.0.0\build\net45\bin\x64\v110\Aruco.Net.dll</HintPath>
     </Reference>
-    <Reference Include="libpxcclr.cs">
-      <HintPath>..\lib\libpxcclr.cs.dll</HintPath>
+    <Reference Include="libpxcclr.cs, Version=6.0.21.6598, Culture=neutral, PublicKeyToken=ca106b2214526f83, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\..\Program Files (x86)\Intel\RSSDK\bin\x64\libpxcclr.cs.dll</HintPath>
     </Reference>
     <Reference Include="OpenCV.Net, Version=3.3.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\OpenCV.Net.3.3.0\lib\net40\OpenCV.Net.dll</HintPath>

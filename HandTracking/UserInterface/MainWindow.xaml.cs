@@ -10,8 +10,7 @@ namespace UserInterface
     {
         public MainWindow()
         {
-            InitializeComponent();            
-
+            InitializeComponent();
         }
 
         //TODO: release all resources when closing the main window

@@ -62,7 +62,7 @@
     </Reference>
     <Reference Include="libpxcclr.cs, Version=6.0.21.6598, Culture=neutral, PublicKeyToken=ca106b2214526f83, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\lib\libpxcclr.cs.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\..\Program Files (x86)\Intel\RSSDK\bin\x64\libpxcclr.cs.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Practices.ServiceLocation, Version=1.3.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\CommonServiceLocator.1.3\lib\portable-net4+sl5+netcore45+wpa81+wp8\Microsoft.Practices.ServiceLocation.dll</HintPath>
@@ -80,11 +80,11 @@
   <ItemGroup>
     <Compile Include="Implementation\ConditionGroup.cs" />
     <Compile Include="Implementation\Data\DataExporter.cs" />
+    <Compile Include="Implementation\ExperimentStatus.cs" />
     <Compile Include="Interfaces\ExperimentException.cs" />
     <Compile Include="Interfaces\IExperiment.cs" />
     <Compile Include="Interfaces\Participant.cs" />
     <Compile Include="Implementation\Condition.cs" />
-    <Compile Include="Implementation\ExperimentSettings.cs" />
     <Compile Include="Implementation\MainExperiment.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

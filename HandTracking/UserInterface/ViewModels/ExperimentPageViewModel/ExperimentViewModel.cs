@@ -4,8 +4,6 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Threading;
 using AudioModule.Implementation.AudioController;
 using AudioModule.Interfaces;
 using CameraModule.Implementation.HandTracking;
@@ -43,52 +41,99 @@ namespace UserInterface.ViewModels.ExperimentPageViewModel
             //commands
             StartExperimentCommand = new RelayCommand(StartExperiment, CanStart);
             StopExperimentCommand = new RelayCommand(StopExperiment, CanStop);
+            PauseExperimentCommand = new RelayCommand(PauseExperiment, CanPause);
 
             //space pressed command
             SpacePressedCommand = new RelayCommand(o => NextTrial());
         }
 
+        /// <summary>
+        ///     Method that checks whether the experiment can be paused or not.
+        /// </summary>
+        /// <param name="arg"></param>
+        /// <returns>Returns true if the experiment is running, false otherwise.</returns>
+        private bool CanPause(object arg)
+        {
+            return MainExperiment.ExperimentStatus == ExperimentStatus.Running;
+        }
+
+        /// <summary>
+        ///     Method that pauses the experiment.
+        /// </summary>
+        /// <param name="obj"></param>
+        private void PauseExperiment(object obj)
+        {
+            MainExperiment.PauseExperiment();
+        }
+
+        /// <summary>
+        ///     Method called when the user pressed the Space key on the UI. This will signal the experiment
+        ///     thread to move to the next trial/speaker.
+        /// </summary>
         private void NextTrial()
         {
-              if (MainExperiment.IsStopped())
-                Console.WriteLine("Space pressed");
-
-              MainExperiment.NextTrial();
+            if (MainExperiment.ExperimentStatus != ExperimentStatus.Running) return;
+            Console.WriteLine("Space pressed.");
+            MainExperiment.NextTrial();
         }
 
+        /// <summary>
+        ///     Method that checks whether the experiment can be stopped or not.
+        /// </summary>
+        /// <param name="arg"></param>
+        /// <returns>If the experiment is running or paused, the method returns true. Otherwise it returns false.</returns>
         private bool CanStop(object arg)
         {
-            return MainExperiment.IsStarted();
+            return MainExperiment.ExperimentStatus == ExperimentStatus.Running ||
+                   MainExperiment.ExperimentStatus == ExperimentStatus.Paused;
         }
 
+        /// <summary>
+        ///     Method that stops the current experiment.
+        /// </summary>
+        /// <param name="obj"></param>
         private void StopExperiment(object obj)
         {
             //stop experiment
             MainExperiment.StopExperiment();
         }
 
+        /// <summary>
+        ///     Method that checks whether the experiment can be started.
+        /// </summary>
+        /// <param name="arg"></param>
+        /// <returns>Returns true if experiment is initialized or paused. Otherwise it returns false.</returns>
         private bool CanStart(object arg)
         {
             //check if experiment is running
-            return MainExperiment.IsStopped();
-        }
-
-        private void StartExperiment(object obj)
-        {
-            //get data
-            if (!GetData())
-                return;
-
-            //pass data to experiment object
-            MainExperiment.SetExperimentData(ConditionGroups, SpeakerController, HandTracking);
-
-            //start experiment
-            MainExperiment.StartExperiment();
+            return MainExperiment.ExperimentStatus != ExperimentStatus.Running;
         }
 
         /// <summary>
-        ///     Method which gathers the speaker list, condition and participant from the view models.
-        ///     TODO: validate data and show messages before running the experiment
+        ///     Method that starts the experiment. If the experiment is stopped or not started, it will start a new experiment.
+        ///     If the experiment is paused, the method will resume the current experiment.
+        /// </summary>
+        /// <param name="obj"></param>
+        private void StartExperiment(object obj)
+        {
+            //if not paused, then set up a new experiment
+            if (MainExperiment.ExperimentStatus != ExperimentStatus.Paused)
+            {
+                var ok = GetData();
+                if (!ok) return;
+                MainExperiment.SetExperimentData(ConditionGroups, SpeakerController, HandTracking);
+
+                //start experiment
+                MainExperiment.StartExperiment();
+            }
+            else
+            {
+                MainExperiment.ResumeExperiment();
+            }
+        }
+
+        /// <summary>
+        ///     Method which gathers the speaker list, condition and participant from the view models. 
         /// </summary>
         private bool GetData()
         {
@@ -165,20 +210,6 @@ namespace UserInterface.ViewModels.ExperimentPageViewModel
             ExperimentImageSource = ImageUtils.ConvertBitmapToWpf(args.Bitmap);
         }
 
-        public BitmapSource Convert(System.Drawing.Bitmap bitmap)
-        {
-            var bitmapData = bitmap.LockBits(
-                new System.Drawing.Rectangle(0, 0, bitmap.Width, bitmap.Height),
-                System.Drawing.Imaging.ImageLockMode.ReadOnly, bitmap.PixelFormat);
-
-            var bitmapSource = BitmapSource.Create(
-                bitmapData.Width, bitmapData.Height, 96, 96, PixelFormats.Bgr24, null,
-                bitmapData.Scan0, bitmapData.Stride * bitmapData.Height, bitmapData.Stride);
-
-            bitmap.UnlockBits(bitmapData);
-            return bitmapSource;
-        }
-
         #region vars
 
         /// <summary>
@@ -196,7 +227,7 @@ namespace UserInterface.ViewModels.ExperimentPageViewModel
             }
         }
 
-        private MainExperiment MainExperiment { get; }
+        public MainExperiment MainExperiment { get; }
         private HandTrackingImpl HandTracking { get; }
         private SpeakerControllerImpl SpeakerController { get; }
 
@@ -210,6 +241,7 @@ namespace UserInterface.ViewModels.ExperimentPageViewModel
 
         public ICommand StartExperimentCommand { get; set; }
         public ICommand StopExperimentCommand { get; set; }
+        public ICommand PauseExperimentCommand { get; set; }
         public ICommand SpacePressedCommand { get; set; }
 
         #endregion

@@ -30,15 +30,7 @@ namespace CoreModule.Implementation.Data
             //create trial data file and stream
             _trialData = _directory + "\\" + _participant + "_" + audioDesign + "_" + ".txt";
 
-            if (!File.Exists(_trialData))
-            {
-                _trialDataStream = File.Create(_trialData);
-            }
-            else
-            {
-                //overwrite file
-                _trialDataStream = new FileStream(_trialData, FileMode.Create);
-            }
+            _trialDataStream = !File.Exists(_trialData) ? File.Create(_trialData) : new FileStream(_trialData, FileMode.Create);
 
             //TODO: create trace file
         }

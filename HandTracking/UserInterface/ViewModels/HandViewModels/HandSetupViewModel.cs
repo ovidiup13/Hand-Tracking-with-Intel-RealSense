@@ -5,7 +5,6 @@ using System.Windows.Data;
 using CameraModule.Implementation.HandTracking;
 using CoreModule.Interfaces;
 using GalaSoft.MvvmLight;
-using GalaSoft.MvvmLight.Ioc;
 
 namespace UserInterface.ViewModels.HandViewModels
 {

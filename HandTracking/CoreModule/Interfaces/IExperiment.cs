@@ -20,19 +20,12 @@
         /// <summary>
         /// 
         /// </summary>
+        void ResumeExperiment();
+
+        /// <summary>
+        /// 
+        /// </summary>
         void NextTrial();
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        bool IsStarted();
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        bool IsStopped();
 
         /// <summary>
         /// Method that sets the current participant of the experiment.

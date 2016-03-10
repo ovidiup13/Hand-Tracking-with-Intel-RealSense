@@ -15,6 +15,8 @@ namespace CoreModule.Implementation
     /// </summary>
     public class MainExperiment : IExperiment
     {
+        #region experiment controls
+
         /// <summary>
         ///     Constructor for main experiment.
         /// </summary>
@@ -24,28 +26,30 @@ namespace CoreModule.Implementation
         }
 
         /// <summary>
+        /// Method that starts the current experiment.
         /// </summary>
         public void StartExperiment()
         {
-            InitializeExperiment();
+            //initialize experiment if not started or stopped
+            if (ExperimentStatus != ExperimentStatus.Stopped || ExperimentStatus != ExperimentStatus.NotStarted)
+            {
+                InitializeExperiment();
+                //set processing flag and start the thread
+                _isProcessing = true;
+                _experimentThread.Start();
+            }
 
-            if (_experimentThread.IsAlive)
-                return;
-
-            //start variablesE
-            _experimentIsRunning = true;
-            _isProcessing = true;
-
-            //start experiment
-            _experimentThread.Start();
+            //start variables
+            ExperimentStatus = ExperimentStatus.Running;
         }
 
         /// <summary>
+        ///     Method that pauses the experiment. Sets the waitForPause event to 1 and the main experiment thread will
+        ///     pause until it is set to 0.
         /// </summary>
-        /// TODO: implement pause
         public void PauseExperiment()
         {
-            throw new NotImplementedException();
+            _pauseFlag = true;
         }
 
         /// <summary>
@@ -62,16 +66,27 @@ namespace CoreModule.Implementation
             //stop processing thread
             _isProcessing = false;
 
-            //stop main experiment thread
-            _experimentIsRunning = false;
-
-//            _experimentThread?.Abort();
-
             //move to next trial in case we are waiting for key pressed
             NextTrial();
             _experimentThread.Join();
 
             _dataExporter.CloseStream();
+            ExperimentStatus = ExperimentStatus.Stopped;
+        }
+
+        /// <summary>
+        ///     Method that resumes the experiment thread and sets the Status to Running. If the experiment is not in Paused
+        ///     status,
+        ///     the call will be ignored.
+        /// </summary>
+        public void ResumeExperiment()
+        {
+            if (ExperimentStatus == ExperimentStatus.Paused)
+            {
+                //resume
+                _waitForPauseEvent.Set();
+                ExperimentStatus = ExperimentStatus.Running;
+            }
         }
 
         /// <summary>
@@ -79,23 +94,7 @@ namespace CoreModule.Implementation
         /// </summary>
         public void NextTrial()
         {
-            _resetEvent.Set();
-        }
-
-        /// <summary>
-        /// </summary>
-        /// <returns></returns>
-        public bool IsStarted()
-        {
-            return _experimentThread.IsAlive;
-        }
-
-        /// <summary>
-        /// </summary>
-        /// <returns></returns>
-        public bool IsStopped()
-        {
-            return !_experimentThread.IsAlive;
+            _waitForSpaceEvent.Set();
         }
 
         /// <summary>
@@ -105,10 +104,16 @@ namespace CoreModule.Implementation
         public void SetParticipant(Participant participant)
         {
             if (participant == null)
+            {
                 throw new ExperimentException("Participant cannot be null");
+            }
 
-            if (!IsStarted())
-                _participant = participant;
+            if (ExperimentStatus != ExperimentStatus.Stopped || ExperimentStatus != ExperimentStatus.NotStarted)
+            {
+                throw new ExperimentException("Cannot set a new participant. Experiment is currently running.");
+            }
+
+            _participant = participant;
         }
 
         /// <summary>
@@ -116,9 +121,17 @@ namespace CoreModule.Implementation
         /// </summary>
         private void InitializeExperiment()
         {
+            //initialize thread and stopwatch
             _experimentThread = new Thread(MainExperimentThread);
             _stopwatch = new Stopwatch();
-            _resetEvent = new AutoResetEvent(false);
+
+            //events
+            _waitForSpaceEvent = new AutoResetEvent(false);
+            _waitForPauseEvent = new AutoResetEvent(false);
+            _pauseFlag = false;
+
+            //set status
+            ExperimentStatus = ExperimentStatus.Initialized;
         }
 
         /// <summary>
@@ -138,6 +151,10 @@ namespace CoreModule.Implementation
             _handtracking.InitializeCameraModules();
             _handData = _handtracking.GetData() as HandTrackingData;
         }
+
+        #endregion
+
+        #region inner working of the experiment
 
         /// <summary>
         ///     Method that executes the main experiment thread and is run by pressing the Start button on the
@@ -184,13 +201,10 @@ namespace CoreModule.Implementation
                             _processingThread.Start();
 
                             //wait for main thread to signal key pressed
-                            _resetEvent.WaitOne();
+                            _waitForSpaceEvent.WaitOne();
 
                             //clean up
                             CleanUpTrial();
-
-                            if (!_experimentIsRunning)
-                                return;
                         }
 
                         //signal speaker controller to re-shuffle speaker flags
@@ -198,9 +212,6 @@ namespace CoreModule.Implementation
                     }
 
                     Console.WriteLine(@"Condition ended.");
-
-                    if (!_experimentIsRunning)
-                        return;
 
                     //signal speaker controller to re-shuffle speaker flags for new condition
                     _speakerController.SignalConditionEnded(true);
@@ -224,9 +235,7 @@ namespace CoreModule.Implementation
 
             //stop processing thread
             _isProcessing = false;
-
-            //stop main experiment thread
-            _experimentIsRunning = false;
+            ExperimentStatus = ExperimentStatus.Stopped;
         }
 
         /// <summary>
@@ -234,7 +243,6 @@ namespace CoreModule.Implementation
         /// </summary>
         private void CleanUpTrial()
         {
-
             //stop watch and processing thread
             _stopwatch.Stop();
             _isProcessing = false;
@@ -264,10 +272,41 @@ namespace CoreModule.Implementation
             //reset hand detected
             _handData.ResetHand();
 
+            //check if experimenter wants to pause
+            CheckIfPaused();
+
             //wait 2 seconds before proceeding
             Thread.Sleep(2000);
         }
 
+        /// <summary>
+        ///     Method that checks whether the experiment Pause flag has been raised. If so,
+        ///     it will stop
+        /// </summary>
+        private void CheckIfPaused()
+        {
+            //check if paused
+            if (!_pauseFlag) return;
+
+            Console.WriteLine("Experiment should be paused");
+            ExperimentStatus = ExperimentStatus.Paused;
+
+            //TODO: pause hand tracking
+
+            _waitForPauseEvent.WaitOne();
+
+            //TODO: restart hand tracking
+            ExperimentStatus = ExperimentStatus.Running;
+            _pauseFlag = false;
+        }
+
+
+        /// <summary>
+        ///     Method run in a separate thread. It queries the hand and speaker controllers checking for new data.
+        ///     The hand data is passed to the speaker controller which signals the AudioDesign to change its feedback
+        ///     appropriately.
+        ///     The thread runs until the participant presses space on the keyboard.
+        /// </summary>
         private void ProcessingThread()
         {
             //TODO: catch exception
@@ -301,6 +340,8 @@ namespace CoreModule.Implementation
             }
         }
 
+        #endregion
+
         #region main variables
 
         private List<ConditionGroup> _conditionGroups;
@@ -313,10 +354,14 @@ namespace CoreModule.Implementation
         //other vars
         private Stopwatch _stopwatch;
 
-        //we lock the thread on this object
-        private AutoResetEvent _resetEvent;
+        public ExperimentStatus ExperimentStatus { get; internal set; }
 
-        private volatile bool _experimentIsRunning;
+        //we lock the thread on this object
+        private AutoResetEvent _waitForSpaceEvent;
+        private AutoResetEvent _waitForPauseEvent;
+
+        private volatile bool _pauseFlag;
+        private volatile bool _stopFlag;
         private volatile bool _isProcessing;
 
         #endregion
