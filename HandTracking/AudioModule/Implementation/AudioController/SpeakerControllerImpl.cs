@@ -25,7 +25,6 @@ namespace AudioModule.Implementation.AudioController
             //initialize settings
             AudioSettings = new AudioSettingsImpl();
 
-            //initialize speakers
             Speakers = new ObservableCollection<SpeakerImpl>();
 
             IsPlaying = false;
@@ -46,8 +45,17 @@ namespace AudioModule.Implementation.AudioController
             Console.WriteLine(@"Initializing speakers...");
             var numberOfSpeakers = markers.Count;
 
-            //clear speakers
-            Speakers.Clear();
+            if (Speakers == null)
+            {
+                //initialize speaker collection
+                Speakers = new ObservableCollection<SpeakerImpl> {null};
+                Speakers.Clear();
+            }
+            else
+            {
+                //clear speakers
+                Speakers.Clear();
+            }
 
             //check if number of flags is ok
             if (numberOfSpeakers > AudioSettings.SpeakerFlags.Count)
@@ -65,9 +73,6 @@ namespace AudioModule.Implementation.AudioController
                 _speakerIndexes[i] = i;
                 _speakers.Add(new SpeakerImpl(markers[i], AudioSettings.SpeakerFlags[i]));
             }
-
-            //re-add the wrist speaker
-            Speakers.Add(AudioSettings.WristSpeaker);
 
             //randomize speakers indexes
             _speakerIndexes = ShuffleArray(_speakerIndexes);
@@ -304,5 +309,64 @@ namespace AudioModule.Implementation.AudioController
         public bool IsPlaying { get; private set; }
 
         #endregion
+
+        /// <summary>
+        /// Method that updates the current existing markers in the speaker list.
+        /// </summary>
+        /// <param name="markers"></param>
+        public void UpdateSpeakers(List<Marker> markers)
+        {
+            var ids = new List<int>();
+
+            //update speakers from list
+            for (var i = 0; i < Speakers.Count; i++)
+            {
+                var ok = false;
+                foreach (var marker in markers)
+                {
+                    //update marker if already exists
+                    if (Speakers[i].Marker.Id != marker.Id) continue;
+
+                    Speakers[i].Marker.Position3D = marker.Position3D;
+                    ok = true;
+                    break;
+                }
+
+                if (!ok)
+                {
+                    ids.Add(i);
+                }
+            }
+
+            //remove speakers not found in new marker list
+            for (var i = ids.Count - 1; i >= 0; i--)
+            {
+                Speakers.RemoveAt(ids[i]);
+            }
+
+            _speakerIndexes = new int[markers.Count];
+
+            //add new speakers
+            for (var i = 0; i < markers.Count; i++)
+            {
+                _speakerIndexes[i] = i;
+
+                var ok = false;
+                foreach (var speaker in Speakers)
+                {
+                    if (markers[i].Id == speaker.Marker.Id)
+                    {
+                        ok = true;
+                        break;
+                    }
+                }
+
+                if (!ok)
+                {
+                    Speakers.Add(new SpeakerImpl(markers[i], AudioSettings.SpeakerFlags[i]));
+                }
+            }
+
+        }
     }
 }

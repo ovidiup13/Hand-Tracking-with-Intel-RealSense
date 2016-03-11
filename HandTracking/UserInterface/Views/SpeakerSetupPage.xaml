@@ -10,28 +10,32 @@
     <Grid Style="{StaticResource ContentRoot}">
         <DockPanel>
             <TextBlock DockPanel.Dock="Top" Text="Marker-Speaker Assignment" Style="{StaticResource Heading1}"
-                       HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0" />
+                       HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,0,30" />
+                  
             
-            <Grid>
-                <!-- Definitions -->
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition />
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
+            <StackPanel DockPanel.Dock="Top" Margin="10">
 
-                <!-- Data -->
-                <TextBlock Text="Wrist" Style="{StaticResource Heading2}" HorizontalAlignment="Left" />
-                <ComboBox
+                <!-- Wrist Speaker -->
+                <Grid Margin="0,0,0,20">
+                    <!-- Definitions -->
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition Width="300" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Data -->
+                    <TextBlock Text="Wrist" Style="{StaticResource Heading2}" HorizontalAlignment="Left" />
+                    <ComboBox
                                     ItemsSource="{Binding SpeakerFlags, Mode=TwoWay}"
                                     SelectedItem="{Binding SpeakerController.AudioSettings.WristSpeaker.SpeakerFlag, Mode=TwoWay}"
                                     Grid.Column="1" />
 
-                <Button Grid.Column="2" Content="Test" Command="{Binding TestSoundCommand}" CommandParameter="{Binding SpeakerController.AudioSettings}" />
+                    <Button Grid.Column="2" Content="Test" Command="{Binding TestSoundCommand}" CommandParameter="{Binding SpeakerController.AudioSettings.WristSpeaker}" HorizontalAlignment="Center" MinWidth="70" />
 
-            </Grid>
-            
-            <StackPanel DockPanel.Dock="Top" Margin="10">
+                </Grid>
+
+                <!-- Rest of Speakers -->
                 <ItemsControl Name="MarkerList" ItemsSource="{Binding Path=SpeakerController.Speakers}"
                               Grid.IsSharedSizeScope="True">
                     <ItemsControl.ItemsPanel>
@@ -44,16 +48,16 @@
                         <DataTemplate DataType="audioController:SpeakerImpl">
                             <Grid>
                                 <!-- Resources -->
-                                <Grid.Resources>
+                                <!--<Grid.Resources>
                                     <Style TargetType="{x:Type TextBlock}">
                                         <Setter Property="Margin" Value="20, 0, 20, 0" />
                                     </Style>
                                 </Grid.Resources>
-
+-->
                                 <!-- Definitions -->
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition SharedSizeGroup="ColumnOne" />
-                                    <ColumnDefinition Width="200" />
+                                    <ColumnDefinition />
+                                    <ColumnDefinition Width="300" />
                                     <ColumnDefinition Width="*" />
                                 </Grid.ColumnDefinitions>
 
@@ -64,7 +68,9 @@
                                     ItemsSource="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl} }, Path=DataContext.SpeakerFlags, Mode=TwoWay}"
                                     SelectedItem="{Binding Path=SpeakerFlag, Mode=TwoWay}"
                                     Grid.Column="1" />
-                                <TextBlock Text="{Binding SpeakerFlag}" Grid.Column="2" />
+
+                                <Button Grid.Column="2" Content="Test" Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl} }, Path=DataContext.TestSoundCommand}" CommandParameter="{Binding }" HorizontalAlignment="Center" MinWidth="70" />
+
 
                             </Grid>
 

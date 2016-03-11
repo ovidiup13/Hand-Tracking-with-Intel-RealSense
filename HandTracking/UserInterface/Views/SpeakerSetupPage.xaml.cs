@@ -9,27 +9,12 @@ namespace UserInterface.Views
     /// <summary>
     ///     Interaction logic for SpeakerSetupPage.xaml
     /// </summary>
-    public partial class SpeakerSetupPage : UserControl, IContent
+    public partial class SpeakerSetupPage : UserControl
     {
         public SpeakerSetupPage()
         {
             InitializeComponent();
         }
-
-        public void OnFragmentNavigation(FragmentNavigationEventArgs e)
-        {
-        }
-
-        public void OnNavigatedFrom(NavigationEventArgs e)
-        {
-        }
-
-        public void OnNavigatedTo(NavigationEventArgs e)
-        {
-        }
-
-        public void OnNavigatingFrom(NavigatingCancelEventArgs e)
-        {
-        }
+        
     }
 }

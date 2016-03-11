@@ -28,20 +28,25 @@ namespace UserInterface.ViewModels.SpeakerPageViewModels
             //initialize flags
             InitializeSpeakerFlags();
 
-            TestSoundCommand = new RelayCommand(o => TestSound(o));
+            TestSoundCommand = new RelayCommand(TestSound);
         }
 
-        private void TestSound(object o)
+        private static void TestSound(object o)
         {
             //cast parameter to BASSFlag, otherwise to BASS DEFAULT flag
 //            BASSFlag flag = o as BASSFlag? ?? BASSFlag.BASS_DEFAULT;
-            SpeakerImpl speaker = o as SpeakerImpl;
+            var speaker = o as SpeakerImpl;
 
             try
             {
                 speaker?.Test();
-            } catch(A)
-
+            }
+            catch (AudioException audioException)
+            {
+                var messageBox = MessageBoxButton.OK;
+                ModernDialog.ShowMessage(audioException.Message, "Error", messageBox);
+                Console.WriteLine(audioException.StackTrace);
+            }
         }
 
         #region modules
@@ -69,8 +74,14 @@ namespace UserInterface.ViewModels.SpeakerPageViewModels
         {
             try
             {
-                //initialize new speakers
-                SpeakerController.InitializeSpeakers(markerArgs.Markers);
+                if (SpeakerController.Speakers == null)
+                {
+                    SpeakerController.InitializeSpeakers(markerArgs.Markers);
+                }
+                else if (SpeakerController.Speakers.Count > 0)
+                {
+                    SpeakerController.UpdateSpeakers(markerArgs.Markers);
+                }
             }
             catch (AudioException audioException)
             {
@@ -86,7 +97,6 @@ namespace UserInterface.ViewModels.SpeakerPageViewModels
         ///     Field that holds the speaker flags which are bound to the UI.
         /// </summary>
         private List<BASSFlag> _speakerFlags;
-
         public List<BASSFlag> SpeakerFlags
         {
             get { return _speakerFlags; }
