@@ -7,11 +7,11 @@
              mc:Ignorable="d">
     <Grid Style="{StaticResource ContentRoot}">
         <Grid.RowDefinitions>
-            <RowDefinition Height="7*" />
-            <RowDefinition Height="68*" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <TextBlock Grid.Row="0" HorizontalAlignment="Center" Text="Hand Tracking with Intel RealSense" Style="{StaticResource Heading1}" Height="Auto" MinHeight="30" />
+        <TextBlock Grid.Row="0" HorizontalAlignment="Center" Text="Hand Tracking with Intel RealSense" Style="{StaticResource Heading1}" Height="Auto" MinHeight="30" Margin="0,0,0,30" />
 
         <StackPanel Grid.Row="1" Margin="77,5,77,0" HorizontalAlignment="Center" MinWidth="200" ScrollViewer.VerticalScrollBarVisibility="Disabled">
 
@@ -20,11 +20,11 @@
                             DockPanel.Dock="Top"
                             Margin="0"
                             Command="mui:LinkCommands.NavigateLink"
-                            CommandParameter="/Views/MarkerTrackingPage.xaml" MinHeight="80" />
+                            CommandParameter="/Views/MarkerTrackingPage.xaml" MinHeight="80" MinWidth="300" />
             
             <Separator Opacity="0" VerticalContentAlignment="Stretch" MinHeight="20" HorizontalAlignment="Center"/>
 
-            <Button x:Name="LoadExperimentButton" Content="Load Experiment&#xD;&#xA;" Margin="0" MinHeight="80" />
+            <Button x:Name="LoadExperimentButton" IsEnabled="False" Content="Load Experiment&#xD;&#xA;" Margin="0" MinHeight="80" />
 
             <Separator Opacity="0" VerticalContentAlignment="Stretch" MinHeight="20"/>
             

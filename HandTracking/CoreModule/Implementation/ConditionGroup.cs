@@ -11,6 +11,11 @@ namespace CoreModule.Implementation
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
+        public ConditionGroup()
+        {
+            Conditions = new ObservableCollection<Condition>();
+        }
+
         /// <summary>
         ///     Method that adds a new condition at the specified position.
         /// </summary>
@@ -32,10 +37,24 @@ namespace CoreModule.Implementation
         }
 
         /// <summary>
+        /// Method which removes the specified condition from the group.
+        /// </summary>
+        /// <param name="cond">Condition object</param>
+        public void RemoveCondition(Condition cond)
+        {
+            if (cond == null)
+            {
+                throw new ExperimentException("Remove condition index out of range.");
+            }
+
+            Conditions.Remove(cond);
+        }
+
+        /// <summary>
         ///     Method that removes a condition from the condition group.
         /// </summary>
         /// <param name="index">Index at which the condition will be removed</param>
-        public void RemoveCondition(int index)
+        public void RemoveConditionAt(int index)
         {
             if (index < 0 || index > Conditions.Count)
             {
@@ -67,8 +86,7 @@ namespace CoreModule.Implementation
 
         #region vars
 
-        private string _description;
-
+        private string _description  ="ConditionGroup";
         public string Description
         {
             get { return _description; }

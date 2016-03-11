@@ -2,15 +2,19 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Globalization;
+using System.Linq;
 using System.Windows;
 using System.Windows.Data;
-using System.Windows.Threading;
+using System.Windows.Input;
 using AudioModule.Implementation.AudioController;
 using AudioModule.Interfaces;
 using CoreModule.Implementation;
+using FirstFloor.ModernUI.Presentation;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Ioc;
 using GongSolutions.Wpf.DragDrop;
+using UserInterface.Commands;
 using Condition = CoreModule.Implementation.Condition;
 
 namespace UserInterface.ViewModels.ConditionViewModels
@@ -31,6 +35,32 @@ namespace UserInterface.ViewModels.ConditionViewModels
 
             //retrieve default conditions
             InitializeDefaultGroups();
+
+            Converter = new PassThroughConverter();
+
+            //initialize commands
+            AddNewConditionCommand = new RelayCommand(o => AddNewCondition(o));
+            AddNewConditionGroupCommand = new RelayCommand(AddNewConditionGroup);
+            RemoveConditionCommand = new RemoveConditionCommand(o => RemoveCondition(o), o => CanRemoveCondition(o));
+            RemoveConditionGroupCommand = new RelayCommand(RemoveConditionGroup, CanRemoveConditionGroup);
+        }
+
+        private void RemoveCondition(object o)
+        {
+
+            object[] obj = (object[]) o;
+            ConditionGroup group = obj[0] as ConditionGroup;
+
+            group?.RemoveCondition((Condition) obj[1]);
+
+        }
+
+        private bool CanRemoveCondition(object o)
+        {
+            if (o == null) return true;
+            object[] obj = (object[]) o;
+            ConditionGroup group = obj[0] as ConditionGroup;
+            return group?.Conditions.Count > 0;
         }
 
         /// <summary>
@@ -61,6 +91,49 @@ namespace UserInterface.ViewModels.ConditionViewModels
         }
 
         /// <summary>
+        ///     Method that returns a boolean indicating whether a condition group can be removed.
+        /// </summary>
+        /// <param name="arg"></param>
+        /// <returns></returns>
+        private bool CanRemoveConditionGroup(object arg)
+        {
+            return ConditionsGroupCollectionView.CanRemove;
+        }
+
+        /// <summary>
+        ///     Method that removesd a condition group from the Condition Collection View.
+        /// </summary>
+        /// <param name="obj"></param>
+        private void RemoveConditionGroup(object obj)
+        {
+            var group = obj as ConditionGroup;
+            ConditionsGroupCollectionView.Remove(group);
+        }
+
+        /// <summary>
+        ///     Method that is called by an UI command and adds a new condition group to the model.
+        /// </summary>
+        /// <param name="obj"></param>
+        private void AddNewConditionGroup(object obj)
+        {
+            ConditionsGroupCollectionView.AddNew();
+        }
+
+        /// <summary>
+        ///     /// Method that is called by an UI command and adds a new condition to the current item
+        ///     selected in condition group collection.
+        /// </summary>
+        /// <param name="o"></param>
+        private void AddNewCondition(object o)
+        {
+            //cast to condition group
+            var group = o as ConditionGroup;
+            if (o == null) return;
+
+            group?.AddNewCondition(new Condition());
+        }
+
+        /// <summary>
         ///     Initializes the default audio designs available
         /// </summary>
         private void InitializeDefaultDesigns()
@@ -76,14 +149,13 @@ namespace UserInterface.ViewModels.ConditionViewModels
         /// </summary>
         private void InitializeDefaultGroups()
         {
-            //TODO: think about how to simplify this initialization
             //constant
             ConditionsGroups.Add(new ConditionGroup
             {
                 Description = "Constant Group",
                 Conditions = new ObservableCollection<Condition>
                 {
-                    /*new Condition
+                    new Condition
                     {
                         DesignType = DesignType.Constant,
                         FeedbackType = FeedbackType.Individual
@@ -92,7 +164,7 @@ namespace UserInterface.ViewModels.ConditionViewModels
                     {
                         DesignType = DesignType.Constant,
                         FeedbackType = FeedbackType.Coalescent
-                    },*/
+                    },
                     new Condition
                     {
                         DesignType = DesignType.Constant,
@@ -163,7 +235,7 @@ namespace UserInterface.ViewModels.ConditionViewModels
                 }
             });*/
 
-            ConditionsGroupCollectionView = CollectionViewSource.GetDefaultView(ConditionsGroups);
+            ConditionsGroupCollectionView = new ListCollectionView(ConditionsGroups);
         }
 
         #region vars
@@ -185,7 +257,7 @@ namespace UserInterface.ViewModels.ConditionViewModels
         }
 
         //holds collection for UI view
-        public ICollectionView ConditionsGroupCollectionView { get; set; }
+        public IEditableCollectionView ConditionsGroupCollectionView { get; set; }
         private SpeakerControllerImpl SpeakerController { get; }
 
         //design and feedback types
@@ -193,5 +265,30 @@ namespace UserInterface.ViewModels.ConditionViewModels
         public List<DesignType> DesignTypes { get; private set; }
 
         #endregion
+
+        #region commands
+
+        public ICommand AddNewConditionGroupCommand { get; protected set; }
+        public ICommand AddNewConditionCommand { get; protected set; }
+        public ICommand RemoveConditionCommand { get; protected set; }
+        public ICommand RemoveConditionGroupCommand { get; protected set; }
+
+        public PassThroughConverter Converter { get; set; }
+
+        #endregion
     }
+
+    public class PassThroughConverter : IMultiValueConverter
+    {
+        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+        {
+            return values.ToArray();
+        }
+
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
 }
