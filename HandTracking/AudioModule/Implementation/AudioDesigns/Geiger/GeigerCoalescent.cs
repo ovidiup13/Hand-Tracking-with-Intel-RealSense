@@ -13,8 +13,6 @@ namespace AudioModule.Implementation.AudioDesigns.Geiger
             FeedbackType = FeedbackType.Coalescent;
         }
 
-
-
         /// <summary>
         /// 
         /// </summary>

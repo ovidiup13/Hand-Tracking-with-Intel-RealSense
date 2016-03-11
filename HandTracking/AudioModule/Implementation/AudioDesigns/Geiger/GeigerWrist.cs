@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using AudioModule.Interfaces;
 using AudioModule.Interfaces.Designs;
@@ -35,7 +36,13 @@ namespace AudioModule.Implementation.AudioDesigns.Geiger
             //check stream
             if (Stream == 0)
                 throw new AudioException("Stream error. Stream cannot be zero. ERROR: " + Bass.BASS_ErrorGetCode());
+
+            Timer = new Timer(obj => { Speaker.Play(Stream); }, null, 0, CurrentInterval);
         }
 
+        public override string ToString()
+        {
+            return base.ToString() + "_WRIST";
+        }
     }
 }

@@ -16,7 +16,7 @@ namespace AudioModule.Interfaces
         ///     Method that plays a sound through the Speaker instance.
         /// </summary>
         /// <param name="stream">Bass Stream to play</param>
-        public static void Play(int stream)
+        public void Play(int stream)
         {
             if (stream == 0)
                 throw new AudioException("Speaker: Stream error. Stream cannot be zero.");
@@ -100,7 +100,7 @@ namespace AudioModule.Interfaces
 
             if (testStream == 0)
             {
-                throw new AudioException("Confirm stream encountered an error. Error: " + Bass.BASS_ErrorGetCode());
+                throw new AudioException("Testing stream encountered an error. Error: " + Bass.BASS_ErrorGetCode());
             }
 
             //play the confirm sound

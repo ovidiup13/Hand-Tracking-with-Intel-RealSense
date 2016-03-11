@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Windows;
+using System.Windows.Input;
 using AudioModule.Implementation.AudioController;
 using AudioModule.Interfaces;
+using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Controls;
 using GalaSoft.MvvmLight;
 using Un4seen.Bass;
@@ -25,6 +27,21 @@ namespace UserInterface.ViewModels.SpeakerPageViewModels
 
             //initialize flags
             InitializeSpeakerFlags();
+
+            TestSoundCommand = new RelayCommand(o => TestSound(o));
+        }
+
+        private void TestSound(object o)
+        {
+            //cast parameter to BASSFlag, otherwise to BASS DEFAULT flag
+//            BASSFlag flag = o as BASSFlag? ?? BASSFlag.BASS_DEFAULT;
+            SpeakerImpl speaker = o as SpeakerImpl;
+
+            try
+            {
+                speaker?.Test();
+            } catch(A)
+
         }
 
         #region modules
@@ -81,11 +98,8 @@ namespace UserInterface.ViewModels.SpeakerPageViewModels
             }
         }
 
-        #endregion
-    }
+        public ICommand TestSoundCommand { get; protected set; }
 
-    public class SpeakerFlag
-    {
-        public BASSFlag Flag { get; set; }
+        #endregion
     }
 }

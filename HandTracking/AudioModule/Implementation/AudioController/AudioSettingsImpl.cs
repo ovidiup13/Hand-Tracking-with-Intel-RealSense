@@ -58,6 +58,7 @@ namespace AudioModule.Implementation.AudioController
             {
                 if (value == null) return;
                 _wristSpeaker = value;
+                AudioDesign.WristSpeaker.SpeakerFlag = _wristSpeaker.SpeakerFlag;
                 OnPropertyChanged(nameof(WristSpeaker));
             }
         }

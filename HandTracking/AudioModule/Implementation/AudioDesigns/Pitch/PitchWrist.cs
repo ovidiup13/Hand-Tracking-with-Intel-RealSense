@@ -11,7 +11,6 @@ namespace AudioModule.Implementation.AudioDesigns.Pitch
 {
     class PitchWrist : PitchIndividual
     {
-
         public PitchWrist()
         {
             FeedbackType = FeedbackType.Wrist;
@@ -36,6 +35,11 @@ namespace AudioModule.Implementation.AudioDesigns.Pitch
 
             //play file
             Timer = new Timer(obj => { Speaker.Play(Stream); }, null, 0, Rate);
+        }
+
+        public override string ToString()
+        {
+            return base.ToString() + "_WRIST";
         }
 
     }

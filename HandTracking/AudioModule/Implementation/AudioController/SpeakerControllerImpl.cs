@@ -13,7 +13,6 @@ namespace AudioModule.Implementation.AudioController
 {
     /*
     TODO: add methods for displaying the names of all output devices, including their IDs
-    TODO: release all audio resources (BASS) before exit
     */
 
     public class SpeakerControllerImpl : SpeakerController, INotifyPropertyChanged
@@ -27,7 +26,7 @@ namespace AudioModule.Implementation.AudioController
             AudioSettings = new AudioSettingsImpl();
 
             //initialize speakers
-            Speakers = new ObservableCollection<SpeakerImpl> {AudioSettings.WristSpeaker};
+            Speakers = new ObservableCollection<SpeakerImpl>();
 
             IsPlaying = false;
         }
@@ -198,7 +197,7 @@ namespace AudioModule.Implementation.AudioController
                 if (max < d)
                 {
                     max = d;
-                    id = speaker.GetFlag().ToString();
+                    id = speaker.Marker.Id.ToString();
                 }
             }
 

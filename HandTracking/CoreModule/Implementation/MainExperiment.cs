@@ -242,8 +242,8 @@ namespace CoreModule.Implementation
 
             //stop processing thread
             _isProcessing = false;
-            _processingThread.Abort();
-            _processingThread.Join();
+            _processingThread?.Abort();
+            _processingThread?.Join();
 
             //stop playback
             _speakerController.StopPlayback();
@@ -331,7 +331,7 @@ namespace CoreModule.Implementation
                     //if hand is not detected, set the distance to maximum
                     if (!_handData.HandDetected)
                     {
-                        _speakerController.SetDistance(50);
+//                        _speakerController.SetDistance(50);
                         continue;
                     }
 
@@ -346,7 +346,7 @@ namespace CoreModule.Implementation
 
                     //pass distance to speaker controller
                     _speakerController.SetDistance(distance);
-                    Thread.Sleep(50);
+                    Thread.Sleep(10);
                 }
             }
             catch (ThreadAbortException abortException)
