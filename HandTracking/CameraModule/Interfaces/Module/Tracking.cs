@@ -10,6 +10,7 @@ namespace CameraModule.Interfaces.Module
 {
     public abstract class Tracking : INotifyPropertyChanged
     {
+
         /// <summary>
         ///     Method that sets and gets the IData field for this Tracking instance.
         /// </summary>
@@ -60,6 +61,11 @@ namespace CameraModule.Interfaces.Module
         public abstract void StopProcessing();
 
         /// <summary>
+        /// 
+        /// </summary>
+        public abstract void ResumeProcessing();
+
+        /// <summary>
         ///     Method that pauses the processig thread within derived types.
         /// </summary>
         public abstract void PauseProcessing();
@@ -71,7 +77,7 @@ namespace CameraModule.Interfaces.Module
         public abstract Data GetData();
 
         [NotifyPropertyChangedInvocator]
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
@@ -99,6 +105,17 @@ namespace CameraModule.Interfaces.Module
 
         #region private vars
 
+        private TrackingStatus _trackingStatus;
+        public TrackingStatus TrackingStatus
+        {
+            get { return _trackingStatus; }
+            protected set
+            {
+                _trackingStatus = value;
+                OnPropertyChanged(nameof(TrackingStatus));
+            }
+        }
+
         private Data _data;
         private CameraSettings _settings;
 
@@ -111,22 +128,8 @@ namespace CameraModule.Interfaces.Module
 
         #endregion
 
-        #region threading vars
+        #region threading vars   
 
-        private bool _isProcessing;
-
-        public bool IsProcessing
-        {
-            get { return _isProcessing; }
-
-            set
-            {
-                _isProcessing = value;
-                OnPropertyChanged(nameof(IsProcessing));
-            }
-        }
-
-        protected bool IsInitialized;
         protected Thread ProcessingThread;
         protected bool ProcessingFlag;
 

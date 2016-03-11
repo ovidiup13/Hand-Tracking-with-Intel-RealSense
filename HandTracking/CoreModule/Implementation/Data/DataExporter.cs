@@ -12,78 +12,101 @@ namespace CoreModule.Implementation.Data
         /// <summary>
         ///     Constructor that creates a new data exporter.
         /// </summary>
-        public DataExporter(Participant participant, string audioDesign)
+        public DataExporter(Participant participant)
         {
             _participant = participant;
-            CreateFiles(audioDesign);
         }
 
         /// <summary>
         /// </summary>
         /// <param name="audioDesign"></param>
-        private void CreateFiles(string audioDesign)
+        public void CreateConditionFile(string audioDesign)
         {
             //create directory if it does not exist already
-            if (!Directory.Exists(_directory))
-                Directory.CreateDirectory(_directory);
+            if (!System.IO.Directory.Exists(Directory))
+            {
+                System.IO.Directory.CreateDirectory(Directory);
+            }
 
             //create trial data file and stream
-            _trialData = _directory + "\\" + _participant + "_" + audioDesign + "_" + ".txt";
+            _conditionFile = Directory + "\\" + _participant + "_" + audioDesign + "_" + ".txt";
 
-            _trialDataStream = !File.Exists(_trialData) ? File.Create(_trialData) : new FileStream(_trialData, FileMode.Create);
+            _conditionDataStream = !File.Exists(_conditionFile) ? File.Create(_conditionFile) : new FileStream(_conditionFile, FileMode.Create);
+        }
 
-            //TODO: create trace file
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="audioDesign"></param>
+        /// <param name="speakerId"></param>
+        public void CreateMovementTraceFile(string audioDesign, string speakerId)
+        {
+            //create directory if it does not exist already
+            if (!System.IO.Directory.Exists(Directory))
+            {
+                System.IO.Directory.CreateDirectory(Directory);
+            }
+
+            //create trial data file and stream
+            _traceFile = Directory + "\\" + _participant + "_" + audioDesign + "_" + speakerId + ".txt";
+
+            _traceDataStream = !File.Exists(_traceFile) ? File.Create(_traceFile) : new FileStream(_traceFile, FileMode.Create);
         }
 
         /// <summary>
         ///     Method that sets the current target data for write to file.
         /// </summary>
-        /// <param name="target"></param>
-        /// <param name="closest"></param>
+        /// <param name="target">Marker ID of the speaker</param>
+        /// <param name="closest">The closest speaker</param>
         /// <param name="distance"></param>
         /// <param name="time"></param>
         /// <param name="position"></param>
-        public void SetTrialData(string target, string closest, double distance, long time, PXCMPoint3DF32 position)
+        public void AppendToConditionFile(string target, string closest, double distance, long time, PXCMPoint3DF32 position)
         {
             //create the line
             var line = target + ", " + closest + ", " + distance + ", " + time + ", " +
                        position.x + ", " + position.y + ", " + position.z + "\n";
 
             //write to file
-            AddText(_trialDataStream, line);
+            AddText(_conditionDataStream, line);
         }
 
         /// <summary>
         ///     TODO: append hand location to trace file
         /// </summary>
-        /// <param name="speaker">id of the speaker</param>
+        /// <param name="time"></param>
         /// <param name="position">hand position in 3D</param>
-        public void UpdateLocation(int speaker, PXCMPoint3DF32 position)
+        public void AppendToTraceFile(long time, PXCMPoint3DF32 position)
         {
-            //append position to trace file
-        }
+            //create the line
+            var line = time + ", " + position.x + ", " + position.y + ", " + position.z + "\n";
 
-        /// <summary>
-        ///     Method that sets the current directory for the data files.
-        /// </summary>
-        /// <param name="path"></param>
-        public static void SetDirectory(string path)
-        {
-            _directory = path;
+            //write to file
+            AddText(_traceDataStream, line);
         }
 
         /// <summary>
         ///     Method that returns the current directory for the data files.
         /// </summary>
         /// <returns></returns>
-        public static string GetDirectory()
+        public static string GetDirectory() 
         {
-            return _directory;
+            return Directory;
         }
 
-        public void CloseStream()
+        public void CloseConditionStream()
         {
-            _trialDataStream?.Dispose();
+            _conditionDataStream.Dispose();
+        }
+
+        public void CloseTraceStream()
+        {
+            _traceDataStream.Dispose();
+        }
+
+        public void CloseStreams()
+        {
+            _conditionDataStream?.Dispose();
             _traceDataStream?.Dispose();
         }
 
@@ -103,12 +126,12 @@ namespace CoreModule.Implementation.Data
         private readonly Participant _participant;
 
         //data streams
-        private FileStream _trialDataStream;
+        private FileStream _conditionDataStream;
         private FileStream _traceDataStream;
 
         //files and directories
-        private static string _directory = "data";
-        private string _trialData, _traceData;
+        private const string Directory = "data";
+        private string _conditionFile, _traceFile;
 
         #endregion
     }

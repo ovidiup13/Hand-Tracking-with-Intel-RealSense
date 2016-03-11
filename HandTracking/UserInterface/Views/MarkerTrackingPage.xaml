@@ -7,8 +7,8 @@
              xmlns:views="clr-namespace:UserInterface.Views"
              xmlns:markerTracking="clr-namespace:CameraModule.Implementation.MarkerTracking;assembly=CameraModule"
              mc:Ignorable="d"
-             d:DesignHeight="495.15" d:DesignWidth="657">
-    <!--DataContext="{Binding Source={StaticResource ViewModelLocator}, Path=MarkerViewModel}"-->
+             d:DesignHeight="495.15" d:DesignWidth="657"
+             DataContext="{Binding Source={StaticResource ViewModelLocator}, Path=MarkerViewModel}">
 
     <Grid Style="{StaticResource ContentRoot}">
         <Grid.ColumnDefinitions>

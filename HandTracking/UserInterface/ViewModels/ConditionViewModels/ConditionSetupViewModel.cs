@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Data;
+using System.Windows.Threading;
 using AudioModule.Implementation.AudioController;
 using AudioModule.Interfaces;
 using CoreModule.Implementation;
@@ -81,7 +83,7 @@ namespace UserInterface.ViewModels.ConditionViewModels
                 Description = "Constant Group",
                 Conditions = new ObservableCollection<Condition>
                 {
-                    new Condition
+                    /*new Condition
                     {
                         DesignType = DesignType.Constant,
                         FeedbackType = FeedbackType.Individual
@@ -90,11 +92,11 @@ namespace UserInterface.ViewModels.ConditionViewModels
                     {
                         DesignType = DesignType.Constant,
                         FeedbackType = FeedbackType.Coalescent
-                    },
+                    },*/
                     new Condition
                     {
                         DesignType = DesignType.Constant,
-                        FeedbackType = FeedbackType.Wrist
+                        FeedbackType = FeedbackType.Individual
                     }
                 }
             });

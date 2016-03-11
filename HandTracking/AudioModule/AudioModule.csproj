@@ -59,8 +59,8 @@
   <ItemGroup>
     <Compile Include="Implementation\AudioController\AudioDesignFactory.cs" />
     <Compile Include="Implementation\AudioController\SpeakerControllerImpl.cs" />
-    <Compile Include="Implementation\AudioController\SpeakerImpl.cs" />
     <Compile Include="Implementation\AudioController\AudioSettingsImpl.cs" />
+    <Compile Include="Implementation\AudioController\SpeakerImpl.cs" />
     <Compile Include="Implementation\AudioDesigns\Constant\ConstantCoalescent.cs" />
     <Compile Include="Implementation\AudioDesigns\Constant\ConstantIndividual.cs" />
     <Compile Include="Implementation\AudioDesigns\Constant\ConstantWrist.cs" />
@@ -78,9 +78,9 @@
     <Compile Include="Interfaces\Designs\PitchDesign.cs" />
     <Compile Include="Interfaces\Designs\Interfaces\ICoalescentDesign.cs" />
     <Compile Include="Interfaces\Designs\Interfaces\INdividualDesign.cs" />
+    <Compile Include="Interfaces\Speaker.cs" />
     <Compile Include="Interfaces\Types\DesignType.cs" />
     <Compile Include="Interfaces\Types\FeedbackType.cs" />
-    <Compile Include="Interfaces\Speaker.cs" />
     <Compile Include="Interfaces\SpeakerController.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

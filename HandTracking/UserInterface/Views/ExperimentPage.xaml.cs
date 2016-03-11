@@ -1,13 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Input;
-using AudioModule.Implementation.AudioController;
-using AudioModule.Implementation.AudioDesigns.Constant;
-using AudioModule.Interfaces;
-using CoreModule.Implementation;
-using CoreModule.Interfaces;
-using Condition = CoreModule.Implementation.Condition;
+﻿using System.Windows.Controls;
 
 namespace UserInterface.Views
 {
@@ -19,6 +10,6 @@ namespace UserInterface.Views
         public ExperimentPage()
         {
             InitializeComponent();
-        }       
+        }
     }
 }

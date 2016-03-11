@@ -4,6 +4,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Threading;
 using AudioModule.Implementation.AudioController;
 using AudioModule.Interfaces;
 using CameraModule.Implementation.HandTracking;
@@ -45,6 +46,19 @@ namespace UserInterface.ViewModels.ExperimentPageViewModel
 
             //space pressed command
             SpacePressedCommand = new RelayCommand(o => NextTrial());
+
+            Dispatcher.CurrentDispatcher.ShutdownStarted += ShutDownExperiment;
+        }
+
+        /// <summary>
+        /// Method that stops the experiment and releases all BASS resources before shutdown.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ShutDownExperiment(object sender, EventArgs e)
+        {
+            MainExperiment.StopExperiment();
+            SpeakerController.CleanUp();
         }
 
         /// <summary>
@@ -152,12 +166,12 @@ namespace UserInterface.ViewModels.ExperimentPageViewModel
 
             var wristSpeakerIndex = SpeakerList.Count - 1;
             SpeakerController.AudioSettings.WristSpeaker = SpeakerList[wristSpeakerIndex];
-            SpeakerList.RemoveAt(wristSpeakerIndex); //remove the wrist
+            SpeakerController.Speakers.RemoveAt(wristSpeakerIndex);
 
             //test soundcard
             try
             {
-                SpeakerController.TestSoundCard();
+                SpeakerControllerImpl.TestSoundCard();
             }
             catch (AudioException e)
             {

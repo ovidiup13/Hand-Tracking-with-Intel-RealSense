@@ -46,7 +46,7 @@ namespace AudioModule.Interfaces
         /// <returns></returns>
         public string GetSpeakerId()
         {
-            return Speaker.GetFlag().ToString();
+            return Speaker.Marker.Id.ToString();
         }
 
         /// <summary>

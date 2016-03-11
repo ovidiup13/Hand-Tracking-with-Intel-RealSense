@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using Aruco.Net;
+using CameraModule.Interfaces;
 using CameraModule.Interfaces.Module;
 using CameraModule.Interfaces.Settings;
 using OpenCV.Net;
@@ -21,8 +22,9 @@ namespace CameraModule.Implementation.MarkerTracking
         /// </summary>
         protected internal MarkerTrackingImpl()
         {
-            _markerData = new MarkerData();
+            Data = new MarkerData();
             Settings = new MarkerTrackingSettings();
+            TrackingStatus = TrackingStatus.Stopped;
         }
 
         /// <summary>
@@ -31,8 +33,9 @@ namespace CameraModule.Implementation.MarkerTracking
         /// <param name="settings"></param>
         protected internal MarkerTrackingImpl(ISettings settings)
         {
-            _markerData = new MarkerData();
+            Data = new MarkerData();
             Settings = (MarkerTrackingSettings) settings;
+            TrackingStatus = TrackingStatus.Stopped;
         }
 
         /// <summary>
@@ -87,21 +90,22 @@ namespace CameraModule.Implementation.MarkerTracking
             if (_markerDetector == null)
                 throw new MarkerTrackingException(@"Failed to initialize the Aruco Marker Detector.");
 
-            IsInitialized = true;
+            //set flag to initialized
+            TrackingStatus = TrackingStatus.Initialized;
         }
 
         /// <summary>
         /// </summary>
         public override void StartProcessing()
         {
-            if (!IsInitialized)
+            if (TrackingStatus != TrackingStatus.Initialized)
                 throw new MarkerTrackingException(@"Marker Tracking RealSense Modules have not been initialized.");
-            if (IsProcessing)
-                throw new MarkerTrackingException(@"Marker Tracking process is already running.");
 
+            ProcessingFlag = true;
             ProcessingThread = new Thread(TrackingThread);
-            IsProcessing = true;
             ProcessingThread.Start();
+
+            TrackingStatus = TrackingStatus.Running;
         }
 
         /// <summary>
@@ -126,7 +130,7 @@ namespace CameraModule.Implementation.MarkerTracking
 
                     // retrieve the sample and process it
                     // counts how many times per second the frame is processed
-                    if (frameCount++ % 10 == 0)
+                    if (frameCount++%10 == 0)
                     {
                         var sample = SenseManager.QuerySample();
                         ProcessFrame(sample);
@@ -138,7 +142,8 @@ namespace CameraModule.Implementation.MarkerTracking
             }
             catch (ThreadAbortException abortException)
             {
-                Console.WriteLine("Marker Tracking Thread received an Abort call. Thread will terminate.");
+                Console.WriteLine("Marker Tracking Thread received an Abort call. Thread will terminate. " +
+                                  abortException.Message);
             }
             finally //executed before thread is aborted
             {
@@ -148,7 +153,10 @@ namespace CameraModule.Implementation.MarkerTracking
                 SenseManager.Dispose();
                 Session.Dispose();
                 _markerDetector.Dispose();
+
                 Console.WriteLine(@"Marker Tracking terminated.");
+
+                TrackingStatus = TrackingStatus.Stopped;
             }
         }
 
@@ -235,10 +243,10 @@ namespace CameraModule.Implementation.MarkerTracking
         /// </summary>
         public override void StopProcessing()
         {
-            if (!IsInitialized)
-                throw new MarkerTrackingException(@"Marker Tracking RealSense Modules have not been initialized.");
-            if (!IsProcessing)
+            if (TrackingStatus != TrackingStatus.Running || TrackingStatus == TrackingStatus.Paused)
+            {
                 throw new MarkerTrackingException(@"Marker Tracking process is not running.");
+            }
 
             ProcessingFlag = false;
 
@@ -248,11 +256,20 @@ namespace CameraModule.Implementation.MarkerTracking
             ProcessingThread = null;
 
             //set flag to false
-            IsProcessing = false;
+            TrackingStatus = TrackingStatus.Stopped;
+        }
+
+
+        /// <summary>
+        ///     not necessary for this module
+        /// </summary>
+        public override void ResumeProcessing()
+        {
+            throw new NotImplementedException();
         }
 
         /// <summary>
-        ///     TODO: implement pause - not necessary for this module
+        ///     not necessary for this module
         /// </summary>
         public override void PauseProcessing()
         {
@@ -319,7 +336,7 @@ namespace CameraModule.Implementation.MarkerTracking
         /// <returns></returns>
         public override Data GetData()
         {
-            return _markerData;
+            return Data;
         }
 
         /// <summary>
@@ -341,7 +358,7 @@ namespace CameraModule.Implementation.MarkerTracking
 
         #region tracking vars
 
-        private readonly MarkerData _markerData;
+        public new MarkerData Data { get; }
         public new MarkerTrackingSettings Settings { get; }
 
         //event handlers for new image, markers

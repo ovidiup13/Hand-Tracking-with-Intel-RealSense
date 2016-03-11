@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CoreModule.Implementation
+namespace CameraModule.Interfaces
 {
-    public enum ExperimentStatus
+    public enum TrackingStatus
     {
-        Initialized, Running, Paused, Stopped
+        Stopped, Initialized, Running, Paused
     }
 }

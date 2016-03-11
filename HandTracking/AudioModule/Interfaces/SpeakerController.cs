@@ -75,8 +75,12 @@ namespace AudioModule.Interfaces
         /// <summary>
         /// Method which ends the current playback.
         /// </summary>
-        public abstract void StopPlayback();        
-       
+        public abstract void StopPlayback();
+
+        /// <summary>
+        /// Method that disposes the BASS libraries.
+        /// </summary>
+        public abstract void CleanUp();
 
         /// <summary>
         ///     Method that returns the distance between two points in 3D space. The two points must

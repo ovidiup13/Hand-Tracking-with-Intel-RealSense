@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading;
+using CameraModule.Interfaces;
 using CameraModule.Interfaces.Module;
 using CameraModule.Interfaces.Settings;
 
@@ -14,7 +15,7 @@ namespace CameraModule.Implementation.HandTracking
         {
 //            Settings = new HandTrackingSettings();
 //            Data = new HandTrackingData();
-            Settings = new HandTrackingSettings(1920, 1080, 30);
+            Settings = new HandTrackingSettings();
             Data = new HandTrackingData();
         }
 
@@ -33,11 +34,14 @@ namespace CameraModule.Implementation.HandTracking
         /// </summary>
         public override void StartProcessing()
         {
-            if (IsInitialized)
+            if (TrackingStatus == TrackingStatus.Initialized)
             {
+                _isPaused = false;
+                _waitForPauseEvent = new AutoResetEvent(false);
+
                 ProcessingThread = new Thread(TrackingThread);
-                IsProcessing = true;
                 ProcessingThread.Start();
+                TrackingStatus = TrackingStatus.Running;
             }
             else throw new HandTrackingException("Hand tracking RealSense modules have not been initialized.");
         }
@@ -49,17 +53,33 @@ namespace CameraModule.Implementation.HandTracking
         {
             //terminate thread
             ProcessingFlag = false;
-            ProcessingThread.Join();
+            ProcessingThread?.Abort();
+            ProcessingThread?.Join();
 
             ProcessingThread = null;
 
-            IsProcessing = false;
+            TrackingStatus = TrackingStatus.Stopped;
         }
 
-        //TODO: implement pause
+        /// <summary>
+        ///     Method that resumes the processing thread after the Paused flag has been set.
+        /// </summary>
+        public override void ResumeProcessing()
+        {
+            if (TrackingStatus == TrackingStatus.Paused)
+            {
+                _waitForPauseEvent.Set();
+                _isPaused = false;
+            }
+            else throw new HandTrackingException("Hand tracking cannot be resumed since it's not in the Paused state.");
+        }
+
+        /// <summary>
+        /// </summary>
         public override void PauseProcessing()
         {
-            throw new NotImplementedException();
+            if (TrackingStatus == TrackingStatus.Running)
+                _isPaused = true;
         }
 
         public override Data GetData()
@@ -129,7 +149,8 @@ namespace CameraModule.Implementation.HandTracking
             if (SenseManager.Init() != pxcmStatus.PXCM_STATUS_NO_ERROR)
                 throw new HandTrackingException(@"Failed to initialize the SenseManager");
 
-            IsInitialized = true;
+            //set status to initialized
+            TrackingStatus = TrackingStatus.Initialized;
         }
 
         /// <summary>
@@ -137,45 +158,48 @@ namespace CameraModule.Implementation.HandTracking
         /// </summary>
         protected override void TrackingThread()
         {
-            Console.WriteLine(@"Hand Tracking Started.");
-            ProcessingFlag = true;
-            var frameCount = -1;
-            // Looping to query the hands information
-            while (ProcessingFlag)
+            try
             {
-                // Acquiring a frame
-                if (SenseManager.AcquireFrame(true) < pxcmStatus.PXCM_STATUS_NO_ERROR)
+                Console.WriteLine(@"Hand Tracking Started.");
+                ProcessingFlag = true;
+                // Looping to query the hands information
+                while (ProcessingFlag)
                 {
-                    break;
-                }
+                    // Acquiring a frame
+                    if (SenseManager.AcquireFrame(true) < pxcmStatus.PXCM_STATUS_NO_ERROR)
+                    {
+                        break;
+                    }
 
-                //acquire color stream and pass it to the delegate
-                //TODO: check if it works or not
-                var sample = SenseManager.QuerySample();
-                AccessImage(sample.color);
+                    //acquire color stream and pass it to the delegate
+                    var sample = SenseManager.QuerySample();
+                    AccessImage(sample.color);
 
-                if (frameCount++%10 == 0)
-                {
                     // Updating the hand data
                     _handData?.Update();
 
                     // Processing Hands
                     ProcessHands(_handData);
+
+                    // Releasing the acquired frame
+                    SenseManager.ReleaseFrame();
                 }
-
-                // Releasing the acquired frame
-                SenseManager.ReleaseFrame();
             }
+            catch (ThreadAbortException abortException)
+            {
+                Console.WriteLine("Hand Tracking Stopped.");
+            }
+            finally
+            {
+                // Releasing resources
+                _handData?.Dispose();
+                _handConfiguration?.Dispose();
 
-            // Releasing resources
-            _handData?.Dispose();
-            _handConfiguration?.Dispose();
-
-            SenseManager.Close();
-            SenseManager.Dispose();
-            Session.Dispose();
-
-            Console.WriteLine(@"Hand Tracking terminated.");
+                SenseManager.Close();
+                SenseManager.Dispose();
+                Session.Dispose();
+                Console.WriteLine(@"Hand Tracking terminated.");
+            }
         }
 
         private void AccessImage(PXCMImage image)
@@ -211,7 +235,7 @@ namespace CameraModule.Implementation.HandTracking
 
             //detected at least one hand
             Data.HandDetected = true;
-//            Console.WriteLine(@"Hand detected! Number of hands: " + numberOfHands);
+            Console.WriteLine(@"Hand detected! Number of hands: " + numberOfHands);
 
             // Querying the information about detected hands
             for (var i = 0; i < numberOfHands; i++)
@@ -219,10 +243,7 @@ namespace CameraModule.Implementation.HandTracking
                 // Querying hand id
                 int handId;
 
-                //closest hand gets smaller id
-
-                /*if (Settings.TrackingModeType == PXCMHandData.TrackingModeType.TRACKING_MODE_FULL_HAND)
-                {*/
+                //get hand data by order type
                 var queryHandIdStatus = handData.QueryHandId(Settings.AccessOrderType, i,
                     out handId);
 
@@ -232,55 +253,53 @@ namespace CameraModule.Implementation.HandTracking
                     Console.WriteLine(@"Failed to query the hand Id.");
                     continue;
                 }
-//                }
+
                 // Querying the hand data
                 PXCMHandData.IHand hand;
                 var queryHandStatus = handData.QueryHandDataById(handId, out hand);
-//                Console.WriteLine(@"Hand data status: " + queryHandStatus);
 
-                if (queryHandStatus == pxcmStatus.PXCM_STATUS_NO_ERROR && hand != null)
+                if (queryHandStatus != pxcmStatus.PXCM_STATUS_NO_ERROR || hand == null) continue;
+                
+                //extremities mode
+                if (Settings.TrackingModeType == PXCMHandData.TrackingModeType.TRACKING_MODE_EXTREMITIES)
                 {
-                    //extremities mode
-                    if (Settings.TrackingModeType == PXCMHandData.TrackingModeType.TRACKING_MODE_EXTREMITIES)
+                    //get extremity data
+                    PXCMHandData.ExtremityData extremityData;
+                    var extremityStatus = hand.QueryExtremityPoint(Settings.ExtremityType, out extremityData);
+
+                    //check for errors
+                    if (extremityStatus != pxcmStatus.PXCM_STATUS_NO_ERROR || extremityData == null)
                     {
-                        //get extremity data
-                        PXCMHandData.ExtremityData extremityData;
-                        var extremityStatus = hand.QueryExtremityPoint(Settings.ExtremityType, out extremityData);
-
-                        //check for errors
-                        if (extremityStatus != pxcmStatus.PXCM_STATUS_NO_ERROR || extremityData == null)
-                        {
-                            Console.WriteLine("An error occurred while querying extremity data: " + extremityStatus);
-                            continue;
-                        }
-
-                        //update hand tracking data
-                        Data.Location2D = extremityData.pointImage;
-                        var p = extremityData.pointWorld;
-                        Data.Location3D = new PXCMPoint3DF32(p.x * 1000, p.y * 1000, p.z * 1000);
+                        Console.WriteLine("An error occurred while querying extremity data: " + extremityStatus);
+                        continue;
                     }
 
-                    // full hand
-                    if (hand.HasTrackedJoints())
+                    //update hand tracking data
+                    Data.Location2D = extremityData.pointImage;
+                    var p = extremityData.pointWorld;
+                    Data.Location3D = new PXCMPoint3DF32(p.x*1000, p.y*1000, p.z*1000);
+                }
+
+                // full hand
+                else if (hand.HasTrackedJoints())
+                {
+                    //get joint data
+                    PXCMHandData.JointData jointData;
+                    var queryStatus = hand.QueryTrackedJoint(Settings.JointType, out jointData);
+
+                    //check for errors
+                    if (queryStatus != pxcmStatus.PXCM_STATUS_NO_ERROR || jointData == null)
                     {
-                        //get joint data
-                        PXCMHandData.JointData jointData;
-                        var queryStatus = hand.QueryTrackedJoint(Settings.JointType, out jointData);
-
-                        //check for errors
-                        if (queryStatus != pxcmStatus.PXCM_STATUS_NO_ERROR || jointData == null)
-                        {
-                            Console.WriteLine("An error occurred while querying joint data: " + queryStatus);
-                            continue;
-                        }
-
-                        //set 2D position in hand Data
-                        Data.Location2D = jointData.positionImage;
-
-                        //set 3D position in hand Data (in mm)
-                        var p = jointData.positionWorld;
-                        Data.Location3D = new PXCMPoint3DF32(p.x*1000, p.y*1000, p.z*1000);
+                        Console.WriteLine("An error occurred while querying joint data: " + queryStatus);
+                        continue;
                     }
+
+                    //set 2D position in hand Data
+                    Data.Location2D = jointData.positionImage;
+
+                    //set 3D position in hand Data (in mm)
+                    var p = jointData.positionWorld;
+                    Data.Location3D = new PXCMPoint3DF32(p.x*1000, p.y*1000, p.z*1000);
                 }
             }
         }
@@ -290,8 +309,11 @@ namespace CameraModule.Implementation.HandTracking
         public event NewImageEventHandler NewImageAvailable;
 
 
-        public new HandTrackingData Data;
+        public new readonly HandTrackingData Data;
         public new HandTrackingSettings Settings { get; }
+
+        private bool _isPaused;
+        private AutoResetEvent _waitForPauseEvent;
 
         #endregion
 

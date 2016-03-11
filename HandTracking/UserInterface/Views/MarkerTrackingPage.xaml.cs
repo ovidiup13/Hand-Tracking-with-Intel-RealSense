@@ -9,31 +9,11 @@ namespace UserInterface.Views
     /// <summary>
     ///     Interaction logic for MarkerTrackingPage.xaml
     /// </summary>
-    public partial class MarkerTrackingPage : UserControl, IContent
+    public partial class MarkerTrackingPage : UserControl
     {
         public MarkerTrackingPage()
         {
-            InitializeComponent();
-            _viewModel = SimpleIoc.Default.GetInstance<MarkerTrackingViewModel>();
-            DataContext = _viewModel;
+            InitializeComponent();          
         }
-
-        public void OnFragmentNavigation(FragmentNavigationEventArgs e)
-        {
-        }
-
-        public void OnNavigatedFrom(NavigationEventArgs e)
-        {
-        }
-
-        public void OnNavigatedTo(NavigationEventArgs e)
-        {
-        }
-
-        public void OnNavigatingFrom(NavigatingCancelEventArgs e)
-        {
-        }
-
-        private readonly MarkerTrackingViewModel _viewModel;
     }
 }

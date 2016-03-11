@@ -86,6 +86,7 @@
     <Compile Include="Interfaces\Module\IModule.cs" />
     <Compile Include="Interfaces\Module\ModuleException.cs" />
     <Compile Include="Interfaces\Module\Tracking.cs" />
+    <Compile Include="Interfaces\TrackingStatus.cs" />
     <Compile Include="Interfaces\UI\CommandBase.cs" />
     <Compile Include="Interfaces\UI\Displayable.cs" />
     <Compile Include="Interfaces\UI\RelayCommand.cs" />

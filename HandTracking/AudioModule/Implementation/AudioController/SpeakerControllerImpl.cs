@@ -23,8 +23,6 @@ namespace AudioModule.Implementation.AudioController
         /// </summary>
         public SpeakerControllerImpl()
         {
-//            SetVolume(AudioSettingsImpl.DefaultVolume);
-
             //initialize settings
             AudioSettings = new AudioSettingsImpl();
 
@@ -219,7 +217,7 @@ namespace AudioModule.Implementation.AudioController
         /// <summary>
         ///     Method that tests the current audio configuration
         /// </summary>
-        public void TestSoundCard()
+        public static void TestSoundCard()
         {
             //initialize current sound card
 //            AudioSettings.InitializeSoundCard(-1);
@@ -246,6 +244,14 @@ namespace AudioModule.Implementation.AudioController
             _currentIndex = 0;
             _targetSpeaker = null;
             _speakerIndexes = ShuffleArray(_speakerIndexes);
+        }
+
+        /// <summary>
+        /// Method that disposes of all BASS resources.
+        /// </summary>
+        public override void CleanUp()
+        {
+            Bass.BASS_Free();
         }
 
         /// <summary>

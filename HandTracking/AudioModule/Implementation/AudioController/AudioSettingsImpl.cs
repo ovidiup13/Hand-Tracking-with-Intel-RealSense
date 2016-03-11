@@ -122,7 +122,7 @@ namespace AudioModule.Implementation.AudioController
         #region volume variables
 
         private const int VolumeGap = 50;
-        private const int DefaultVolume = 200;
+        private const int DefaultVolume = 50;
         private int _volume = DefaultVolume;
 
         protected const int DefaultSoundCard = -1;

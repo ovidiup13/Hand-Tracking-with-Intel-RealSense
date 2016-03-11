@@ -10,7 +10,10 @@ namespace UserInterface.ViewModels.HandViewModels
 {
     public class HandSetupViewModel : ViewModelBase
     {
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="handTracking"></param>
         public HandSetupViewModel(HandTrackingImpl handTracking)
         {
             //retrieve hand tracking module and settings
@@ -23,20 +26,16 @@ namespace UserInterface.ViewModels.HandViewModels
             InitializeEnumTypes();
         }
 
+
+        /// <summary>
+        /// 
+        /// </summary>
         private void InitializeEnumTypes()
         {
             TrackingModeTypes = HandTrackingSettings.GetTrackingTypes();
             JointTypes = HandTrackingSettings.GetJointTypes();
             AccessOrderTypes = HandTrackingSettings.GetAccessOrderTypes();
             ExtremityTypes = HandTrackingSettings.GetExtremeTypes();
-        }
-
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            string strValue = value.ToString();
-            if (strValue.Length >= 4)
-                return false;
-            return true;
         }
 
         #region vars
@@ -47,7 +46,6 @@ namespace UserInterface.ViewModels.HandViewModels
         public List<PXCMHandData.JointType> JointTypes { get; set; }
         public List<PXCMHandData.AccessOrderType> AccessOrderTypes { get; set; }
         public List<PXCMHandData.ExtremityType> ExtremityTypes { get; set; }
-
 
         public Participant Participant { get; set; }
 

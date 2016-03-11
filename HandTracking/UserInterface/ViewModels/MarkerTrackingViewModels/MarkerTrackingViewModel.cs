@@ -7,6 +7,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
 using CameraModule.Implementation.MarkerTracking;
+using CameraModule.Interfaces;
 using CameraModule.Interfaces.Module;
 using CameraModule.Interfaces.UI;
 using FirstFloor.ModernUI.Windows.Controls;
@@ -16,10 +17,6 @@ namespace UserInterface.ViewModels.MarkerTrackingViewModels
 {
     public class MarkerTrackingViewModel : ViewModelBase
     {
-        //TODO: create a delegate type and pass it to the speaker setup view model
-        //the delegate will take place of the method which initializes new speakers
-        //when new markers are available, call the delegate function and reinitialize the speaker objects
-
         public MarkerTrackingViewModel()
         {
             //load markertracking modules
@@ -27,6 +24,16 @@ namespace UserInterface.ViewModels.MarkerTrackingViewModels
 
             StartTrackingCommand = new RelayCommand(StartTracking, CanStartTracking);
             StopTrackingCommand = new RelayCommand(StopTracking, CanStopTracking);
+
+            Dispatcher.CurrentDispatcher.ShutdownStarted += ShutDownViewModel;
+        }
+
+        private void ShutDownViewModel(object sender, EventArgs e)
+        {
+            if (_markerTracking.TrackingStatus != TrackingStatus.Running) return;
+            var messageBox = MessageBoxButton.OK;
+            ModernDialog.ShowMessage("Application will exit.", "Bye", messageBox);
+            _markerTracking.StopProcessing();
         }
 
         /// <summary>
@@ -36,7 +43,7 @@ namespace UserInterface.ViewModels.MarkerTrackingViewModels
         /// <returns></returns>
         private bool CanStopTracking(object arg)
         {
-            return _markerTracking.IsProcessing;
+            return _markerTracking.TrackingStatus == TrackingStatus.Running;
         }
 
         /// <summary>
@@ -46,7 +53,7 @@ namespace UserInterface.ViewModels.MarkerTrackingViewModels
         /// <returns></returns>
         private bool CanStartTracking(object arg)
         {
-            return !_markerTracking.IsProcessing;
+            return _markerTracking.TrackingStatus != TrackingStatus.Running;
         }
 
         private void LoadModules()
@@ -79,7 +86,7 @@ namespace UserInterface.ViewModels.MarkerTrackingViewModels
             //update subscribers
             if (MarkersDetected.Count > 0)
             {
-                NewMarkersAvailableEvent.Invoke(this, new NewMarkersArgs(MarkersDetected.ToList()));
+                NewMarkersAvailableEvent?.Invoke(this, new NewMarkersArgs(MarkersDetected.ToList()));
             }
         }
 

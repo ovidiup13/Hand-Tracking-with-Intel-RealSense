@@ -1,4 +1,6 @@
 ﻿using System.ComponentModel;
+using System.Net.Mime;
+using System.Windows;
 using FirstFloor.ModernUI.Windows.Controls;
 
 namespace UserInterface
@@ -13,15 +15,9 @@ namespace UserInterface
             InitializeComponent();
         }
 
-        //TODO: release all resources when closing the main window
         private void MainWindow_OnClosing(object sender, CancelEventArgs e)
         {
-        }
-
-
-        private void CloseAll()
-        {
-            
+            Dispatcher.InvokeShutdown();
         }
     }
 }
