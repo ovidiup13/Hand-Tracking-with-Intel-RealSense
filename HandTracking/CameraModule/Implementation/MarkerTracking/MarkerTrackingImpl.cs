@@ -13,29 +13,24 @@ namespace CameraModule.Implementation.MarkerTracking
     //TODO: draw a circle on the image component at each marker's position
     public class MarkerTrackingImpl : Tracking
     {
-        public delegate void NewMarkerEventHandler(object sender, NewMarkerArgs args);
-
-        public delegate void NoMarkerEventHandler(object sender, NewMarkerArgs args);
-
         /// <summary>
         ///     Constructor that instantiates the Marker Tracking class with default settings.
         /// </summary>
-        protected internal MarkerTrackingImpl()
+        public MarkerTrackingImpl()
         {
-            Data = new MarkerData();
-            Settings = new MarkerTrackingSettings();
-            TrackingStatus = TrackingStatus.Stopped;
+            Data = new MarkerTrackingData();
+            Settings = new MarkerTrackingSettings {TrackingStatus = TrackingStatus.Stopped};
         }
 
         /// <summary>
         ///     Constructor that instantiates the Marker Tracking class with custom settings.
         /// </summary>
         /// <param name="settings"></param>
-        protected internal MarkerTrackingImpl(ISettings settings)
+        public MarkerTrackingImpl(ISettings settings)
         {
-            Data = new MarkerData();
+            Data = new MarkerTrackingData();
             Settings = (MarkerTrackingSettings) settings;
-            TrackingStatus = TrackingStatus.Stopped;
+            Settings.TrackingStatus = TrackingStatus.Stopped;
         }
 
         /// <summary>
@@ -91,21 +86,21 @@ namespace CameraModule.Implementation.MarkerTracking
                 throw new MarkerTrackingException(@"Failed to initialize the Aruco Marker Detector.");
 
             //set flag to initialized
-            TrackingStatus = TrackingStatus.Initialized;
+            Settings.TrackingStatus = TrackingStatus.Initialized;
         }
 
         /// <summary>
         /// </summary>
         public override void StartProcessing()
         {
-            if (TrackingStatus != TrackingStatus.Initialized)
+            if (Settings.TrackingStatus != TrackingStatus.Initialized)
                 throw new MarkerTrackingException(@"Marker Tracking RealSense Modules have not been initialized.");
 
             ProcessingFlag = true;
             ProcessingThread = new Thread(TrackingThread);
             ProcessingThread.Start();
 
-            TrackingStatus = TrackingStatus.Running;
+            Settings.TrackingStatus = TrackingStatus.Running;
         }
 
         /// <summary>
@@ -128,7 +123,7 @@ namespace CameraModule.Implementation.MarkerTracking
                         break;
                     }
 
-                    // retrieve the sample and process it
+                    // retrieve the sample and process 
                     // counts how many times per second the frame is processed
                     if (frameCount++%10 == 0)
                     {
@@ -156,7 +151,7 @@ namespace CameraModule.Implementation.MarkerTracking
 
                 Console.WriteLine(@"Marker Tracking terminated.");
 
-                TrackingStatus = TrackingStatus.Stopped;
+                Settings.TrackingStatus = TrackingStatus.Stopped;
             }
         }
 
@@ -181,7 +176,7 @@ namespace CameraModule.Implementation.MarkerTracking
                 return;
             }
 
-            var colorPoints = new PXCMPointF32[detectedMarkers.Count];
+            var colourPoints = new PXCMPointF32[detectedMarkers.Count];
             var depthPoints = new PXCMPointF32[detectedMarkers.Count];
 
             //get centroid of markers
@@ -189,11 +184,11 @@ namespace CameraModule.Implementation.MarkerTracking
             for (var markerIndex = 0; markerIndex < detectedMarkers.Count; markerIndex++)
             {
                 var marker = detectedMarkers[markerIndex];
-                colorPoints[markerIndex] = new PXCMPointF32(marker.Center.X, marker.Center.Y);
+                colourPoints[markerIndex] = new PXCMPointF32(marker.Center.X, marker.Center.Y);
             }
 
             //we map center marker color points to their associated depth point
-            _projection.MapColorToDepth(depth, colorPoints, depthPoints);
+            _projection.MapColorToDepth(depth, colourPoints, depthPoints);
 
             //query vertices (which are depth points coordinates in mm)
             var vertices = new PXCMPoint3DF32[depth.info.width*depth.info.height];
@@ -213,7 +208,7 @@ namespace CameraModule.Implementation.MarkerTracking
                 var v = vertices[(int) (depthPoints[point].y*depth.info.width + depthPoints[point].x)];
                 Console.WriteLine("Distance to camera: " + GetDistance(_cameraCoordinate, v));
 
-                markers.Add(new Marker(detectedMarkers[point].Id, v, colorPoints[point]));
+                markers.Add(new Marker(detectedMarkers[point].Id, v, colourPoints[point]));
             }
 
             //notify that a new collection of markers is available
@@ -243,7 +238,7 @@ namespace CameraModule.Implementation.MarkerTracking
         /// </summary>
         public override void StopProcessing()
         {
-            if (TrackingStatus != TrackingStatus.Running || TrackingStatus == TrackingStatus.Paused)
+            if (Settings.TrackingStatus != TrackingStatus.Running || Settings.TrackingStatus == TrackingStatus.Paused)
             {
                 throw new MarkerTrackingException(@"Marker Tracking process is not running.");
             }
@@ -256,7 +251,7 @@ namespace CameraModule.Implementation.MarkerTracking
             ProcessingThread = null;
 
             //set flag to false
-            TrackingStatus = TrackingStatus.Stopped;
+            Settings.TrackingStatus = TrackingStatus.Stopped;
         }
 
 
@@ -358,8 +353,11 @@ namespace CameraModule.Implementation.MarkerTracking
 
         #region tracking vars
 
-        public new MarkerData Data { get; }
+        public new MarkerTrackingData Data { get; }
         public new MarkerTrackingSettings Settings { get; }
+
+        public delegate void NewMarkerEventHandler(object sender, NewMarkerArgs args);
+        public delegate void NoMarkerEventHandler(object sender, NewMarkerArgs args);
 
         //event handlers for new image, markers
         public event NewImageEventHandler NewImageAvailable;

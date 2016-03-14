@@ -17,10 +17,11 @@ namespace UserInterface.ViewModels.MarkerTrackingViewModels
 {
     public class MarkerTrackingViewModel : ViewModelBase
     {
-        public MarkerTrackingViewModel()
+        public MarkerTrackingViewModel(MarkerTrackingImpl markerTracking)
         {
-            //load markertracking modules
-            LoadModules();
+            
+            _markerTracking = markerTracking;
+            _markersDetected = new ObservableCollection<Marker>();
 
             StartTrackingCommand = new RelayCommand(StartTracking, CanStartTracking);
             StopTrackingCommand = new RelayCommand(StopTracking, CanStopTracking);
@@ -30,7 +31,7 @@ namespace UserInterface.ViewModels.MarkerTrackingViewModels
 
         private void ShutDownViewModel(object sender, EventArgs e)
         {
-            if (_markerTracking.TrackingStatus != TrackingStatus.Running) return;
+            if (_markerTracking.Settings.TrackingStatus != TrackingStatus.Running) return;
             var messageBox = MessageBoxButton.OK;
             ModernDialog.ShowMessage("Application will exit.", "Bye", messageBox);
             _markerTracking.StopProcessing();
@@ -43,7 +44,7 @@ namespace UserInterface.ViewModels.MarkerTrackingViewModels
         /// <returns></returns>
         private bool CanStopTracking(object arg)
         {
-            return _markerTracking.TrackingStatus == TrackingStatus.Running;
+            return _markerTracking.Settings.TrackingStatus == TrackingStatus.Running;
         }
 
         /// <summary>
@@ -53,17 +54,7 @@ namespace UserInterface.ViewModels.MarkerTrackingViewModels
         /// <returns></returns>
         private bool CanStartTracking(object arg)
         {
-            return _markerTracking.TrackingStatus != TrackingStatus.Running;
-        }
-
-        private void LoadModules()
-        {
-            //initialize marker tracking module
-            _markerTrackingModule = new MarkerTrackingModule();
-            _markerTracking = (MarkerTrackingImpl) _markerTrackingModule.GetInstance();
-
-            //create marker collection
-            _markersDetected = new ObservableCollection<Marker>();
+            return _markerTracking.Settings.TrackingStatus != TrackingStatus.Running;
         }
 
         /// <summary>

@@ -14,6 +14,7 @@
 
 using AudioModule.Implementation.AudioController;
 using CameraModule.Implementation.HandTracking;
+using CameraModule.Implementation.MarkerTracking;
 using CoreModule.Implementation;
 using GalaSoft.MvvmLight.Ioc;
 using Microsoft.Practices.ServiceLocation;
@@ -61,6 +62,7 @@ namespace UserInterface.ViewModels
             //todo: initialize modules here
             SimpleIoc.Default.Register<SpeakerControllerImpl>();
             SimpleIoc.Default.Register<HandTrackingImpl>();
+            SimpleIoc.Default.Register<MarkerTrackingImpl>();
             SimpleIoc.Default.Register<MainExperiment>();
         }
 

@@ -3,12 +3,12 @@ using CameraModule.Interfaces.Module;
 
 namespace CameraModule.Implementation.MarkerTracking
 {
-    public class MarkerData : Data
+    public class MarkerTrackingData : Data
     {
         /// <summary>
         ///     Constructor creates a new instance of MarkerData.
         /// </summary>
-        internal MarkerData()
+        internal MarkerTrackingData()
         {
 //            Markers = new Dictionary<int, PXCMPoint3DF32>();
 //              Markers = new ObservableCollection<Marker> {new Marker(1, new PXCMPoint3DF32(1, 2, 3))};

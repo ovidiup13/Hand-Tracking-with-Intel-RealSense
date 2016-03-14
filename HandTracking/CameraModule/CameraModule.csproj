@@ -91,7 +91,7 @@
     <Compile Include="Interfaces\UI\Displayable.cs" />
     <Compile Include="Interfaces\UI\RelayCommand.cs" />
     <Compile Include="Implementation\MarkerTracking\Marker.cs" />
-    <Compile Include="Implementation\MarkerTracking\MarkerData.cs" />
+    <Compile Include="Implementation\MarkerTracking\MarkerTrackingData.cs" />
     <Compile Include="Implementation\MarkerTracking\MarkerTrackingException.cs" />
     <Compile Include="Implementation\MarkerTracking\MarkerTrackingImpl.cs" />
     <Compile Include="Implementation\MarkerTracking\MarkerTrackingModule.cs" />
@@ -100,9 +100,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Interfaces\Settings\CameraSettings.cs" />
     <Compile Include="Interfaces\Settings\ISettings.cs" />
-    <Compile Include="Interfaces\Settings\AudioSettings.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="MarkerTrackingDiagram.cd" />
+    <None Include="HandTrackingClassDiagram.cd" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

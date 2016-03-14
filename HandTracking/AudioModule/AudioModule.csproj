@@ -75,6 +75,7 @@
     <Compile Include="Interfaces\AudioException.cs" />
     <Compile Include="Interfaces\Designs\ConstantDesign.cs" />
     <Compile Include="Interfaces\Designs\GeigerDesign.cs" />
+    <Compile Include="Interfaces\AudioSettings.cs" />
     <Compile Include="Interfaces\Designs\PitchDesign.cs" />
     <Compile Include="Interfaces\Designs\Interfaces\ICoalescentDesign.cs" />
     <Compile Include="Interfaces\Designs\Interfaces\INdividualDesign.cs" />

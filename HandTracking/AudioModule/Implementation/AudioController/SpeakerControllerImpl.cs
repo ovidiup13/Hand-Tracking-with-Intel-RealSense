@@ -25,7 +25,7 @@ namespace AudioModule.Implementation.AudioController
             //initialize settings
             AudioSettings = new AudioSettingsImpl();
 
-            Speakers = new ObservableCollection<SpeakerImpl>();
+            Speakers = new ObservableCollection<Speaker>();
 
             IsPlaying = false;
         }
@@ -48,7 +48,7 @@ namespace AudioModule.Implementation.AudioController
             if (Speakers == null)
             {
                 //initialize speaker collection
-                Speakers = new ObservableCollection<SpeakerImpl> {null};
+                Speakers = new ObservableCollection<Speaker> {null};
                 Speakers.Clear();
             }
             else
@@ -187,29 +187,6 @@ namespace AudioModule.Implementation.AudioController
         }
 
         /// <summary>
-        ///     Method that returns the id of the speaker which is physically closest to the hand position
-        ///     at the time of pressing space.
-        /// </summary>
-        /// <param name="handLocation"></param>
-        /// <returns></returns>
-        public override string GetClosest(PXCMPoint3DF32 handLocation)
-        {
-            double max = -1;
-            var id = "";
-            foreach (var speaker in _speakers)
-            {
-                var d = GetDistance(handLocation, speaker.GetPosition());
-                if (max < d)
-                {
-                    max = d;
-                    id = speaker.Marker.Id.ToString();
-                }
-            }
-
-            return id;
-        }
-
-        /// <summary>
         ///     Method that stops the current playback of the audio design.
         /// </summary>
         public void StopSounds()
@@ -285,8 +262,8 @@ namespace AudioModule.Implementation.AudioController
         #region vars      
 
         //list of Speaker instances
-        private ObservableCollection<SpeakerImpl> _speakers;
-        public ObservableCollection<SpeakerImpl> Speakers
+        private ObservableCollection<Speaker> _speakers;
+        public ObservableCollection<Speaker> Speakers
         {
             get { return _speakers; }
             set

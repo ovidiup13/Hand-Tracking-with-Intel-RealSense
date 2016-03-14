@@ -15,7 +15,7 @@ namespace CameraModule.Implementation.HandTracking
         {
 //            Settings = new HandTrackingSettings();
 //            Data = new HandTrackingData();
-            Settings = new HandTrackingSettings();
+            Settings = new HandTrackingSettings() {TrackingStatus = TrackingStatus.Stopped};
             Data = new HandTrackingData();
         }
 
@@ -34,14 +34,14 @@ namespace CameraModule.Implementation.HandTracking
         /// </summary>
         public override void StartProcessing()
         {
-            if (TrackingStatus == TrackingStatus.Initialized)
+            if (Settings.TrackingStatus == TrackingStatus.Initialized)
             {
                 _isPaused = false;
                 _waitForPauseEvent = new AutoResetEvent(false);
 
                 ProcessingThread = new Thread(TrackingThread);
                 ProcessingThread.Start();
-                TrackingStatus = TrackingStatus.Running;
+                Settings.TrackingStatus = TrackingStatus.Running;
             }
             else throw new HandTrackingException("Hand tracking RealSense modules have not been initialized.");
         }
@@ -58,7 +58,7 @@ namespace CameraModule.Implementation.HandTracking
 
             ProcessingThread = null;
 
-            TrackingStatus = TrackingStatus.Stopped;
+            Settings.TrackingStatus = TrackingStatus.Stopped;
         }
 
         /// <summary>
@@ -66,7 +66,7 @@ namespace CameraModule.Implementation.HandTracking
         /// </summary>
         public override void ResumeProcessing()
         {
-            if (TrackingStatus == TrackingStatus.Paused)
+            if (Settings.TrackingStatus == TrackingStatus.Paused)
             {
                 _waitForPauseEvent.Set();
                 _isPaused = false;
@@ -78,7 +78,7 @@ namespace CameraModule.Implementation.HandTracking
         /// </summary>
         public override void PauseProcessing()
         {
-            if (TrackingStatus == TrackingStatus.Running)
+            if (Settings.TrackingStatus == TrackingStatus.Running)
                 _isPaused = true;
         }
 
@@ -150,7 +150,7 @@ namespace CameraModule.Implementation.HandTracking
                 throw new HandTrackingException(@"Failed to initialize the SenseManager");
 
             //set status to initialized
-            TrackingStatus = TrackingStatus.Initialized;
+            Settings.TrackingStatus = TrackingStatus.Initialized;
         }
 
         /// <summary>
@@ -173,7 +173,7 @@ namespace CameraModule.Implementation.HandTracking
 
                     //acquire color stream and pass it to the delegate
                     var sample = SenseManager.QuerySample();
-                    AccessImage(sample.color);
+                    ProcessImage(sample.color);
 
                     // Updating the hand data
                     _handData?.Update();
@@ -202,7 +202,7 @@ namespace CameraModule.Implementation.HandTracking
             }
         }
 
-        private void AccessImage(PXCMImage image)
+        private void ProcessImage(PXCMImage image)
         {
             PXCMImage.ImageData imageData;
             image.AcquireAccess(PXCMImage.Access.ACCESS_READ, PXCMImage.PixelFormat.PIXEL_FORMAT_RGB24, out imageData);
@@ -274,10 +274,10 @@ namespace CameraModule.Implementation.HandTracking
                         continue;
                     }
 
-                    //update hand tracking data
+                    //update hand location using extremity data
                     Data.Location2D = extremityData.pointImage;
                     var p = extremityData.pointWorld;
-                    Data.Location3D = new PXCMPoint3DF32(p.x*1000, p.y*1000, p.z*1000);
+                    Data.Location3D = new PXCMPoint3DF32(p.x*Millis, p.y*Millis, p.z*Millis);
                 }
 
                 // full hand
@@ -294,12 +294,10 @@ namespace CameraModule.Implementation.HandTracking
                         continue;
                     }
 
-                    //set 2D position in hand Data
+                    // update hand location using joint data
                     Data.Location2D = jointData.positionImage;
-
-                    //set 3D position in hand Data (in mm)
                     var p = jointData.positionWorld;
-                    Data.Location3D = new PXCMPoint3DF32(p.x*1000, p.y*1000, p.z*1000);
+                    Data.Location3D = new PXCMPoint3DF32(p.x*Millis, p.y*Millis, p.z*Millis);
                 }
             }
         }
@@ -314,6 +312,8 @@ namespace CameraModule.Implementation.HandTracking
 
         private bool _isPaused;
         private AutoResetEvent _waitForPauseEvent;
+
+        private const int Millis = 1000;
 
         #endregion
 

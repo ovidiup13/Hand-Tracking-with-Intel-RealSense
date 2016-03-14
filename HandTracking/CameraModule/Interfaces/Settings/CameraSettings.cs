@@ -31,6 +31,17 @@ namespace CameraModule.Interfaces.Settings
 
         public int FramesPerSecond { get; set; } = _defaultFps;
 
+        private TrackingStatus _trackingStatus;
+        public TrackingStatus TrackingStatus
+        {
+            get { return _trackingStatus; }
+            protected internal set
+            {
+                _trackingStatus = value;
+                OnPropertyChanged(nameof(TrackingStatus));
+            }
+        }
+
         /// <summary>
         ///     Method that sets the widht, height and fps fields.
         /// </summary>

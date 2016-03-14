@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using AudioModule.Interfaces;
-using CameraModule.Interfaces.Settings;
 using Un4seen.Bass;
 
 namespace AudioModule.Implementation.AudioController

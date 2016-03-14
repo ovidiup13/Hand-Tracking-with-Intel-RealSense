@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading;
 using AudioModule.Implementation.AudioController;
 using AudioModule.Interfaces;
@@ -276,8 +277,8 @@ namespace CoreModule.Implementation
 
             //add data
             var speakerPosition = _speakerController.GetSpeakerPosition();
-            var distance = SpeakerController.GetDistance(_handData.Location3D, speakerPosition);
-            var closest = _speakerController.GetClosest(_handData.Location3D);
+            var distance = Tracking.GetDistance(_handData.Location3D, speakerPosition);
+            var closest = GetClosest(_handData.Location3D, _speakerController.Speakers.ToList());
 
             //export data to file
             _dataExporter.AppendToConditionFile(_speakerController.GetSpeakerId(), closest, distance, time,
@@ -342,7 +343,7 @@ namespace CoreModule.Implementation
                     var speakerPosition = _speakerController.GetSpeakerPosition();
 
                     //calculate distance between hand and speaker
-                    var distance = SpeakerController.GetDistance(handPosition, speakerPosition);
+                    var distance = Tracking.GetDistance(handPosition, speakerPosition);
 
                     //pass distance to speaker controller
                     _speakerController.SetDistance(distance);
@@ -353,6 +354,29 @@ namespace CoreModule.Implementation
             {
                 Console.WriteLine("Processing Thread Aborted.");
             }
+        }
+
+        /// <summary>
+        ///     Method that returns the id of the speaker which is physically closest to the hand position
+        ///     at the time of pressing space.
+        /// </summary>
+        /// <param name="handLocation"></param>
+        /// <returns></returns>
+        public string GetClosest(PXCMPoint3DF32 handLocation, List<Speaker> speakers)
+        {
+            double max = -1;
+            var id = "";
+            foreach (var speaker in speakers)
+            {
+                var d = Tracking.GetDistance(handLocation, speaker.GetPosition());
+                if (max < d)
+                {
+                    max = d;
+                    id = speaker.Marker.Id.ToString();
+                }
+            }
+
+            return id;
         }
 
         #endregion

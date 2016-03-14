@@ -68,8 +68,8 @@ namespace CameraModule.Implementation.HandTracking
         /// <summary>
         ///     Generic method that retrieves all the values of a enumeration type.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <returns></returns>
+        /// <typeparam name="T">Type of enumeration</typeparam>
+        /// <returns>a list of T values</returns>
         private static List<T> GetEnumList<T>()
         {
             var array = (T[]) Enum.GetValues(typeof (T));

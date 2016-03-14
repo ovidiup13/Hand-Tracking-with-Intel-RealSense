@@ -67,12 +67,6 @@ namespace AudioModule.Interfaces
         public abstract void SetDistance(double distance);
 
         /// <summary>
-        ///     Method that returns the closest speaker flag to the hand position.
-        /// </summary>
-        /// <param name="handLocation"></param>
-        public abstract string GetClosest(PXCMPoint3DF32 handLocation);
-
-        /// <summary>
         /// Method which ends the current playback.
         /// </summary>
         public abstract void StopPlayback();
@@ -82,24 +76,7 @@ namespace AudioModule.Interfaces
         /// </summary>
         public abstract void CleanUp();
 
-        /// <summary>
-        ///     Method that returns the distance between two points in 3D space. The two points must
-        ///     be measured in the same units. (e.g. either meters or millimeters)
-        /// </summary>
-        /// <param name="point1">First point</param>
-        /// <param name="point2">Second point</param>
-        /// <returns>The distance in the unit of measurement between the two points in cm (assumming points are measured in mm)</returns>
-        public static double GetDistance(PXCMPoint3DF32 point1, PXCMPoint3DF32 point2)
-        {
-            //TODO: there is a gap between centre of hand and centre of marker - aprox 3cm
-            return
-                Math.Sqrt(Math.Pow(point1.x - point2.x, 2) + Math.Pow(point1.y - point2.y, 2) +
-                          Math.Pow(point1.z - point2.z, 2))/10 - Offset;
-        }
-
-        #region default vars
-
-        private const int Offset = 2;
+        #region default 
 
         public AudioSettingsImpl AudioSettings { get; protected set; }
 
