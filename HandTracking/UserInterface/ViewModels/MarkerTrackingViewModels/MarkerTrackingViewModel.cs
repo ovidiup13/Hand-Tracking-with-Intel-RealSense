@@ -19,7 +19,6 @@ namespace UserInterface.ViewModels.MarkerTrackingViewModels
     {
         public MarkerTrackingViewModel(MarkerTrackingImpl markerTracking)
         {
-            
             _markerTracking = markerTracking;
             _markersDetected = new ObservableCollection<Marker>();
 

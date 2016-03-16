@@ -36,12 +36,15 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
+    <!-->
     <Reference Include="Aruco.Net" Condition="'$(Platform)'=='x64'">
       <HintPath>..\packages\Aruco.Net.2.0.0\build\net45\bin\x64\v110\Aruco.Net.dll</HintPath>
     </Reference>
     <Reference Include="Aruco.Net" Condition="'$(Platform)'=='x86'">
       <HintPath>..\packages\Aruco.Net.2.0.0\build\net45\bin\x86\v110\Aruco.Net.dll</HintPath>
     </Reference>
+    
+    <-->
     <Reference Include="GalaSoft.MvvmLight.Extras">
       <HintPath>..\packages\MvvmLightLibs.5.2.0.0\lib\net45\GalaSoft.MvvmLight.Extras.dll</HintPath>
     </Reference>
@@ -98,6 +101,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="aruco124.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Libs\opencv_core300.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -119,10 +125,11 @@
     <Error Condition="!Exists('..\packages\Aruco.Net.2.0.0\build\net45\Aruco.Net.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Aruco.Net.2.0.0\build\net45\Aruco.Net.targets'))" />
   </Target>
   <Import Project="..\packages\OpenCV.Net.3.3.0\build\net40\OpenCV.Net.targets" Condition="Exists('..\packages\OpenCV.Net.3.3.0\build\net40\OpenCV.Net.targets')" />
-  <Import Project="..\packages\Aruco.Net.2.0.0\build\net45\Aruco.Net.targets" Condition="Exists('..\packages\Aruco.Net.2.0.0\build\net45\Aruco.Net.targets')" />
   <PropertyGroup>
-    <PostBuildEvent>copy /y "$(SolutionDir)\packages\Aruco.Net.2.0.0\build\native\bin\Win32\v110\aruco124.dll" "$(TargetDir)"</PostBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
+  <Import Project="..\packages\Aruco.Net.2.0.0\build\net45\Aruco.Net.targets" Condition="Exists('..\packages\Aruco.Net.2.0.0\build\net45\Aruco.Net.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
