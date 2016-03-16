@@ -120,6 +120,9 @@
   </Target>
   <Import Project="..\packages\OpenCV.Net.3.3.0\build\net40\OpenCV.Net.targets" Condition="Exists('..\packages\OpenCV.Net.3.3.0\build\net40\OpenCV.Net.targets')" />
   <Import Project="..\packages\Aruco.Net.2.0.0\build\net45\Aruco.Net.targets" Condition="Exists('..\packages\Aruco.Net.2.0.0\build\net45\Aruco.Net.targets')" />
+  <PropertyGroup>
+    <PostBuildEvent>copy /y "$(SolutionDir)\packages\Aruco.Net.2.0.0\build\native\bin\Win32\v110\aruco124.dll" "$(TargetDir)"</PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
