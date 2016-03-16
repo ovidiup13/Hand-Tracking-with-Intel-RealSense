@@ -31,5 +31,24 @@ namespace AudioModule.Implementation.AudioController
 
             Console.WriteLine(@"Speaker initialized with id: " + Marker.Id + @", speaker: " + SpeakerFlag);
         }
+
+        /// <summary>
+        ///     Method that stops the current playback.
+        /// </summary>
+        public static void StopPlayback(int stream)
+        {
+            //if the stream is not defined, then ignore
+            if (stream == 0)
+                throw new AudioException("Stream error. Stream cannot be zero. Error: " + Bass.BASS_ErrorGetCode());
+
+            //wait until finished
+            //            while (IsPlaying(stream)) { }
+
+            if (!Bass.BASS_ChannelStop(stream))
+                throw new AudioException("Cannot stop playback. Error: " + Bass.BASS_ErrorGetCode());
+
+            //free stream
+            Bass.BASS_StreamFree(stream);
+        }
     }
 }

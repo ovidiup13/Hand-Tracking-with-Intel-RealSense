@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using AudioModule.Interfaces;
+using AudioModule.Interfaces.Designs.Types;
 using Un4seen.Bass;
 
 namespace AudioModule.Implementation.AudioController
@@ -105,7 +106,7 @@ namespace AudioModule.Implementation.AudioController
         /// <summary>
         ///     Method that initializes the default soundcard as the BASS.
         /// </summary>
-        internal void InitializeSoundCard(int id)
+        private void InitializeSoundCard(int id)
         {
             //bass.net registration
             BassNet.Registration("ovidiu.popoviciu@hotmail.co.uk", "2X2417830312420");

@@ -11,10 +11,11 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>CameraModule</RootNamespace>
     <AssemblyName>CameraModule</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -52,13 +53,20 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Aruco.Net, Version=2.0.0.0, Culture=neutral, processorArchitecture=AMD64">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="Aruco.Net" Condition="'$(Platform)'=='x64'">
       <HintPath>..\packages\Aruco.Net.2.0.0\build\net45\bin\x64\v110\Aruco.Net.dll</HintPath>
     </Reference>
-    <Reference Include="libpxcclr.cs, Version=6.0.21.6598, Culture=neutral, PublicKeyToken=ca106b2214526f83, processorArchitecture=AMD64">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files (x86)\Intel\RSSDK\bin\x64\libpxcclr.cs.dll</HintPath>
+    <Reference Include="Aruco.Net" Condition="'$(Platform)'=='x86'">
+      <HintPath>..\packages\Aruco.Net.2.0.0\build\net45\bin\x86\v110\Aruco.Net.dll</HintPath>
+    </Reference>
+    <Reference Include="GalaSoft.MvvmLight.Extras">
+      <HintPath>..\packages\MvvmLightLibs.5.2.0.0\lib\net45\GalaSoft.MvvmLight.Extras.dll</HintPath>
+    </Reference>
+    <Reference Include="libpxcclr.cs" Condition="'$(Platform)'=='x86'">
+      <HintPath>c:\Program Files (x86)\Intel\RSSDK\bin\win32\libpxcclr.cs.dll</HintPath>
+    </Reference>
+    <Reference Include="libpxcclr.cs" Condition="'$(Platform)'=='x64'">
+      <HintPath>c:\Program Files (x86)\Intel\RSSDK\bin\x64\libpxcclr.cs.dll</HintPath>
     </Reference>
     <Reference Include="OpenCV.Net, Version=3.3.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\OpenCV.Net.3.3.0\lib\net40\OpenCV.Net.dll</HintPath>

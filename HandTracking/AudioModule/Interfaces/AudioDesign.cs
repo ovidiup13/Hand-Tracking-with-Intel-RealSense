@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using AudioModule.Implementation.AudioController;
+using AudioModule.Interfaces.Designs.Types;
 using CameraModule.Annotations;
 using CameraModule.Implementation.MarkerTracking;
 using Un4seen.Bass;

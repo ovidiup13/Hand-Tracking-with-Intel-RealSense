@@ -107,14 +107,14 @@ namespace CameraModule.Interfaces.Module
             //TODO: there is a gap between centre of hand and centre of marker - aprox 3cm
             return
                 Math.Sqrt(Math.Pow(point1.x - point2.x, 2) + Math.Pow(point1.y - point2.y, 2) +
-                          Math.Pow(point1.z - point2.z, 2)) / 10 - Offset;
+                          Math.Pow(point1.z - point2.z, 2)) - Offset;
         }
 
         #endregion
 
         #region private vars
 
-        private const int Offset = 2;
+        public const int Offset = 2;
         private Data _data;
         private CameraSettings _settings;
 

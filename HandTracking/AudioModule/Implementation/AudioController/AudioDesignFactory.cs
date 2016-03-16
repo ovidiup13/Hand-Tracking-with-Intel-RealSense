@@ -2,6 +2,7 @@
 using AudioModule.Implementation.AudioDesigns.Geiger;
 using AudioModule.Implementation.AudioDesigns.Pitch;
 using AudioModule.Interfaces;
+using AudioModule.Interfaces.Designs.Types;
 
 namespace AudioModule.Implementation.AudioController
 {

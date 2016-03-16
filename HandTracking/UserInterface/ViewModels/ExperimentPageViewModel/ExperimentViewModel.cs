@@ -152,7 +152,16 @@ namespace UserInterface.ViewModels.ExperimentPageViewModel
         private bool GetData()
         {
             //get the speakers and remove the wrist
-//            SpeakerList = SpeakerController.Speakers.ToList();
+            //            SpeakerList = SpeakerController.Speakers.ToList();
+
+            if (SpeakerController.Speakers == null) //only containing wrist
+            {
+                var messageBox = MessageBoxButton.OK;
+                ModernDialog.ShowMessage(
+                    "Experiment cannot start because an error occurred when initializing the Speaker Controller.",
+                    "Error", messageBox);
+                return false;
+            }
 
             //validate speaker list
             if (SpeakerController.Speakers.Count == 0) //only containing wrist
@@ -163,10 +172,6 @@ namespace UserInterface.ViewModels.ExperimentPageViewModel
                     "Error", messageBox);
                 return false;
             }
-
-//            var wristSpeakerIndex = SpeakerList.Count - 1;
-//            SpeakerController.AudioSettings.WristSpeaker = SpeakerList[wristSpeakerIndex];
-//            SpeakerController.Speakers.RemoveAt(wristSpeakerIndex);
 
             //test soundcard
             try

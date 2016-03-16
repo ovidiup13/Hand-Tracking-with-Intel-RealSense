@@ -277,7 +277,7 @@ namespace CameraModule.Implementation.HandTracking
                     //update hand location using extremity data
                     Data.Location2D = extremityData.pointImage;
                     var p = extremityData.pointWorld;
-                    Data.Location3D = new PXCMPoint3DF32(p.x*Millis, p.y*Millis, p.z*Millis);
+                    Data.Location3D = new PXCMPoint3DF32(p.x*Centis, p.y*Centis, p.z*Centis);
                 }
 
                 // full hand
@@ -297,7 +297,7 @@ namespace CameraModule.Implementation.HandTracking
                     // update hand location using joint data
                     Data.Location2D = jointData.positionImage;
                     var p = jointData.positionWorld;
-                    Data.Location3D = new PXCMPoint3DF32(p.x*Millis, p.y*Millis, p.z*Millis);
+                    Data.Location3D = new PXCMPoint3DF32(p.x*Centis, p.y*Centis, p.z*Centis);
                 }
             }
         }
@@ -313,7 +313,7 @@ namespace CameraModule.Implementation.HandTracking
         private bool _isPaused;
         private AutoResetEvent _waitForPauseEvent;
 
-        private const int Millis = 1000;
+        private const int Centis = 100;
 
         #endregion
 

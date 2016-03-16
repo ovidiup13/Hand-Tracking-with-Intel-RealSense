@@ -5,11 +5,12 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using AudioModule.Interfaces;
+using AudioModule.Interfaces.Designs.Types;
 using Un4seen.Bass;
 
 namespace AudioModule.Implementation.AudioDesigns.Pitch
 {
-    class PitchWrist : PitchIndividual
+    public class PitchWrist : PitchIndividual
     {
         public PitchWrist()
         {

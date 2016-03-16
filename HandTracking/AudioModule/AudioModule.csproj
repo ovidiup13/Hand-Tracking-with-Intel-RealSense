@@ -9,8 +9,9 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>AudioModule</RootNamespace>
     <AssemblyName>AudioModule</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -49,9 +50,11 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Bass.Net, Version=2.4.11.1, Culture=neutral, PublicKeyToken=b7566c273e6ef480, processorArchitecture=MSIL" />
-    <Reference Include="libpxcclr.cs, Version=6.0.21.6598, Culture=neutral, PublicKeyToken=ca106b2214526f83, processorArchitecture=AMD64">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files (x86)\Intel\RSSDK\bin\x64\libpxcclr.cs.dll</HintPath>
+    <Reference Include="libpxcclr.cs" Condition="'$(Platform)'=='x86'">
+      <HintPath>c:\Program Files (x86)\Intel\RSSDK\bin\win32\libpxcclr.cs.dll</HintPath>
+    </Reference>
+    <Reference Include="libpxcclr.cs" Condition="'$(Platform)'=='x64'">
+      <HintPath>c:\Program Files (x86)\Intel\RSSDK\bin\x64\libpxcclr.cs.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -80,8 +83,8 @@
     <Compile Include="Interfaces\Designs\Interfaces\ICoalescentDesign.cs" />
     <Compile Include="Interfaces\Designs\Interfaces\INdividualDesign.cs" />
     <Compile Include="Interfaces\Speaker.cs" />
-    <Compile Include="Interfaces\Types\DesignType.cs" />
-    <Compile Include="Interfaces\Types\FeedbackType.cs" />
+    <Compile Include="Interfaces\Designs\Types\DesignType.cs" />
+    <Compile Include="Interfaces\Designs\Types\FeedbackType.cs" />
     <Compile Include="Interfaces\SpeakerController.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

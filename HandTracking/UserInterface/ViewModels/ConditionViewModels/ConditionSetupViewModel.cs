@@ -8,7 +8,7 @@ using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
 using AudioModule.Implementation.AudioController;
-using AudioModule.Interfaces;
+using AudioModule.Interfaces.Designs.Types;
 using CoreModule.Implementation;
 using FirstFloor.ModernUI.Presentation;
 using GalaSoft.MvvmLight;
@@ -36,7 +36,7 @@ namespace UserInterface.ViewModels.ConditionViewModels
             //retrieve default conditions
             InitializeDefaultGroups();
 
-            Converter = new PassThroughConverter();
+            new PassThroughConverter();
 
             //initialize commands
             AddNewConditionCommand = new RelayCommand(o => AddNewCondition(o));
@@ -272,8 +272,6 @@ namespace UserInterface.ViewModels.ConditionViewModels
         public ICommand AddNewConditionCommand { get; protected set; }
         public ICommand RemoveConditionCommand { get; protected set; }
         public ICommand RemoveConditionGroupCommand { get; protected set; }
-
-        public PassThroughConverter Converter { get; set; }
 
         #endregion
     }

@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using AudioModule.Interfaces;
+using AudioModule.Interfaces.Designs.Types;
 using CameraModule.Annotations;
 using CoreModule.Interfaces;
 

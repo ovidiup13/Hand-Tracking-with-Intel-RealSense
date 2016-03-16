@@ -6,11 +6,12 @@ using System.Threading;
 using System.Threading.Tasks;
 using AudioModule.Interfaces;
 using AudioModule.Interfaces.Designs;
+using AudioModule.Interfaces.Designs.Types;
 using Un4seen.Bass;
 
 namespace AudioModule.Implementation.AudioDesigns.Geiger
 {
-    class GeigerWrist : GeigerIndividual
+    public class GeigerWrist : GeigerIndividual
     {
 
         public GeigerWrist()

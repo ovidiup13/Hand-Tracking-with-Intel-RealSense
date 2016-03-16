@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Threading;
+using AudioModule.Interfaces.Designs.Types;
 using Un4seen.Bass;
 
 namespace AudioModule.Interfaces.Designs

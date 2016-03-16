@@ -5,6 +5,7 @@ using Aruco.Net;
 using CameraModule.Interfaces;
 using CameraModule.Interfaces.Module;
 using CameraModule.Interfaces.Settings;
+using GalaSoft.MvvmLight.Ioc;
 using OpenCV.Net;
 
 namespace CameraModule.Implementation.MarkerTracking
@@ -16,6 +17,7 @@ namespace CameraModule.Implementation.MarkerTracking
         /// <summary>
         ///     Constructor that instantiates the Marker Tracking class with default settings.
         /// </summary>
+        [PreferredConstructor] 
         public MarkerTrackingImpl()
         {
             Data = new MarkerTrackingData();
@@ -208,7 +210,7 @@ namespace CameraModule.Implementation.MarkerTracking
                 var v = vertices[(int) (depthPoints[point].y*depth.info.width + depthPoints[point].x)];
                 Console.WriteLine("Distance to camera: " + GetDistance(_cameraCoordinate, v));
 
-                markers.Add(new Marker(detectedMarkers[point].Id, v, colourPoints[point]));
+                markers.Add(new Marker(detectedMarkers[point].Id, new PXCMPoint3DF32(v.x*Centis, v.y*Centis, v.z*Centis), colourPoints[point]));
             }
 
             //notify that a new collection of markers is available
@@ -217,19 +219,6 @@ namespace CameraModule.Implementation.MarkerTracking
             color.Dispose();
             depth.Dispose();
             colorOcv.Dispose();
-        }
-
-        /// <summary>
-        ///     Method that calculates the Euclidian distance between two three-dimensional points.
-        /// </summary>
-        /// <param name="point1"></param>
-        /// <param name="point2"></param>
-        /// <returns></returns>
-        private static double GetDistance(PXCMPoint3DF32 point1, PXCMPoint3DF32 point2)
-        {
-            return
-                Math.Sqrt(Math.Pow(point1.x - point2.x, 2) + Math.Pow(point1.y - point2.y, 2) +
-                          Math.Pow(point1.z - point2.z, 2))/10;
         }
 
         /// <summary>
@@ -366,6 +355,8 @@ namespace CameraModule.Implementation.MarkerTracking
 
         //aruco detector
         private MarkerDetector _markerDetector;
+
+        private const int Centis = 10;
 
         //camera coordinates
         private readonly PXCMPoint3DF32 _cameraCoordinate = new PXCMPoint3DF32(0, 0, 0);

@@ -1,4 +1,5 @@
 ﻿using AudioModule.Interfaces;
+using AudioModule.Interfaces.Designs.Types;
 
 namespace AudioModule.Implementation.AudioDesigns.Constant
 {

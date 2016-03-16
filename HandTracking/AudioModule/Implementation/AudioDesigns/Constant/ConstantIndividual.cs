@@ -1,6 +1,7 @@
 ﻿using System.Threading;
 using AudioModule.Interfaces;
 using AudioModule.Interfaces.Designs;
+using AudioModule.Interfaces.Designs.Types;
 
 namespace AudioModule.Implementation.AudioDesigns.Constant
 {
