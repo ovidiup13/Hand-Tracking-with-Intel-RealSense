@@ -35,7 +35,7 @@ namespace AudioModule.Implementation.AudioController
         /// <summary>
         ///     Method that stops the current playback.
         /// </summary>
-        public static void StopPlayback(int stream)
+        public new void StopPlayback(int stream)
         {
             //if the stream is not defined, then ignore
             if (stream == 0)

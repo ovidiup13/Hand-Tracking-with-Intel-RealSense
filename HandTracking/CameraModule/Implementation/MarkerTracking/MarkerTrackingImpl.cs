@@ -210,7 +210,7 @@ namespace CameraModule.Implementation.MarkerTracking
                 var v = vertices[(int) (depthPoints[point].y*depth.info.width + depthPoints[point].x)];
                 Console.WriteLine("Distance to camera: " + GetDistance(_cameraCoordinate, v));
 
-                markers.Add(new Marker(detectedMarkers[point].Id, new PXCMPoint3DF32(v.x*Centis, v.y*Centis, v.z*Centis), colourPoints[point]));
+                markers.Add(new Marker(detectedMarkers[point].Id, new PXCMPoint3DF32(v.x/Centis, v.y/Centis, v.z/Centis), colourPoints[point]));
             }
 
             //notify that a new collection of markers is available

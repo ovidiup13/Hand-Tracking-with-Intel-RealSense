@@ -27,7 +27,15 @@ namespace AudioModule.Implementation.AudioDesigns.Constant
                 throw new AudioException("Stream error. Stream cannot be zero. ERROR: " + Bass.BASS_ErrorGetCode());
 
             //play file
-            Timer = new Timer(obj => { Speaker.Play(Stream); }, null, 0, _interval);
+            Timer = new Timer(obj => { WristSpeaker.Play(Stream); }, null, 0, _interval);
+        }
+
+        /// <summary>
+        /// Plays the sound made by the wrist speaker.
+        /// </summary>
+        public override void Play()
+        {
+            PlayIndividual();
         }
     }
 }

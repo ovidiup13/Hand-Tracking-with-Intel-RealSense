@@ -326,25 +326,27 @@ namespace CoreModule.Implementation
             try
             {
                 _speakerController.PlaySounds();
+                _speakerController.SetDistance(50);
 
                 while (_isProcessing)
                 {
                     //if hand is not detected, set the distance to maximum
                     if (!_handData.HandDetected)
                     {
-//                        _speakerController.SetDistance(50);
                         continue;
                     }
 
                     var handPosition = _handData.Location3D;
+//                    Console.WriteLine("Hand x:" + handPosition.x + ", y: " + handPosition.y + ", z: " + handPosition.z);
                     _dataExporter.AppendToTraceFile(_stopwatch.ElapsedMilliseconds, handPosition);
 
                     //get speaker position
                     var speakerPosition = _speakerController.GetSpeakerPosition();
+//                    Console.WriteLine("Speaker x:" + speakerPosition.x + ", y: " + speakerPosition.y + ", z: " + speakerPosition.z);
 
                     //calculate distance between hand and speaker
                     var distance = Tracking.GetDistance(handPosition, speakerPosition);
-
+                    Console.WriteLine("Distance: " + distance);
                     //pass distance to speaker controller
                     _speakerController.SetDistance(distance);
                     Thread.Sleep(10);
