@@ -109,7 +109,7 @@ namespace AudioModule.Implementation.AudioController
         private void InitializeSoundCard(int id)
         {
             //bass.net registration
-            BassNet.Registration("ovidiu.popoviciu@hotmail.co.uk", "2X2417830312420");
+            BassNet.Registration("email", "api-key");
 
             if (!Bass.BASS_Init(id, 44100, BASSInit.BASS_DEVICE_DEFAULT, IntPtr.Zero))
             {
@@ -123,7 +123,7 @@ namespace AudioModule.Implementation.AudioController
         #region volume variables
 
         private const int VolumeGap = 50;
-        private const int DefaultVolume = 50;
+        private const int DefaultVolume = 200;
         private int _volume = DefaultVolume;
 
         protected const int DefaultSoundCard = -1;

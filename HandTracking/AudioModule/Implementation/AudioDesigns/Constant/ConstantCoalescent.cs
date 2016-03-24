@@ -28,7 +28,7 @@ namespace AudioModule.Implementation.AudioDesigns.Constant
         public void PlayBoth()
         {
             //create stream
-            Stream2 = Bass.BASS_StreamCreateFile(File, 0L, 0L, WristSpeaker.GetFlag());
+            Stream2 = Bass.BASS_StreamCreateFile(File2, 0L, 0L, WristSpeaker.GetFlag());
 
             //check stream
             if (Stream2 == 0)
@@ -41,7 +41,7 @@ namespace AudioModule.Implementation.AudioDesigns.Constant
 //            Thread.Sleep(100);
 
             //play wrist stream
-            Timer2 = new Timer(obj => { Speaker.Play(Stream2); }, null, 100, _interval);
+            Timer2 = new Timer(obj => { WristSpeaker.Play(Stream2); }, null, 100, _interval);
         }
 
         public override void StopPlayback()
@@ -75,6 +75,8 @@ namespace AudioModule.Implementation.AudioDesigns.Constant
 
         protected Timer Timer2;
         protected int Stream2;
+
+        private const string File2 = "Sounds\\Pluck\\obj5p.wav"; //G4
 
         #endregion
     }

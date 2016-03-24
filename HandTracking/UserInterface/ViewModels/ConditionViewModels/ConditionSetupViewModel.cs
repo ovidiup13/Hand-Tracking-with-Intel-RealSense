@@ -45,24 +45,6 @@ namespace UserInterface.ViewModels.ConditionViewModels
             RemoveConditionGroupCommand = new RelayCommand(RemoveConditionGroup, CanRemoveConditionGroup);
         }
 
-        private void RemoveCondition(object o)
-        {
-
-            object[] obj = (object[]) o;
-            ConditionGroup group = obj[0] as ConditionGroup;
-
-            group?.RemoveCondition((Condition) obj[1]);
-
-        }
-
-        private bool CanRemoveCondition(object o)
-        {
-            if (o == null) return true;
-            object[] obj = (object[]) o;
-            ConditionGroup group = obj[0] as ConditionGroup;
-            return group?.Conditions.Count > 0;
-        }
-
         /// <summary>
         ///     Method called when an UIElement is dragged
         /// </summary>
@@ -88,6 +70,22 @@ namespace UserInterface.ViewModels.ConditionViewModels
         /// <param name="dropInfo"></param>
         public void Drop(IDropInfo dropInfo)
         {
+        }
+
+        private void RemoveCondition(object o)
+        {
+            var obj = (object[]) o;
+            var group = obj[0] as ConditionGroup;
+
+            group?.RemoveCondition((Condition) obj[1]);
+        }
+
+        private bool CanRemoveCondition(object o)
+        {
+            if (o == null) return true;
+            var obj = (object[]) o;
+            var group = obj[0] as ConditionGroup;
+            return group?.Conditions.Count > 0;
         }
 
         /// <summary>
@@ -149,7 +147,7 @@ namespace UserInterface.ViewModels.ConditionViewModels
         /// </summary>
         private void InitializeDefaultGroups()
         {
-            //constant
+            /*//constant
             ConditionsGroups.Add(new ConditionGroup
             {
                 Description = "Constant Group",
@@ -173,7 +171,7 @@ namespace UserInterface.ViewModels.ConditionViewModels
                 }
             });
 
-            /*//Geiger
+            //Geiger
             ConditionsGroups.Add(new ConditionGroup
             {
                 Description = "Geiger Group",
@@ -195,7 +193,7 @@ namespace UserInterface.ViewModels.ConditionViewModels
                         FeedbackType = FeedbackType.Wrist
                     }
                 }
-            });
+            });*/
 
             //pitch
             ConditionsGroups.Add(new ConditionGroup
@@ -233,7 +231,7 @@ namespace UserInterface.ViewModels.ConditionViewModels
                         FeedbackType = FeedbackType.Individual
                     }
                 }
-            });*/
+            });
 
             ConditionsGroupCollectionView = new ListCollectionView(ConditionsGroups);
         }
@@ -288,5 +286,4 @@ namespace UserInterface.ViewModels.ConditionViewModels
             throw new NotImplementedException();
         }
     }
-
 }

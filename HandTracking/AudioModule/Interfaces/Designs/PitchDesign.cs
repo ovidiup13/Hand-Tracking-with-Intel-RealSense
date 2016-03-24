@@ -59,18 +59,18 @@ namespace AudioModule.Interfaces.Designs
                 throw new NullReferenceException("Speaker cannot be null.");
             }
 
-            //get default file to play
-            CurrentFile = GetFile(-1);
+            //get default file to play - lowest note
+            CurrentFile = GetFile(50);
         }
 
         public override void StopPlayback()
         {
             Timer?.Dispose();
-            if (Stream != 0)
-            {
-                Speaker.StopPlayback(Stream);
-                Stream = 0;
-            }
+//            if (Stream != 0)
+//            {
+//                Speaker.StopPlayback(Stream);
+//                Stream = 0;
+//            }
         }
 
         /// <summary>
@@ -80,42 +80,42 @@ namespace AudioModule.Interfaces.Designs
         /// <returns></returns>
         protected string GetFile(double distance)
         {
-            if (distance > 45)
+            if (distance > 40)
             {
                 return _files[0];
             }
 
-            if (distance > 40 && distance < 45)
+            if (distance > 35 && distance < 40)
             {
                 return _files[1];
             }
 
-            if (distance > 35 && distance < 40)
+            if (distance > 30 && distance < 35)
             {
                 return _files[2];
             }
 
-            if (distance > 30 && distance < 35)
+            if (distance > 25 && distance < 30)
             {
                 return _files[3];
             }
 
-            if (distance > 25 && distance < 30)
+            if (distance > 20 && distance < 25)
             {
                 return _files[4];
             }
 
-            if (distance > 20 && distance < 25)
+            if (distance > 15 && distance < 20)
             {
                 return _files[5];
             }
 
-            if (distance > 15 && distance < 20)
+            if (distance > 7.5 && distance < 15)
             {
                 return _files[6];
             }
 
-            if (distance < 15)
+            if (distance < 7.5)
             {
                 return _files[7];
             }

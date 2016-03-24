@@ -326,7 +326,6 @@ namespace CoreModule.Implementation
             try
             {
                 _speakerController.PlaySounds();
-                _speakerController.SetDistance(50);
 
                 while (_isProcessing)
                 {

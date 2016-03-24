@@ -76,6 +76,7 @@ namespace CameraModule.Implementation.HandTracking
         public void ResetHand()
         {
             HandDetected = false;
+            Location3D = new PXCMPoint3DF32(100, 100, 100);
         }
     }
 }
