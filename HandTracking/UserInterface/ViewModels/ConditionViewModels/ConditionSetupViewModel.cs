@@ -26,7 +26,7 @@ namespace UserInterface.ViewModels.ConditionViewModels
         /// </summary>
         public ConditionSetupViewModel()
         {
-            ConditionsGroups = new ObservableCollection<ConditionGroup>();
+            ConditionsGroups = new ObservableCollection<Condition>();
 
             SpeakerController = SimpleIoc.Default.GetInstance<SpeakerControllerImpl>();
 
@@ -57,7 +57,7 @@ namespace UserInterface.ViewModels.ConditionViewModels
                 dropInfo.Effects = DragDropEffects.Move;
             }
 
-            if (dropInfo.Data is ConditionGroup && dropInfo.TargetItem is ConditionGroup)
+            if (dropInfo.Data is Condition && dropInfo.TargetItem is Condition)
             {
                 dropInfo.DropTargetAdorner = DropTargetAdorners.Highlight;
                 dropInfo.Effects = DragDropEffects.Move;
@@ -75,16 +75,16 @@ namespace UserInterface.ViewModels.ConditionViewModels
         private void RemoveCondition(object o)
         {
             var obj = (object[]) o;
-            var group = obj[0] as ConditionGroup;
+            var group = obj[0] as Condition;
 
-            group?.RemoveCondition((Condition) obj[1]);
+            group?.RemoveCondition((ConditionDesign) obj[1]);
         }
 
         private bool CanRemoveCondition(object o)
         {
             if (o == null) return true;
             var obj = (object[]) o;
-            var group = obj[0] as ConditionGroup;
+            var group = obj[0] as Condition;
             return group?.Conditions.Count > 0;
         }
 
@@ -99,12 +99,12 @@ namespace UserInterface.ViewModels.ConditionViewModels
         }
 
         /// <summary>
-        ///     Method that removesd a condition group from the Condition Collection View.
+        ///     Method that removesd a condition group from the ConditionDesign Collection View.
         /// </summary>
         /// <param name="obj"></param>
         private void RemoveConditionGroup(object obj)
         {
-            var group = obj as ConditionGroup;
+            var group = obj as Condition;
             ConditionsGroupCollectionView.Remove(group);
         }
 
@@ -125,10 +125,10 @@ namespace UserInterface.ViewModels.ConditionViewModels
         private void AddNewCondition(object o)
         {
             //cast to condition group
-            var group = o as ConditionGroup;
+            var group = o as Condition;
             if (o == null) return;
 
-            group?.AddNewCondition(new Condition());
+            group?.AddNewCondition(new ConditionDesign());
         }
 
         /// <summary>
@@ -148,22 +148,22 @@ namespace UserInterface.ViewModels.ConditionViewModels
         private void InitializeDefaultGroups()
         {
             /*//constant
-            ConditionsGroups.Add(new ConditionGroup
+            ConditionsGroups.Add(new Condition
             {
                 Description = "Constant Group",
-                Conditions = new ObservableCollection<Condition>
+                Conditions = new ObservableCollection<ConditionDesign>
                 {
-                    new Condition
+                    new ConditionDesign
                     {
                         DesignType = DesignType.Constant,
                         FeedbackType = FeedbackType.Individual
                     },
-                    new Condition
+                    new ConditionDesign
                     {
                         DesignType = DesignType.Constant,
                         FeedbackType = FeedbackType.Coalescent
                     },
-                    new Condition
+                    new ConditionDesign
                     {
                         DesignType = DesignType.Constant,
                         FeedbackType = FeedbackType.Individual
@@ -172,22 +172,22 @@ namespace UserInterface.ViewModels.ConditionViewModels
             });
 
             //Geiger
-            ConditionsGroups.Add(new ConditionGroup
+            ConditionsGroups.Add(new Condition
             {
                 Description = "Geiger Group",
-                Conditions = new ObservableCollection<Condition>
+                Conditions = new ObservableCollection<ConditionDesign>
                 {
-                    new Condition
+                    new ConditionDesign
                     {
                         DesignType = DesignType.Geiger,
                         FeedbackType = FeedbackType.Individual
                     },
-                    new Condition
+                    new ConditionDesign
                     {
                         DesignType = DesignType.Geiger,
                         FeedbackType = FeedbackType.Coalescent
                     },
-                    new Condition
+                    new ConditionDesign
                     {
                         DesignType = DesignType.Geiger,
                         FeedbackType = FeedbackType.Wrist
@@ -196,22 +196,22 @@ namespace UserInterface.ViewModels.ConditionViewModels
             });*/
 
             //pitch
-            ConditionsGroups.Add(new ConditionGroup
+            ConditionsGroups.Add(new Condition
             {
                 Description = "Pitch Group",
-                Conditions = new ObservableCollection<Condition>
+                Conditions = new ObservableCollection<ConditionDesign>
                 {
-                    new Condition
+                    new ConditionDesign
                     {
                         DesignType = DesignType.Pitch,
                         FeedbackType = FeedbackType.Individual
                     },
-                    new Condition
+                    new ConditionDesign
                     {
                         DesignType = DesignType.Pitch,
                         FeedbackType = FeedbackType.Coalescent
                     },
-                    new Condition
+                    new ConditionDesign
                     {
                         DesignType = DesignType.Pitch,
                         FeedbackType = FeedbackType.Wrist
@@ -220,12 +220,12 @@ namespace UserInterface.ViewModels.ConditionViewModels
             });
 
             //control
-            ConditionsGroups.Add(new ConditionGroup
+            ConditionsGroups.Add(new Condition
             {
                 Description = "Control Group",
-                Conditions = new ObservableCollection<Condition>
+                Conditions = new ObservableCollection<ConditionDesign>
                 {
-                    new Condition
+                    new ConditionDesign
                     {
                         DesignType = DesignType.Control,
                         FeedbackType = FeedbackType.Individual
@@ -241,9 +241,9 @@ namespace UserInterface.ViewModels.ConditionViewModels
         /// <summary>
         ///     Holds condition groups
         /// </summary>
-        private ObservableCollection<ConditionGroup> _conditionGroups;
+        private ObservableCollection<Condition> _conditionGroups;
 
-        public ObservableCollection<ConditionGroup> ConditionsGroups
+        public ObservableCollection<Condition> ConditionsGroups
         {
             get { return _conditionGroups; }
             set

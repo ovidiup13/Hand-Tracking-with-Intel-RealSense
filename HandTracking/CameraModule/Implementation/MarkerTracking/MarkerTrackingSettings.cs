@@ -23,9 +23,6 @@ namespace CameraModule.Implementation.MarkerTracking
 
         #region vars
 
-
-        public int ConvertTo { get; private set; } = 1000;
-
         #endregion
 
 

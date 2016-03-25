@@ -1,8 +1,7 @@
-﻿using System;
+﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using AudioModule.Interfaces;
-using AudioModule.Interfaces.Designs.Types;
+using System.Windows.Data;
 using CameraModule.Annotations;
 using CoreModule.Interfaces;
 
@@ -10,85 +9,113 @@ namespace CoreModule.Implementation
 {
     public class Condition : INotifyPropertyChanged
     {
-        private static long _id = 0;
-
-        /// <summary>
-        ///     Constructor that instantiates an object with a number of trials.
-        /// </summary>
-        /// <param name="trials"></param>
-        public Condition()
-        {
-            ConditionId = _id++;
-        }
-
-        /// <summary>
-        ///     Fields that sets an ID to the current condition.
-        /// </summary>
-        public long ConditionId { get; protected set; }
-
-        /// <summary>
-        ///     Field that sets and gets the type of AudioDesign associated with the Condition.
-        /// </summary>
-        private AudioDesign _audioDesign;
-        public AudioDesign AudioDesign
-        {
-            get { return _audioDesign; }
-            set
-            {
-                if (value == null) throw new ArgumentNullException(nameof(value));
-                _audioDesign = value;
-            }
-        }
-
-        /// <summary>
-        /// Field that holds the design type of the condition.
-        /// </summary>
-        private DesignType _designType;
-        public DesignType DesignType
-        {
-            get { return _designType; }
-            set
-            {
-                _designType = value;
-                OnPropertyChanged(nameof(DesignType));
-            }
-        }
-
-        /// <summary>
-        /// Field that holds the type of feedback of the condition.
-        /// </summary>
-        private FeedbackType _feedbackType;
-        public FeedbackType FeedbackType
-        {
-            get { return _feedbackType; }
-            set
-            {
-                _feedbackType = value;
-                OnPropertyChanged(nameof(FeedbackType));
-            }
-        }
-
-        /// <summary>
-        ///     Field that sets and gets the number of trials associated with each condition
-        /// </summary>
-        private int _numberOfTrials = 1;
-        public int NumberOfTrials
-        {
-            get { return _numberOfTrials; }
-            set
-            {
-                if (value <= 0) throw new ArgumentOutOfRangeException(nameof(value));
-                _numberOfTrials = value;
-                OnPropertyChanged(nameof(NumberOfTrials));
-            }
-        }
-
         public event PropertyChangedEventHandler PropertyChanged;
 
+        public Condition()
+        {
+            Conditions = new ObservableCollection<ConditionDesign>();
+        }
+
+        /// <summary>
+        ///     Method that adds a new ConditionDesign at the specified position.
+        /// </summary>
+        /// <param name="index"></param>
+        /// <param name="conditionDesign"></param>
+        public void AddConditionAtIndex(int index, ConditionDesign conditionDesign)
+        {
+            if (index < 0 || index > Conditions.Count)
+            {
+                throw new ExperimentException("Remove ConditionDesign index out of range.");
+            }
+
+            if (conditionDesign == null)
+            {
+                throw new ExperimentException("ConditionDesign cannot be null.");
+            }
+
+            Conditions.Insert(index, conditionDesign);
+        }
+
+        /// <summary>
+        /// Method which removes the specified ConditionDesign from the group.
+        /// </summary>
+        /// <param name="cond">ConditionDesign object</param>
+        public void RemoveCondition(ConditionDesign cond)
+        {
+            if (cond == null)
+            {
+                throw new ExperimentException("Remove ConditionDesign index out of range.");
+            }
+
+            Conditions.Remove(cond);
+        }
+
+        /// <summary>
+        ///     Method that removes a ConditionDesign from the ConditionDesign group.
+        /// </summary>
+        /// <param name="index">Index at which the ConditionDesign will be removed</param>
+        public void RemoveConditionAt(int index)
+        {
+            if (index < 0 || index > Conditions.Count)
+            {
+                throw new ExperimentException("Remove ConditionDesign index out of range.");
+            }
+
+            Conditions.RemoveAt(index);
+        }
+
+        /// <summary>
+        ///     Method that inserts a new ConditionDesign at the end of the ConditionDesign group.
+        /// </summary>
+        /// <param name="conditionDesign"></param>
+        public void AddNewCondition(ConditionDesign conditionDesign)
+        {
+            if (conditionDesign == null)
+            {
+                throw new ExperimentException("ConditionDesign cannot be null.");
+            }
+
+            Conditions.Add(conditionDesign);
+        }
+
         [NotifyPropertyChangedInvocator]
-        private void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+
+        #region vars
+
+        private string _description = "Condition";
+        public string Description
+        {
+            get { return _description; }
+            set
+            {
+                _description = value;
+                OnPropertyChanged(nameof(Description));
+            }
+        }
+
+        /// <summary>
+        ///     List of conditions.
+        /// </summary>
+        private ObservableCollection<ConditionDesign> _conditions;
+        public ObservableCollection<ConditionDesign> Conditions
+        {
+            get { return _conditions; }
+            set
+            {
+                if (value == null) return;
+                _conditions = value;
+                ConditionsCollectionView = CollectionViewSource.GetDefaultView(_conditions);
+                OnPropertyChanged(nameof(Conditions));
+            }
+        }
+
+        public ICollectionView ConditionsCollectionView { get; private set; }
+
+
+        #endregion
     }
 }

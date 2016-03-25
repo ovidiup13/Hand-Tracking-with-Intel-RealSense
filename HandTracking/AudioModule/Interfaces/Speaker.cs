@@ -72,6 +72,7 @@ namespace AudioModule.Interfaces
 
         /// <summary>
         ///     Method that plays an initial sound before the start of the audio feedback.
+        ///     TODO: set feedback to five beeps, instead of peak geiger
         /// </summary>
         public void PlayInitialSound()
         {

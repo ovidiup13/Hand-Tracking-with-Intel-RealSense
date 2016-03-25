@@ -16,6 +16,7 @@ using FirstFloor.ModernUI.Windows.Controls;
 using GalaSoft.MvvmLight;
 using UserInterface.ViewModels.ConditionViewModels;
 using UserInterface.ViewModels.HandViewModels;
+using Condition = CoreModule.Implementation.Condition;
 
 namespace UserInterface.ViewModels.ExperimentPageViewModel
 {
@@ -251,7 +252,7 @@ namespace UserInterface.ViewModels.ExperimentPageViewModel
         private SpeakerControllerImpl SpeakerController { get; }
 
         public List<SpeakerImpl> SpeakerList { get; private set; }
-        public List<ConditionGroup> ConditionGroups { get; private set; }
+        public List<Condition> ConditionGroups { get; private set; }
         public Participant Participant { get; private set; }
 
         #endregion

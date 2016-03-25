@@ -134,7 +134,7 @@ namespace CoreModule.Implementation
         /// <summary>
         ///     Method that initializes the modules of the main experiment
         /// </summary>
-        public void SetExperimentData(List<ConditionGroup> conditionGroups, SpeakerControllerImpl speakerController,
+        public void SetExperimentData(List<Condition> conditionGroups, SpeakerControllerImpl speakerController,
             HandTrackingImpl handTracking)
         {
             //set condition groups
@@ -182,7 +182,7 @@ namespace CoreModule.Implementation
                         //set the audio design on the speaker controller
                         _speakerController.SetAudioDesign(cond.AudioDesign);
 
-                        Console.WriteLine(@"Condition started");
+                        Console.WriteLine(@"ConditionDesign started");
                         for (var i = 0; i < trials; i++)
                         {
                             Console.WriteLine(@"Trial + " + i + @" started.");
@@ -213,7 +213,7 @@ namespace CoreModule.Implementation
                             _speakerController.SignalTrialEnded(true);
                         }
 
-                        Console.WriteLine(@"Condition ended.");
+                        Console.WriteLine(@"ConditionDesign ended.");
 
                         //signal speaker controller to re-shuffle speaker flags for new condition
                         _speakerController.SignalConditionEnded(true);
@@ -384,7 +384,7 @@ namespace CoreModule.Implementation
 
         #region main variables
 
-        private List<ConditionGroup> _conditionGroups;
+        private List<Condition> _conditionGroups;
         private SpeakerControllerImpl _speakerController;
         private Thread _experimentThread;
         private Thread _processingThread;
