@@ -5,7 +5,6 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mui="http://firstfloorsoftware.com/ModernUI"
              xmlns:forms="clr-namespace:System.Windows.Forms;assembly=System.Windows.Forms"
-             xmlns:handViewModels="clr-namespace:UserInterface.ViewModels.HandViewModels"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300"
              DataContext="{Binding Source={StaticResource ViewModelLocator}, Path=HandViewModel}">

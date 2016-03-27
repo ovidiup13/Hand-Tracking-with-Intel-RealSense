@@ -344,6 +344,8 @@ namespace AudioModule.Implementation.AudioController
                 }
             }
 
+            _speakerIndexes = ShuffleArray(_speakerIndexes);
+
         }
     }
 }

@@ -137,12 +137,12 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Compile Include="ViewModels\ConditionViewModels\ConditionSetupViewModel.cs" />
-    <Compile Include="ViewModels\ExperimentPageViewModel\ExperimentViewModel.cs" />
-    <Compile Include="ViewModels\HandViewModels\HandSetupViewModel.cs" />
+    <Compile Include="ViewModels\ConditionSetupViewModel.cs" />
+    <Compile Include="ViewModels\ExperimentViewModel.cs" />
+    <Compile Include="ViewModels\HandSetupViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
-    <Compile Include="ViewModels\MarkerTrackingViewModels\MarkerTrackingViewModel.cs" />
-    <Compile Include="ViewModels\SpeakerPageViewModels\SpeakerSetupViewModel.cs" />
+    <Compile Include="ViewModels\MarkerTrackingViewModel.cs" />
+    <Compile Include="ViewModels\SpeakerSetupViewModel.cs" />
     <Compile Include="ViewModels\ViewModelLocator.cs" />
     <Compile Include="Views\ConditionPage.xaml.cs">
       <DependentUpon>ConditionPage.xaml</DependentUpon>

@@ -4,7 +4,7 @@ using System.Windows.Controls;
 using FirstFloor.ModernUI.Windows;
 using FirstFloor.ModernUI.Windows.Navigation;
 using GalaSoft.MvvmLight.Ioc;
-using UserInterface.ViewModels.SpeakerPageViewModels;
+using UserInterface.ViewModels;
 
 namespace UserInterface.Views
 {

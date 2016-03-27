@@ -14,11 +14,9 @@ using CoreModule.Implementation;
 using CoreModule.Interfaces;
 using FirstFloor.ModernUI.Windows.Controls;
 using GalaSoft.MvvmLight;
-using UserInterface.ViewModels.ConditionViewModels;
-using UserInterface.ViewModels.HandViewModels;
 using Condition = CoreModule.Implementation.Condition;
 
-namespace UserInterface.ViewModels.ExperimentPageViewModel
+namespace UserInterface.ViewModels
 {
     public class ExperimentViewModel : ViewModelBase
     {

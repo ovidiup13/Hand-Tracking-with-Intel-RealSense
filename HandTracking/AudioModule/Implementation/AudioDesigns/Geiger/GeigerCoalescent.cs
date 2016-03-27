@@ -56,7 +56,7 @@ namespace AudioModule.Implementation.AudioDesigns.Geiger
             if (Stream2 == 0)
                 throw new AudioException("Stream error. Stream cannot be zero. ERROR: " + Bass.BASS_ErrorGetCode());
 
-            Timer = new Timer(obj => { Speaker.Play(Stream); }, null, 50, CurrentInterval);
+            Timer = new Timer(obj => { Speaker.Play(Stream); }, null, 0, CurrentInterval);
             Timer2 = new Timer(obj => { Speaker.Play(Stream2); }, null, Delay, CurrentInterval);
         }
 

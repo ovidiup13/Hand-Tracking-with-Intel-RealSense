@@ -27,7 +27,7 @@ namespace AudioModule.Implementation.AudioDesigns.Constant
         public void PlayIndividual()
         {
             //play file
-            Timer = new Timer(obj => { Speaker.Play(Stream); }, null, 200, _interval);
+            Timer = new Timer(obj => { Speaker.Play(Stream); }, null, 0, _interval);
         }
 
         /// <summary>

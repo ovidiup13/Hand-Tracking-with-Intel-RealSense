@@ -17,7 +17,7 @@ using GongSolutions.Wpf.DragDrop;
 using UserInterface.Commands;
 using Condition = CoreModule.Implementation.Condition;
 
-namespace UserInterface.ViewModels.ConditionViewModels
+namespace UserInterface.ViewModels
 {
     public class ConditionSetupViewModel : ViewModelBase, IDropTarget
     {

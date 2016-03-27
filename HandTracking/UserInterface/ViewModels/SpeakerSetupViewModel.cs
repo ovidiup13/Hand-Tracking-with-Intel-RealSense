@@ -8,9 +8,8 @@ using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Controls;
 using GalaSoft.MvvmLight;
 using Un4seen.Bass;
-using UserInterface.ViewModels.MarkerTrackingViewModels;
 
-namespace UserInterface.ViewModels.SpeakerPageViewModels
+namespace UserInterface.ViewModels
 {
     public class SpeakerSetupViewModel : ViewModelBase
     {

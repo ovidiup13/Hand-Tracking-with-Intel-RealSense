@@ -6,7 +6,7 @@ using CameraModule.Implementation.HandTracking;
 using CoreModule.Interfaces;
 using GalaSoft.MvvmLight;
 
-namespace UserInterface.ViewModels.HandViewModels
+namespace UserInterface.ViewModels
 {
     public class HandSetupViewModel : ViewModelBase
     {

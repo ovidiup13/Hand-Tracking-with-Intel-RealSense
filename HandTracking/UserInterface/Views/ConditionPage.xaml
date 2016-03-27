@@ -6,13 +6,13 @@
              xmlns:mui="http://firstfloorsoftware.com/ModernUI"
              xmlns:implementation="clr-namespace:CoreModule.Implementation;assembly=CoreModule"
              xmlns:dragDrop="clr-namespace:GongSolutions.Wpf.DragDrop;assembly=GongSolutions.Wpf.DragDrop"
-             xmlns:conditionViewModels="clr-namespace:UserInterface.ViewModels.ConditionViewModels"
+             xmlns:viewModels="clr-namespace:UserInterface.ViewModels"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300"
              DataContext="{Binding Source={StaticResource ViewModelLocator}, Path=ConditionViewModel}">
 
     <UserControl.Resources>
-        <conditionViewModels:PassThroughConverter x:Key="PassThroughConverter" />
+        <viewModels:PassThroughConverter x:Key="PassThroughConverter" />
     </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>

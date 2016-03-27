@@ -18,11 +18,6 @@ using CameraModule.Implementation.MarkerTracking;
 using CoreModule.Implementation;
 using GalaSoft.MvvmLight.Ioc;
 using Microsoft.Practices.ServiceLocation;
-using UserInterface.ViewModels.ConditionViewModels;
-using UserInterface.ViewModels.ExperimentPageViewModel;
-using UserInterface.ViewModels.HandViewModels;
-using UserInterface.ViewModels.MarkerTrackingViewModels;
-using UserInterface.ViewModels.SpeakerPageViewModels;
 
 namespace UserInterface.ViewModels
 {

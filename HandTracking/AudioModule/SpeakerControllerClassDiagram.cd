@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="AudioModule.Implementation.AudioController.SpeakerControllerImpl">
+    <Position X="4.25" Y="0.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AiIAgQAAAAAIAAAGMAAAUAAogEQQQAAEAQAAEEAEAEQ=</HashCode>
+      <FileName>Implementation\AudioController\SpeakerControllerImpl.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="_audioDesign" />
+      <Field Name="_targetSpeaker" />
+    </ShowAsAssociation>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="AudioModule.Interfaces.AudioDesign">
+    <Position X="8.25" Y="0.75" Width="2" />
+    <TypeIdentifier>
+      <HashCode>ACAAQAAAAAQQAACGIAIAMAEAgAgAAAAEgAAAAAAAAAI=</HashCode>
+      <FileName>Interfaces\AudioDesign.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="AudioModule.Interfaces.Speaker">
+    <Position X="0.5" Y="1" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>ACAAAAAEACEAAAEAIgCAAQAIgAQCAAAAgAAACAAAAAA=</HashCode>
+      <FileName>Interfaces\Speaker.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

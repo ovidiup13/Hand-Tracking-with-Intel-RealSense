@@ -13,7 +13,7 @@ using CameraModule.Interfaces.UI;
 using FirstFloor.ModernUI.Windows.Controls;
 using GalaSoft.MvvmLight;
 
-namespace UserInterface.ViewModels.MarkerTrackingViewModels
+namespace UserInterface.ViewModels
 {
     public class MarkerTrackingViewModel : ViewModelBase
     {
