@@ -263,6 +263,7 @@ namespace CoreModule.Implementation
         {
             //stop watch and processing thread
             _stopwatch.Stop();
+            _processingThread.Abort();
             _isProcessing = false;
 
             //get time elapsed

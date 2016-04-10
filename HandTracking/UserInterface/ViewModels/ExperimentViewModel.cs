@@ -135,6 +135,7 @@ namespace UserInterface.ViewModels
                 var ok = GetData();
                 if (!ok) return;
                 MainExperiment.SetExperimentData(ConditionGroups, SpeakerController, HandTracking);
+                MainExperiment.SetParticipant(Participant);
 
                 //start experiment
                 MainExperiment.StartExperiment();

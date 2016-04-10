@@ -8,7 +8,7 @@
              d:DesignHeight="300" d:DesignWidth="300"
              DataContext="{Binding Source={StaticResource ViewModelLocator}, Path=ExperimentViewModel}">
 
-    <Grid Style="{StaticResource ContentRoot}">
+    <Grid Name="Grid" Style="{StaticResource ContentRoot}">
         <Grid.ColumnDefinitions>
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
@@ -21,21 +21,21 @@
             <KeyBinding Command="{Binding SpacePressedCommand}" Key="Space" />
         </Grid.InputBindings>
 
-        <ScrollViewer>
+        <ScrollViewer Name="ScrollViewer">
 
-            <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Top"
+            <StackPanel Name="ButtonPanel" Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Top"
                         Width="310">
 
                 <!-- Start tracking button -->
                 <Button x:Name="StartTrackingButton" Content="Stop" Focusable="False"
                         ToolTip="Start the tracking module"
-                        Command="{Binding Path=StopExperimentCommand}" Width="90" />
+                        Command="{Binding Path=StopExperimentCommand}" Width="90" Click="Focus_Click" />
 
                 <!-- Stop tracking button -->
                 <Button x:Name="StartExperimentButton" Content="Start/Resume" Focusable="False"
-                        ToolTip="Stop the tracking module" Command="{Binding Path=StartExperimentCommand}" Width="130" />
+                        ToolTip="Stop the tracking module" Command="{Binding Path=StartExperimentCommand}" Width="130" Click="Focus_Click" />
                 <Button x:Name="PauseExperimentButton" Content="Pause" Focusable="False"
-                        ToolTip="Pause Experiment" Command="{Binding PauseExperimentCommand}" Width="90" />
+                        ToolTip="Pause Experiment" Command="{Binding PauseExperimentCommand}" Width="90" Click="Focus_Click" />
 
                 <!-- Stop tracking button -->
 
