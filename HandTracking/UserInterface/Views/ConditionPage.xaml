@@ -37,9 +37,9 @@
             </Grid.RowDefinitions>
 
             <!-- Column Labels -->
-            <TextBlock Grid.Column="0" Grid.Row="0" Text="Groups" Style="{StaticResource Heading1}" />
-            <TextBlock Grid.Column="2" Grid.Row="0" Text="ConditionDesigns" Style="{StaticResource Heading1}" />
-            <TextBlock Grid.Column="4" Grid.Row="0" Text="Designs" Style="{StaticResource Heading1}" />
+            <TextBlock Grid.Column="0" Grid.Row="0" Text="Conditions" Style="{StaticResource Heading1}" />
+            <TextBlock Grid.Column="2" Grid.Row="0" Text="Designs" Style="{StaticResource Heading1}" />
+            <TextBlock Grid.Column="4" Grid.Row="0" Text="Settings" Style="{StaticResource Heading1}" />
 
             <TextBlock Grid.Column="0" Grid.Row="1" />
 
@@ -63,7 +63,7 @@
             <!-- Conditions -->
             <ListBox Grid.Column="2" Grid.Row="2"
                      ItemsSource="{Binding ConditionsGroupCollectionView.CurrentItem.ConditionsCollectionView}"
-                     DisplayMemberPath="ConditionDesignId" ItemStringFormat="ConditionDesign #{0}"
+                     DisplayMemberPath="ConditionDesignId" ItemStringFormat="Design #{0}"
                      IsSynchronizedWithCurrentItem="True"
                      dragDrop:DragDrop.IsDragSource="True" dragDrop:DragDrop.IsDropTarget="True" />
             <ListBox Grid.Column="3" Grid.Row="2" Margin="6,0,0,0" />

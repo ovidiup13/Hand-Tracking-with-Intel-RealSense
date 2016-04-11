@@ -46,6 +46,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Implementation\AudioController\AudioDesignFactory.cs" />
+    <Compile Include="Implementation\AudioController\Device.cs" />
     <Compile Include="Implementation\AudioController\SpeakerControllerImpl.cs" />
     <Compile Include="Implementation\AudioController\AudioSettingsImpl.cs" />
     <Compile Include="Implementation\AudioController\SpeakerImpl.cs" />

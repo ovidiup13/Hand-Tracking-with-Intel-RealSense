@@ -28,6 +28,27 @@ namespace UserInterface.ViewModels
             InitializeSpeakerFlags();
 
             TestSoundCommand = new RelayCommand(TestSound);
+            InitSoundCardCommand = new RelayCommand(InitSoundCard, CanInitDevice);
+        }
+
+        /// <summary>
+        /// Checks whether the sound card device can be initialized.
+        /// </summary>
+        /// <param name="arg"></param>
+        /// <returns></returns>
+        private bool CanInitDevice(object arg)
+        {
+            return SelectedSoundDevice != null;
+        }
+
+        /// <summary>
+        /// Initialize the current sound card
+        /// </summary>
+        /// <param name="obj"></param>
+        private void InitSoundCard(object obj)
+        {
+            if (SelectedSoundDevice == null) return;
+            SpeakerController.AudioSettings.InitializeSoundDevice(SelectedSoundDevice.Id, Frequency);
         }
 
         private static void TestSound(object o)
@@ -92,6 +113,10 @@ namespace UserInterface.ViewModels
 
         #region data structures
 
+        //device held
+        public Device SelectedSoundDevice { get; set; }
+        public int Frequency { get; set; } = 44100;
+
         /// <summary>
         ///     Field that holds the speaker flags which are bound to the UI.
         /// </summary>
@@ -108,6 +133,7 @@ namespace UserInterface.ViewModels
         }
 
         public ICommand TestSoundCommand { get; protected set; }
+        public ICommand InitSoundCardCommand { get; protected set; }
 
         #endregion
     }

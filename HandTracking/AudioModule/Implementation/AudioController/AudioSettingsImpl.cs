@@ -111,6 +111,10 @@ namespace AudioModule.Implementation.AudioController
             //bass.net registration
             BassNet.Registration("email", "api-key");
 
+            //get devices
+            Devices = GetDeviceList();
+
+            //initialize default sound device
             if (!Bass.BASS_Init(id, 44100, BASSInit.BASS_DEVICE_DEFAULT, IntPtr.Zero))
             {
                 throw new AudioException("An error occurred while initializing the BASS library: " +
@@ -118,7 +122,42 @@ namespace AudioModule.Implementation.AudioController
             }
         }
 
-        //todo: add all settings for speaker controller here
+        /// <summary>
+        /// Returns the list of currently connected devices. 
+        /// </summary>
+        /// <returns></returns>
+        public List<Device> GetDeviceList()
+        {
+            //set device list
+            List<Device> devices = new List<Device>();
+            var deviceInfos = Bass.BASS_GetDeviceInfos();
+            for (var i = 0; i < deviceInfos.Length; i++)
+            {
+                devices.Add(new Device(i, deviceInfos[i].name));
+            }
+
+            return devices;
+        }
+
+        /// <summary>
+        /// Method that initializes a new sound card device.
+        /// </summary>
+        /// <param name="device"></param>
+        /// <param name="freq"></param>
+        /// <param name="flag"></param>
+        public void InitializeSoundDevice(int device, int freq)
+        {
+            //free previous device
+            Bass.BASS_Free();
+
+            //init selected device
+            //todo : the init flag can be selected in the UI by the client
+            if (!Bass.BASS_Init(device, freq, BASSInit.BASS_DEVICE_DEFAULT, IntPtr.Zero))
+            {
+                throw new AudioException("An error occurred while initializing the BASS library: " +
+                                         Bass.BASS_ErrorGetCode());
+            }
+        }   
 
         #region volume variables
 
@@ -129,6 +168,19 @@ namespace AudioModule.Implementation.AudioController
         protected const int DefaultSoundCard = -1;
 
         #endregion
+
+        //list of devices
+        private List<Device> _devices;
+        public List<Device> Devices
+        {
+            get { return _devices; }
+            set
+            {
+                if (value == null) return;
+                _devices = value;
+                OnPropertyChanged(nameof(Devices));
+            }
+        }  
 
         #region speaker variables
 

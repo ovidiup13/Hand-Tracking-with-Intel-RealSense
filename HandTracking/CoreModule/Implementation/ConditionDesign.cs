@@ -37,13 +37,13 @@ namespace CoreModule.Implementation
         /// <param name="trials"></param>
         public ConditionDesign()
         {
-            ConditionId = _id++;
+            ConditionDesignId = _id++;
         }
 
         /// <summary>
         ///     Fields that sets an ID to the current condition.
         /// </summary>
-        public long ConditionId { get; protected set; }
+        public long ConditionDesignId { get; protected set; }
 
         public AudioDesign AudioDesign
         {
