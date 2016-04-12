@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.ComponentModel;
+using System.Drawing;
 using System.Windows;
 using System.Windows.Input;
 using AudioModule.Implementation.AudioController;
@@ -31,8 +34,14 @@ namespace UserInterface.ViewModels
             InitSoundCardCommand = new RelayCommand(InitSoundCard, CanInitDevice);
         }
 
+        #region modules
+
+        public SpeakerControllerImpl SpeakerController { get; }
+
+        #endregion
+
         /// <summary>
-        /// Checks whether the sound card device can be initialized.
+        ///     Checks whether the sound card device can be initialized.
         /// </summary>
         /// <param name="arg"></param>
         /// <returns></returns>
@@ -42,13 +51,26 @@ namespace UserInterface.ViewModels
         }
 
         /// <summary>
-        /// Initialize the current sound card
+        ///     Initialize the current sound card
         /// </summary>
         /// <param name="obj"></param>
         private void InitSoundCard(object obj)
         {
             if (SelectedSoundDevice == null) return;
-            SpeakerController.AudioSettings.InitializeSoundDevice(SelectedSoundDevice.Id, Frequency);
+            try
+            {
+                SpeakerController.AudioSettings.InitializeSoundDevice(SelectedSoundDevice.Id, Frequency);
+                var messageBox = MessageBoxButton.OK;
+                ModernDialog.ShowMessage("Sound Device " + SelectedSoundDevice.Name + " has been successfully initialized. Please make sure to test the speakers before continuing.", "Init Successful", messageBox);
+                InitMessage = "Initialization Successful!";
+            }
+            catch (AudioException audioException)
+            {
+                var messageBox = MessageBoxButton.OK;
+                ModernDialog.ShowMessage(audioException.Message, "Error", messageBox);
+                Console.WriteLine(audioException.StackTrace);
+                InitMessage = "Initialization Failed!";
+            }
         }
 
         private static void TestSound(object o)
@@ -68,12 +90,6 @@ namespace UserInterface.ViewModels
                 Console.WriteLine(audioException.StackTrace);
             }
         }
-
-        #region modules
-
-        public SpeakerControllerImpl SpeakerController { get; }
-
-        #endregion
 
         /// <summary>
         ///     Method that initializes the speaker flags to be bound to the UI.
@@ -110,6 +126,21 @@ namespace UserInterface.ViewModels
                 Console.WriteLine(audioException.StackTrace);
             }
         }
+
+        #region UI fields
+
+        private string _initMessage = "Default SoundCard Initialized";
+        public string InitMessage
+        {
+            get { return _initMessage;}
+            set
+            {
+                _initMessage = value;
+                RaisePropertyChanged(nameof(InitMessage));
+            }
+        }
+
+        #endregion
 
         #region data structures
 

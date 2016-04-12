@@ -18,6 +18,10 @@
                 <!-- Init Soundcard -->
                 <Grid Margin="0,0,0,20">
                     <!-- Definitions -->
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition />
                         <ColumnDefinition Width="300" />
@@ -25,16 +29,19 @@
                     </Grid.ColumnDefinitions>
 
                     <!-- Data -->
-                    <TextBlock Text="SoundCard" Style="{StaticResource Heading2}" HorizontalAlignment="Left" />
+                    <TextBlock Grid.Row="0" Grid.Column="0" Text="SoundCard" Style="{StaticResource Heading2}" HorizontalAlignment="Left" />
                     <ComboBox
                                     ItemsSource="{Binding SpeakerController.AudioSettings.Devices, Mode=OneWay}"
                                     DisplayMemberPath="Name"
                                     SelectedItem="{Binding SelectedSoundDevice, Mode=TwoWay}"
-                                    Grid.Column="1" />
+                                    Grid.Column="1" Grid.Row="0" />
 
-                    <Button Grid.Column="2" Content="Init" Command="{Binding InitSoundCardCommand}" HorizontalAlignment="Center" MinWidth="70" />
+                    <Button Grid.Row="0" Grid.Column="2" Content="Init" Command="{Binding InitSoundCardCommand}" HorizontalAlignment="Center" MinWidth="70" />
 
+                    <TextBlock Style="{StaticResource Small}" Grid.Row="1" Grid.Column="0" Text="{Binding InitMessage}"/>
                 </Grid>
+
+
 
                 <TextBlock Text="Speakers" Style="{StaticResource Heading2}"
                        HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,0,30" />

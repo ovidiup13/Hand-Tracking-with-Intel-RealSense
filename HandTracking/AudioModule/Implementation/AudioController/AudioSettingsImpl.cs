@@ -8,6 +8,28 @@ namespace AudioModule.Implementation.AudioController
 {
     public class AudioSettingsImpl : AudioSettings
     {
+        #region speaker variables
+
+        //BASSFlags
+        public readonly List<BASSFlag> SpeakerFlags = new List<BASSFlag>
+        {
+            BASSFlag.BASS_SPEAKER_REAR2LEFT, //7
+            BASSFlag.BASS_SPEAKER_REARRIGHT, //6
+            BASSFlag.BASS_SPEAKER_REARLEFT, //5
+            BASSFlag.BASS_SPEAKER_LFE, //4
+            BASSFlag.BASS_SPEAKER_CENTER, //3
+            BASSFlag.BASS_SPEAKER_FRONTLEFT, //1???
+            BASSFlag.BASS_SPEAKER_FRONTRIGHT, //2???
+            BASSFlag.BASS_SPEAKER_REAR2RIGHT //8
+        };
+
+        #endregion
+
+        //list of devices
+        private List<Device> _devices;
+
+        //get the wrist speaker from the audio design
+        private SpeakerImpl _wristSpeaker = AudioDesign.WristSpeaker;
 
         public AudioSettingsImpl()
         {
@@ -15,42 +37,6 @@ namespace AudioModule.Implementation.AudioController
             SetVolume(DefaultVolume);
         }
 
-        #region designs and feedback
-
-        /// <summary>
-        /// Method that returns all the design types
-        /// </summary>
-        /// <returns>List of all audio designs types</returns>
-        public List<DesignType> GetDesignTypes()
-        {
-            return GetEnumList<DesignType>();
-        }
-
-        /// <summary>
-        /// Method that returns all the feedback types.
-        /// </summary>
-        /// <returns>List of audio feedback types</returns>
-        public List<FeedbackType> GetFeedbackTypes()
-        {
-            return GetEnumList<FeedbackType>();
-        } 
-
-        /// <summary>
-        /// Generic method that retrieves all the values of a enumeration type.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <returns></returns>
-        private static List<T> GetEnumList<T>()
-        {
-            T[] array = (T[])Enum.GetValues(typeof(T));
-            List<T> list = new List<T>(array);
-            return list;
-        }
-
-        #endregion
-
-        //get the wrist speaker from the audio design
-        private SpeakerImpl _wristSpeaker = AudioDesign.WristSpeaker;
         public SpeakerImpl WristSpeaker
         {
             get { return _wristSpeaker; }
@@ -60,6 +46,17 @@ namespace AudioModule.Implementation.AudioController
                 _wristSpeaker = value;
                 AudioDesign.WristSpeaker.SpeakerFlag = _wristSpeaker.SpeakerFlag;
                 OnPropertyChanged(nameof(WristSpeaker));
+            }
+        }
+
+        public List<Device> Devices
+        {
+            get { return _devices; }
+            set
+            {
+                if (value == null) return;
+                _devices = value;
+                OnPropertyChanged(nameof(Devices));
             }
         }
 
@@ -123,13 +120,13 @@ namespace AudioModule.Implementation.AudioController
         }
 
         /// <summary>
-        /// Returns the list of currently connected devices. 
+        ///     Returns the list of currently connected devices.
         /// </summary>
         /// <returns></returns>
         public List<Device> GetDeviceList()
         {
             //set device list
-            List<Device> devices = new List<Device>();
+            var devices = new List<Device>();
             var deviceInfos = Bass.BASS_GetDeviceInfos();
             for (var i = 0; i < deviceInfos.Length; i++)
             {
@@ -140,7 +137,7 @@ namespace AudioModule.Implementation.AudioController
         }
 
         /// <summary>
-        /// Method that initializes a new sound card device.
+        ///     Method that initializes a new sound card device.
         /// </summary>
         /// <param name="device"></param>
         /// <param name="freq"></param>
@@ -154,10 +151,45 @@ namespace AudioModule.Implementation.AudioController
             //todo : the init flag can be selected in the UI by the client
             if (!Bass.BASS_Init(device, freq, BASSInit.BASS_DEVICE_DEFAULT, IntPtr.Zero))
             {
-                throw new AudioException("An error occurred while initializing the BASS library: " +
-                                         Bass.BASS_ErrorGetCode());
+                throw new AudioException(
+                    "An error occurred while initializing the selected sound device. Error code: " +
+                    Bass.BASS_ErrorGetCode());
             }
-        }   
+        }
+
+        #region designs and feedback
+
+        /// <summary>
+        ///     Method that returns all the design types
+        /// </summary>
+        /// <returns>List of all audio designs types</returns>
+        public List<DesignType> GetDesignTypes()
+        {
+            return GetEnumList<DesignType>();
+        }
+
+        /// <summary>
+        ///     Method that returns all the feedback types.
+        /// </summary>
+        /// <returns>List of audio feedback types</returns>
+        public List<FeedbackType> GetFeedbackTypes()
+        {
+            return GetEnumList<FeedbackType>();
+        }
+
+        /// <summary>
+        ///     Generic method that retrieves all the values of a enumeration type.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        private static List<T> GetEnumList<T>()
+        {
+            var array = (T[]) Enum.GetValues(typeof (T));
+            var list = new List<T>(array);
+            return list;
+        }
+
+        #endregion
 
         #region volume variables
 
@@ -166,37 +198,6 @@ namespace AudioModule.Implementation.AudioController
         private int _volume = DefaultVolume;
 
         protected const int DefaultSoundCard = -1;
-
-        #endregion
-
-        //list of devices
-        private List<Device> _devices;
-        public List<Device> Devices
-        {
-            get { return _devices; }
-            set
-            {
-                if (value == null) return;
-                _devices = value;
-                OnPropertyChanged(nameof(Devices));
-            }
-        }  
-
-        #region speaker variables
-
-        //BASSFlags
-        public readonly List<BASSFlag> SpeakerFlags = new List<BASSFlag>
-        {
-            BASSFlag.BASS_SPEAKER_REAR2LEFT, //7
-            BASSFlag.BASS_SPEAKER_REARRIGHT, //6
-            BASSFlag.BASS_SPEAKER_REARLEFT, //5
-            BASSFlag.BASS_SPEAKER_LFE, //4
-            BASSFlag.BASS_SPEAKER_CENTER, //3
-            BASSFlag.BASS_SPEAKER_FRONTLEFT, //1???
-            BASSFlag.BASS_SPEAKER_FRONTRIGHT, //2???
-            BASSFlag.BASS_SPEAKER_REAR2RIGHT //8
-
-        };
 
         #endregion
     }
