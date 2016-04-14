@@ -129,6 +129,9 @@ namespace CoreModule.Implementation
 
             //set status
             ExperimentStatus = ExperimentStatus.Initialized;
+
+            //export speaker positions
+            _dataExporter.ExportSpeakerPositions(_participant, _speakerController.Speakers.ToList());
         }
 
         /// <summary>

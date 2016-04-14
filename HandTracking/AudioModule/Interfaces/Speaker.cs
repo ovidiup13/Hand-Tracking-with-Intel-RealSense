@@ -76,7 +76,7 @@ namespace AudioModule.Interfaces
         /// </summary>
         public void PlayInitialSound()
         {
-            var initialStream = Bass.BASS_StreamCreateFile(TestFile, 0L, 0L,
+            var initialStream = Bass.BASS_StreamCreateFile(InitialSoundFile, 0L, 0L,
                 SpeakerFlag);
 
             if (initialStream == 0)
@@ -85,7 +85,7 @@ namespace AudioModule.Interfaces
             }
 
             var timer = new Timer(obj => { Bass.BASS_ChannelPlay(initialStream, true); }, null, 0, 200);
-            Thread.Sleep(1200); //sleep for a bit
+            Thread.Sleep(1000); //sleep for a bit
 
             timer.Dispose();
             Bass.BASS_StreamFree(initialStream);
@@ -164,6 +164,7 @@ namespace AudioModule.Interfaces
 
         private const string ConfirmFile = "Sounds\\confirm.wav";
         private const string TestFile = "Sounds\\peakGeiger.wav";
+        private const string InitialSoundFile = "Sounds\\Pluck\\obj8p.wav";
 
         #endregion
     }

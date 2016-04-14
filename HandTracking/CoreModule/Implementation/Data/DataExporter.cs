@@ -1,5 +1,7 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 using System.Text;
+using AudioModule.Interfaces;
 using CoreModule.Interfaces;
 
 namespace CoreModule.Implementation.Data
@@ -108,6 +110,32 @@ namespace CoreModule.Implementation.Data
         {
             _conditionDataStream?.Dispose();
             _traceDataStream?.Dispose();
+        }
+
+        /// <summary>
+        /// Method that exports the speaker positions. 
+        /// </summary>
+        /// <param name="participant"></param>
+        /// <param name="speakers"></param>
+        public void ExportSpeakerPositions(Participant participant, List<Speaker> speakers)
+        {
+            //create directory if it does not exist already
+            if (!System.IO.Directory.Exists(Directory))
+            {
+                System.IO.Directory.CreateDirectory(Directory);
+            }
+
+            var speakerFile = Directory + "\\" + _participant + "_Speaker_Positions.txt";
+            var speakerFileStream = !File.Exists(speakerFile) ? File.Create(speakerFile) : new FileStream(speakerFile, FileMode.Create);
+
+            foreach (var speaker in speakers)
+            {
+                var line = speaker.Marker.Id + ", " + speaker.Marker.Position3D.x + ", " + speaker.Marker.Position3D.y +
+                           ", " + speaker.Marker.Position3D.z + "\n";
+                AddText(speakerFileStream, line);
+            }
+
+            speakerFileStream.Close();
         }
 
         /// <summary>
