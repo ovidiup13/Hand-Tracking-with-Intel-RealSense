@@ -22,7 +22,6 @@ namespace CameraModule.Implementation.HandTracking
 
         private PXCMPoint3DF32 _point3D;
         private PXCMPoint3DF32 _point2D;
-        private bool _isDetected;
 
         #endregion
 
@@ -55,14 +54,16 @@ namespace CameraModule.Implementation.HandTracking
             }
         }
 
+
+        private bool _handDetected = false;
         public bool HandDetected
         {
-            get { return _isDetected; }
+            get { return _handDetected; }
             internal set
             {
                 lock (_lock3D)
                 {
-                    _isDetected = value;
+                    _handDetected = value;
                     OnPropertyChanged(nameof(HandDetected));
                 }
             }

@@ -23,11 +23,9 @@ namespace AudioModule.Implementation.AudioDesigns.Pitch
 
         public virtual void PlayIndividual()
         {
-            //stop the playback and change to other file
-            StopPlayback();
 
             //create stream
-            Stream = Bass.BASS_StreamCreateFile(CurrentFile, 0L, 0L, Speaker.GetFlag());
+//            Stream = Bass.BASS_StreamCreateFile(CurrentFile, 0L, 0L, Speaker.GetFlag());
 
             //check stream
             if (Stream == 0)
@@ -53,17 +51,25 @@ namespace AudioModule.Implementation.AudioDesigns.Pitch
         public override void SetDistance(double distance)
         {
             //get file
-            var file = GetFile(distance);
+//            var file = GetFile(distance);
+            var stream = GetStream(distance);
 
-            //if we have the same file, then don't need to change feedback
-            if (CurrentFile != null && CurrentFile == file)
+//            //if we have the same file, then don't need to change feedback
+//            if (CurrentFile != null && CurrentFile == file)
+//            {
+//                //                Console.WriteLine(@"Skipped current file: " + _currentFile);
+//                return;
+//            }
+
+            //skip changing the stream
+            if (Stream == stream)
             {
-                //                Console.WriteLine(@"Skipped current file: " + _currentFile);
                 return;
             }
 
             //otherwise change the file
-            CurrentFile = file;
+            PauseStream();
+            Stream = stream;
 
             //play next sound
             PlayIndividual();

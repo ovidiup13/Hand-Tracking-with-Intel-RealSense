@@ -119,13 +119,13 @@
                 <RowDefinition />
 
             </Grid.RowDefinitions>
-            <Button Grid.Column="0" Content="Add Group" Command="{Binding AddNewConditionGroupCommand}" VerticalAlignment="Bottom" Grid.ColumnSpan="2" Margin="0,0,19.333,25"  />
-            <Button Grid.Column="0" Content="Remove Group" Command="{Binding RemoveConditionGroupCommand}" CommandParameter="{Binding ConditionsGroupCollectionView.CurrentItem}"  Margin="0" VerticalAlignment="Bottom" />
+            <Button Grid.Column="0" Content="Add Group" Command="{Binding AddNewConditionCommand}" VerticalAlignment="Bottom" Grid.ColumnSpan="2" Margin="0,0,19.333,25"  />
+            <Button Grid.Column="0" Content="Remove Group" Command="{Binding RemoveConditionCommand}" CommandParameter="{Binding ConditionsGroupCollectionView.CurrentItem}"  Margin="0" VerticalAlignment="Bottom" />
             <Button Grid.Column="2" Content="Add ConditionDesign" 
-                    Command="{Binding AddNewConditionCommand}" CommandParameter="{Binding ConditionsGroupCollectionView.CurrentItem}" VerticalAlignment="Bottom" Margin="0,0,0,25" />
+                    Command="{Binding AddNewDesignCommand}" CommandParameter="{Binding ConditionsGroupCollectionView.CurrentItem}" VerticalAlignment="Bottom" Margin="0,0,0,25" />
 
             <Button IsEnabled="False" Grid.Column="1" Content="Remove ConditionDesign" 
-                    Command="{Binding RemoveConditionCommand}" Margin="14.667,0,5.333,-8.333" VerticalAlignment="Bottom" Height="20">
+                    Command="{Binding RemoveDesignCommand}" Margin="14.667,0,5.333,-8.333" VerticalAlignment="Bottom" Height="20">
                 <!-- <Button.CommandParameter>
                     <MultiBinding Converter="{StaticResource PassThroughConverter}">
                         <Binding ElementName="ConditionsGroupCollectionView.CurrentItem" />

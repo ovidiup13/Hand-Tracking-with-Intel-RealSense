@@ -54,6 +54,9 @@ namespace AudioModule.Interfaces.Designs
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public override void Play()
         {
             //check speaker
@@ -67,6 +70,9 @@ namespace AudioModule.Interfaces.Designs
             if (Stream == 0)
                 throw new AudioException("Stream error. Stream cannot be zero. ERROR: " + Bass.BASS_ErrorGetCode());
 
+            //always set the initial interval to be outside range
+            CurrentInterval = GetInterval(50);
+
         }
 
         /// <summary>
@@ -78,6 +84,11 @@ namespace AudioModule.Interfaces.Designs
             return "GEI_DYNA";
         }
 
+        /// <summary>
+        /// Get the interval according to the proximity between hand and speaker.
+        /// </summary>
+        /// <param name="distance"></param>
+        /// <returns></returns>
         protected int GetInterval(double distance)
         {
             if (distance > 45)

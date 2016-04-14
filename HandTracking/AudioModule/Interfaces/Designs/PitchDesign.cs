@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using AudioModule.Interfaces.Designs.Types;
+using Un4seen.Bass;
 
 namespace AudioModule.Interfaces.Designs
 {
@@ -59,18 +60,59 @@ namespace AudioModule.Interfaces.Designs
                 throw new NullReferenceException("Speaker cannot be null.");
             }
 
+            LoadStreams(Speaker.SpeakerFlag);
+
             //get default file to play - lowest note
-            CurrentFile = GetFile(50);
+//            CurrentFile = GetFile(50);
+            Stream = GetStream(50);
         }
 
+        /// <summary>
+        /// Method that loads all the files into a list of streams.
+        /// </summary>
+        protected void LoadStreams(BASSFlag flag)
+        {
+            Streams = new List<int>(_files.Count);
+            foreach (var file in _files)
+            {
+                int stream = Bass.BASS_StreamCreateFile(file, 0L, 0L, flag);
+                if (stream == 0)
+                {
+                    throw new AudioException("An error occurred while trying to load file " + file + " into a stream. Error code: " + Bass.BASS_ErrorGetCode());
+                }
+                Streams.Add(stream);
+            }
+        }
+
+        /// <summary>
+        /// Method that disposes all the streams. 
+        /// </summary>
+        protected void DisposeStreams()
+        {
+            if (Streams == null) return;
+            foreach (var stream in Streams)
+            {
+                Bass.BASS_StreamFree(stream);
+            }
+            Streams = null;
+        }
+
+        /// <summary>
+        /// Method that pauses the current stream.
+        /// </summary>
+        protected void PauseStream()
+        {
+            Timer?.Dispose();
+            Bass.BASS_ChannelPause(Stream);
+        }
+
+        /// <summary>
+        /// Method that stops the current playback and disposes all the streams.
+        /// </summary>
         public override void StopPlayback()
         {
             Timer?.Dispose();
-//            if (Stream != 0)
-//            {
-//                Speaker.StopPlayback(Stream);
-//                Stream = 0;
-//            }
+            DisposeStreams();
         }
 
         /// <summary>
@@ -124,6 +166,56 @@ namespace AudioModule.Interfaces.Designs
         }
 
         /// <summary>
+        ///     Method that returns the file to be played for the current distance.
+        /// </summary>
+        /// <param name="distance"></param>
+        /// <returns></returns>
+        protected int GetStream(double distance)
+        {
+            if (distance > 40)
+            {
+                return Streams[0];
+            }
+
+            if (distance > 35 && distance < 40)
+            {
+                return Streams[1];
+            }
+
+            if (distance > 30 && distance < 35)
+            {
+                return Streams[2];
+            }
+
+            if (distance > 25 && distance < 30)
+            {
+                return Streams[3];
+            }
+
+            if (distance > 20 && distance < 25)
+            {
+                return Streams[4];
+            }
+
+            if (distance > 15 && distance < 20)
+            {
+                return Streams[5];
+            }
+
+            if (distance > 7.5 && distance < 15)
+            {
+                return Streams[6];
+            }
+
+            if (distance < 7.5)
+            {
+                return Streams[7];
+            }
+
+            return Streams[0];
+        }
+
+        /// <summary>
         ///     Method that sets the distance between hand and target speaker. It selects the appropriate
         ///     file to be played according to the distance and calls the Play method.
         /// </summary>
@@ -159,6 +251,8 @@ namespace AudioModule.Interfaces.Designs
         private readonly List<string> _files;
         protected string CurrentFile;
         protected int Stream;
+
+        protected List<int> Streams;
 
         protected static readonly int Rate = 200;
 

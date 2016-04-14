@@ -36,13 +36,11 @@ namespace UserInterface.ViewModels
             //retrieve default conditions
             InitializeDefaultGroups();
 
-            new PassThroughConverter();
-
             //initialize commands
-            AddNewConditionCommand = new RelayCommand(o => AddNewCondition(o));
-            AddNewConditionGroupCommand = new RelayCommand(AddNewConditionGroup);
-            RemoveConditionCommand = new RemoveConditionCommand(o => RemoveCondition(o), o => CanRemoveCondition(o));
-            RemoveConditionGroupCommand = new RelayCommand(RemoveConditionGroup, CanRemoveConditionGroup);
+            AddNewDesignCommand = new RelayCommand(AddNewDesign);
+            AddNewConditionCommand = new RelayCommand(AddNewCondition);
+            RemoveDesignCommand = new RemoveConditionCommand(RemoveDesign, CanRemoveDesign);
+            RemoveConditionCommand = new RelayCommand(RemoveCondition, CanRemoveCondition);
         }
 
         /// <summary>
@@ -64,15 +62,11 @@ namespace UserInterface.ViewModels
             }
         }
 
-        /// <summary>
-        ///     No idea what this does
-        /// </summary>
-        /// <param name="dropInfo"></param>
         public void Drop(IDropInfo dropInfo)
         {
         }
 
-        private void RemoveCondition(object o)
+        private void RemoveDesign(object o)
         {
             var obj = (object[]) o;
             var group = obj[0] as Condition;
@@ -80,7 +74,7 @@ namespace UserInterface.ViewModels
             group?.RemoveCondition((ConditionDesign) obj[1]);
         }
 
-        private bool CanRemoveCondition(object o)
+        private bool CanRemoveDesign(object o)
         {
             if (o == null) return true;
             var obj = (object[]) o;
@@ -93,7 +87,7 @@ namespace UserInterface.ViewModels
         /// </summary>
         /// <param name="arg"></param>
         /// <returns></returns>
-        private bool CanRemoveConditionGroup(object arg)
+        private bool CanRemoveCondition(object arg)
         {
             return ConditionsGroupCollectionView.CanRemove;
         }
@@ -102,7 +96,7 @@ namespace UserInterface.ViewModels
         ///     Method that removesd a condition group from the ConditionDesign Collection View.
         /// </summary>
         /// <param name="obj"></param>
-        private void RemoveConditionGroup(object obj)
+        private void RemoveCondition(object obj)
         {
             var group = obj as Condition;
             ConditionsGroupCollectionView.Remove(group);
@@ -112,7 +106,7 @@ namespace UserInterface.ViewModels
         ///     Method that is called by an UI command and adds a new condition group to the model.
         /// </summary>
         /// <param name="obj"></param>
-        private void AddNewConditionGroup(object obj)
+        private void AddNewCondition(object obj)
         {
             ConditionsGroupCollectionView.AddNew();
         }
@@ -122,7 +116,7 @@ namespace UserInterface.ViewModels
         ///     selected in condition group collection.
         /// </summary>
         /// <param name="o"></param>
-        private void AddNewCondition(object o)
+        private void AddNewDesign(object o)
         {
             //cast to condition group
             var group = o as Condition;
@@ -266,10 +260,10 @@ namespace UserInterface.ViewModels
 
         #region commands
 
-        public ICommand AddNewConditionGroupCommand { get; protected set; }
         public ICommand AddNewConditionCommand { get; protected set; }
+        public ICommand AddNewDesignCommand { get; protected set; }
+        public ICommand RemoveDesignCommand { get; protected set; }
         public ICommand RemoveConditionCommand { get; protected set; }
-        public ICommand RemoveConditionGroupCommand { get; protected set; }
 
         #endregion
     }

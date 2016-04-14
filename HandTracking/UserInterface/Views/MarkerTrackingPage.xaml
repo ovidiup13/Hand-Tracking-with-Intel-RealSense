@@ -32,11 +32,11 @@
 
                                     <StackPanel Orientation="Vertical" xml:space="preserve">
                                         <TextBlock
-                                            Text="{Binding Path=XPosition, Mode=TwoWay, StringFormat='X: \t{0}'}" />
+                                            Text="{Binding Path=XPosition, Mode=TwoWay, StringFormat='X: {0}'}" />
                                         <TextBlock
-                                            Text="{Binding Path=YPosition, Mode=OneWay, StringFormat='Y: \t{0}'}" />
+                                            Text="{Binding Path=YPosition, Mode=OneWay, StringFormat='Y: {0}'}" />
                                         <TextBlock
-                                            Text="{Binding Path=ZPosition, Mode=TwoWay, StringFormat='Z: \t{0}'}" />
+                                            Text="{Binding Path=ZPosition, Mode=TwoWay, StringFormat='Z: {0}'}" />
                                     </StackPanel>
                                 </StackPanel>
 

@@ -28,10 +28,10 @@ namespace AudioModule.Implementation.AudioDesigns.Pitch
         public override void PlayIndividual()
         {
             //stop the playback and change to other file
-            StopPlayback();
+            PauseStream();
 
             //create stream
-            Stream = Bass.BASS_StreamCreateFile(CurrentFile, 0L, 0L, WristSpeaker.GetFlag());
+//            Stream = Bass.BASS_StreamCreateFile(CurrentFile, 0L, 0L, WristSpeaker.GetFlag());
 
             //check stream
             if (Stream == 0)
@@ -45,6 +45,13 @@ namespace AudioModule.Implementation.AudioDesigns.Pitch
         /// </summary>
         public override void Play()
         {
+            //load streams
+            LoadStreams(WristSpeaker.SpeakerFlag);
+
+            //set stream far away
+            Stream = GetStream(50);
+
+            //play
             PlayIndividual();
         }
 

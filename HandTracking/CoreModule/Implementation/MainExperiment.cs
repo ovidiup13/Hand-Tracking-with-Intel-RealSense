@@ -238,20 +238,20 @@ namespace CoreModule.Implementation
         /// </summary>
         private void CleanUpExperiment()
         {
-            //close the data stream
-            _dataExporter.CloseStreams();
-
             //stop processing thread
             _isProcessing = false;
             _processingThread?.Abort();
             _processingThread?.Join();
 
-            //stop playback
-            _speakerController.StopPlayback();
-
             //stop hand tracking thread
             _handtracking.StopProcessing();
             _handtracking = null;
+
+            //stop playback
+            _speakerController.StopPlayback();
+
+            //close the data stream
+            _dataExporter.CloseStreams();
 
             ExperimentStatus = ExperimentStatus.Stopped;
         }
@@ -268,7 +268,6 @@ namespace CoreModule.Implementation
 
             //get time elapsed
             var time = (long) _stopwatch.Elapsed.TotalMilliseconds;
-
             //reset stopwatch
             _stopwatch.Reset();
 
@@ -349,7 +348,7 @@ namespace CoreModule.Implementation
                     Console.WriteLine("Distance: " + distance);
                     //pass distance to speaker controller
                     _speakerController.SetDistance(distance);
-                    Thread.Sleep(10);
+                    Thread.Sleep(20);
                 }
             }
             catch (ThreadAbortException abortException)

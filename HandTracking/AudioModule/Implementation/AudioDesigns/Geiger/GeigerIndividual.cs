@@ -35,7 +35,7 @@ namespace AudioModule.Implementation.AudioDesigns.Geiger
             base.Play();
 
             //play file
-            Timer = new Timer(obj => { Speaker.Play(Stream); }, null, 50, CurrentInterval);
+            Timer = new Timer(obj => { Speaker.Play(Stream); }, null, 0, CurrentInterval);
         }
 
         /// <summary>

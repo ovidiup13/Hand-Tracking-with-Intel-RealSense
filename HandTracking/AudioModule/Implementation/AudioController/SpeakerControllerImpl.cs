@@ -87,8 +87,8 @@ namespace AudioModule.Implementation.AudioController
         /// </summary>
         public override void NextSpeaker()
         {
-            _audioDesign.StopPlayback();
-            _targetSpeaker = _speakers[_currentIndex++];
+//            _audioDesign.StopPlayback();
+            _targetSpeaker = _speakers[_speakerIndexes[_currentIndex++]];
             _audioDesign.SetSpeaker(_targetSpeaker);
             _targetSpeaker.PlayInitialSound();
 
@@ -113,6 +113,7 @@ namespace AudioModule.Implementation.AudioController
         public override void SetAudioDesign(AudioDesign audioDesign)
         {
             _audioDesign = audioDesign;
+            _speakerIndexes = ShuffleArray(_speakerIndexes);
         }
 
         /// <summary>
